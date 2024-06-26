@@ -37,6 +37,7 @@ namespace test.Commands
             await ListCommand.GenerateCommandAsync(_socketClient, guildId);
             await RaidPingCommand.GenerateCommandAsync(_socketClient, guildId);
             await WarQuestionCommand.GenerateCommandAsync(_socketClient, guildId);
+            await OutdatedCommands.GenerateCommandAsync(_socketClient, guildId);
         }
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
@@ -55,6 +56,10 @@ namespace test.Commands
 
                 case "ogy-cmdlist":
                     await ListCommand.ExecuteCommandAsync(command);
+                    break;
+
+                case "build-help":
+                    await OutdatedCommands.ExecuteCommandAsync(command);
                     break;
             }
         }
