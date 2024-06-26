@@ -8,13 +8,14 @@ using test.Commands;
 
 public class Program
 {
-    private static Client _discordClient;
+    private static Client? _discordClient;
 
     public static async Task Main()
     {
+
         _discordClient = new(new DiscordSocketClient());
 
-        Commands commands = new(_discordClient.client);
+        CommandController commands = new(_discordClient.client);
 
         _discordClient.Log();
 
