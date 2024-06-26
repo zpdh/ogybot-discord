@@ -18,7 +18,7 @@ namespace test.SlashCommands.IndividualCommands
 
             var textContent = "**/raid [Required: Raid Type] [Optional: Guild Name]**\n" +
                 "Pings either heavy/light raid and you may choose whether or not to inform the guild currently attacking ICo.\n\n" +
-                "**/war-build-help [required: Classes] [Required: Mythics Owned] [Required: Budget]**\n" +
+                "**/war-build-help [Required: Classes] [Required: Mythics Owned] [Required: Budget]**\n" +
                 "Starts a war question thread regarding builds with all of the info required for an answer from the war trainers. ";
 
             var embedBuilder = new EmbedBuilder()

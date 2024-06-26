@@ -15,11 +15,11 @@ using test.SlashCommands.IndividualCommands;
 
 namespace test.Commands
 {
-    public class CommandController
+    public class CommandsController
     {
         private static DiscordSocketClient? _socketClient { get; set; }
 
-        public CommandController(DiscordSocketClient socketClient)
+        public CommandsController(DiscordSocketClient socketClient)
         {
             _socketClient=socketClient;
         }

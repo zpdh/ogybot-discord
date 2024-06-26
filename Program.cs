@@ -15,7 +15,7 @@ public class Program
 
         _discordClient = new(new DiscordSocketClient());
 
-        CommandController commands = new(_discordClient.client);
+        CommandsController commands = new(_discordClient.client);
 
         _discordClient.Log();
 
