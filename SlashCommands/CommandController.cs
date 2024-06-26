@@ -26,10 +26,10 @@ namespace test.Commands
 
         public async Task Client_Ready()
         {
-            //ulong guildId = 810258030201143328;
+            ulong guildId = 810258030201143328;
             // ^^^ MAIN SERVER
 
-            ulong guildId = 1255321257956605963;
+            //ulong guildId = 1255321257956605963;
             // ^^^ TEST SERVER
 
             var guild = _socketClient.GetGuild(guildId);
@@ -44,12 +44,12 @@ namespace test.Commands
             switch (command.Data.Name)
             {
                 case "raid":
-                    if (command.ChannelId != /*863553410813001759*/1255506035091968010) await InvalidChannelCommand(command);
+                    if (command.ChannelId != 863553410813001759) await InvalidChannelCommand(command);
                     else await RaidPingCommand.ExecuteCommandAsync(command);
                     break;
 
                 case "war-build-help":
-                    if (command.ChannelId != /*1255011451056423013*/1255506035091968010) await InvalidChannelCommand(command);
+                    if (command.ChannelId != 1255011451056423013) await InvalidChannelCommand(command);
                     else await WarQuestionCommand.ExecuteCommandAsync(command);
                     break;
 
