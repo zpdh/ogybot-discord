@@ -11,15 +11,15 @@ using test.Login;
 using Discord.Rest;
 using Discord.Commands;
 using System.Reactive.Concurrency;
-using test.SlashCommands.IndividualCommands;
+using test.SlashCommands;
 
-namespace test.Commands
+namespace test.Services
 {
-    public class CommandsController
+    public class CommandsControllerService
     {
-        private static DiscordSocketClient? _socketClient { get; set; }
+        private static DiscordSocketClient _socketClient { get; set; }
 
-        public CommandsController(DiscordSocketClient socketClient)
+        public CommandsControllerService(DiscordSocketClient socketClient)
         {
             _socketClient=socketClient;
         }
@@ -38,6 +38,7 @@ namespace test.Commands
             await RaidPingCommand.GenerateCommandAsync(_socketClient, guildId);
             await WarQuestionCommand.GenerateCommandAsync(_socketClient, guildId);
             await OutdatedCommands.GenerateCommandAsync(_socketClient, guildId);
+            await PingChiefsCommand.GenerateCommandAsync(_socketClient, guildId);
         }
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
@@ -52,6 +53,11 @@ namespace test.Commands
                 case "war-build-help":
                     if (command.ChannelId != 1255011451056423013) await InvalidChannelCommand(command);
                     else await WarQuestionCommand.ExecuteCommandAsync(command);
+                    break;
+
+                case "chiefs":
+                    if (command.ChannelId != 863553410813001759) await InvalidChannelCommand(command);
+                    await PingChiefsCommand.ExecuteCommandAsync(command);
                     break;
 
                 case "ogy-cmdlist":

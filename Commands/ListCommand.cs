@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace test.SlashCommands.IndividualCommands
+namespace test.SlashCommands
 {
     public class ListCommand : ICommand
     {
@@ -19,7 +19,9 @@ namespace test.SlashCommands.IndividualCommands
             var textContent = "**/raid [Required: Raid Type] [Optional: Guild Name]**\n" +
                 "Pings either heavy/light raid and you may choose whether or not to inform the guild currently attacking ICo.\n\n" +
                 "**/war-build-help [Required: Classes] [Required: Mythics Owned] [Required: Budget]**\n" +
-                "Starts a war question thread regarding builds with all of the info required for an answer from the war trainers. ";
+                "Starts a war question thread regarding builds with all of the info required for an answer from the war trainers.\n\n" +
+                "**/chiefs**\n" +
+                "Pings active chiefs (use if you need somebody to set you a headquarter and/or tributes)";
 
             var embedBuilder = new EmbedBuilder()
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())

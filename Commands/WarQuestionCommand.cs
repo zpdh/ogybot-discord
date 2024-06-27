@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace test.SlashCommands.IndividualCommands
+namespace test.SlashCommands
 {
     public class WarQuestionCommand : ICommand
     {

@@ -4,7 +4,11 @@ using Discord.Net;
 using Newtonsoft.Json;
 using test.Loggers;
 using test.Login;
-using test.Commands;
+using test.Services;
+using test.SlashCommands;
+using Discord.Commands;
+
+namespace test;
 
 public class Program
 {
@@ -15,7 +19,7 @@ public class Program
 
         _discordClient = new(new DiscordSocketClient());
 
-        CommandsController commands = new(_discordClient.client);
+        CommandsControllerService commands = new(_discordClient.client);
 
         _discordClient.Log();
 
