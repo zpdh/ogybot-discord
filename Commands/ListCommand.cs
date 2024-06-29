@@ -27,7 +27,7 @@ namespace test.SlashCommands
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
             .WithTitle($"List of commands")
             .WithDescription(textContent)
-            .WithColor(Color.Purple)
+            .WithColor(Color.Teal)
             .WithCurrentTimestamp()
             .WithFooter($"Bot made by oxzy");
 

@@ -16,24 +16,32 @@ namespace test.SlashCommands
         {
             var info = command.Data.Options.ToList();
             var raidType = info[0].Value;
+
             try
             {
                 var guildAttacking = info[1].Value;
 
                 //Heavy raid
                 if (raidType.ToString() == "1")
-                    await command.RespondAsync($"<@&1044407292340211793>\nGuild: {guildAttacking}", allowedMentions: AllowedMentions.All);
-
+                {
+                    await command.RespondAsync($"<@&1044407292340211793>\n**Guild:** {guildAttacking}", allowedMentions: AllowedMentions.All);                  
+                }
                 //Light raid
                 else
-                    await command.RespondAsync($"<@&1044407413345886238>\nGuild: {guildAttacking}", allowedMentions: AllowedMentions.All);
+                {
+                    await command.RespondAsync($"<@&1044407413345886238\n**Guild:** {guildAttacking}>", allowedMentions: AllowedMentions.All);
+                }
             }
             catch
             {
                 if (raidType.ToString() == "1")
-                    await command.RespondAsync("<@&1044407292340211793>\nGuild not specified.", allowedMentions: AllowedMentions.All);
+                {
+                    await command.RespondAsync("<@&1044407292340211793>", allowedMentions: AllowedMentions.All);
+                }
                 else
-                    await command.RespondAsync("<@&1044407413345886238>\nGuild not specified.", allowedMentions: AllowedMentions.All);
+                {
+                    await command.RespondAsync("<@&1044407413345886238>", allowedMentions: AllowedMentions.All);
+                }
             }
         }
 

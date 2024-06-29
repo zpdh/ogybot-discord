@@ -25,7 +25,7 @@ namespace test.SlashCommands
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
             .WithTitle($"{user.GlobalName}'s Build Help")
             .WithDescription(textContent)
-            .WithColor(Color.Purple)
+            .WithColor(Color.Teal)
             .WithCurrentTimestamp();
 
             var channel = command.Channel as ITextChannel;
