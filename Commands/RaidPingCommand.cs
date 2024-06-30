@@ -29,7 +29,7 @@ namespace test.SlashCommands
                 //Light raid
                 else
                 {
-                    await command.RespondAsync($"<@&1044407413345886238\n**Guild:** {guildAttacking}>", allowedMentions: AllowedMentions.All);
+                    await command.RespondAsync($"<@&1044407413345886238>\n**Guild:** {guildAttacking}", allowedMentions: AllowedMentions.All);
                 }
             }
             catch
