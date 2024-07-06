@@ -814,11 +814,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Carine\\source\\repos\\test\\discordbot\\discordbot.csproj",
-      "projectName": "discordbot",
-      "projectPath": "C:\\Users\\Carine\\source\\repos\\test\\discordbot\\discordbot.csproj",
+      "projectUniqueName": "C:\\Users\\Carine\\source\\repos\\test\\test\\test.csproj",
+      "projectName": "test",
+      "projectPath": "C:\\Users\\Carine\\source\\repos\\test\\test\\test.csproj",
       "packagesPath": "C:\\Users\\Carine\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Carine\\source\\repos\\test\\discordbot\\obj\\",
+      "outputPath": "C:\\Users\\Carine\\source\\repos\\test\\test\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Carine\\AppData\\Roaming\\NuGet\\NuGet.Config",
