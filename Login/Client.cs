@@ -12,10 +12,10 @@ namespace test.Login
 {
     public class Client
     {
-        private string _token = "MTI1MjQ2MzAyODAyNTQyNjAzMQ.GgbYj2.ItzY4IqZxVmZ2ol3BLoPZkuhifWlj-S1u9oR0k";
+        //private string _token = "MTI1MjQ2MzAyODAyNTQyNjAzMQ.GgbYj2.ItzY4IqZxVmZ2ol3BLoPZkuhifWlj-S1u9oR0k";
         // ^^^^^ ogybot token
 
-        //private string _token = "MTI1NTUwNDYyNTQyMzg3NjE3OA.G4Jg5o.K7e54OtKLTmGcKEa0E7mt4VZz5N36Cel42cSQw";
+        private string _token = "MTI1NTUwNDYyNTQyMzg3NjE3OA.G4Jg5o.K7e54OtKLTmGcKEa0E7mt4VZz5N36Cel42cSQw";
         // ^^^^^ testing bot token
 
         public DiscordSocketClient client {  get; set; }

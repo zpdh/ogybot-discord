@@ -49,6 +49,10 @@
             "Discord.Net": {
               "target": "Package",
               "version": "[3.15.2, )"
+            },
+            "Microsoft.AspNet.WebApi.Client": {
+              "target": "Package",
+              "version": "[6.0.0, )"
             }
           },
           "imports": [
