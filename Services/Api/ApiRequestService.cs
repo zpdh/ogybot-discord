@@ -57,7 +57,7 @@ public static class ApiRequestService
 
     public static void RunAsync()
     {
-        client.BaseAddress = new Uri("https://ogybot-api.railway.internal/");
+        client.BaseAddress = new Uri("http://ogybot-api.railway.internal/");
 
         client.DefaultRequestHeaders.Accept.Clear();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
