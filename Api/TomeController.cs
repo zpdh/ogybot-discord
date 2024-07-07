@@ -21,7 +21,7 @@ public class TomeController
         _dataContext.Users.Remove(dbUser);
         await _dataContext.SaveChangesAsync();
         
-        return "Successfully removed player from tome list";
+        return $"Successfully removed player '{user.UserName}'from tome list";
     }
 
     public async Task<string> AddPlayerAsync(User user)
@@ -32,6 +32,6 @@ public class TomeController
         await _dataContext.Users.AddAsync(user);
         await _dataContext.SaveChangesAsync();
         
-        return "Successfully added player to tome list";
+        return $"Successfully added player '{user.UserName}'to tome list";
     }
 }
