@@ -7,7 +7,6 @@ using test.Login;
 using test.Services;
 using test.SlashCommands;
 using Discord.Commands;
-using test.Services.Api;
 
 namespace test;
 
@@ -28,8 +27,7 @@ public class Program
 
         _discordClient.client.Ready += commands.Client_Ready;
         _discordClient.client.SlashCommandExecuted += commands.SlashCommandHandler;
-
-        ApiRequestService.RunAsync();
+        
 
         await Task.Delay(-1);
     }
