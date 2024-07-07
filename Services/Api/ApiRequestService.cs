@@ -57,7 +57,7 @@ public static class ApiRequestService
 
     public static void RunAsync()
     {
-        client.BaseAddress = new Uri("postgresql://postgres:nCnOzCXMOWZcjBQGoCXBRpVGfYePqIjj@roundhouse.proxy.rlwy.net:36096/railway");
+        client.BaseAddress = new Uri("mysql://root:isttWVKUfJaELPJEYdxJaNzOZHMmCUjF@monorail.proxy.rlwy.net:37441/railway");
 
         client.DefaultRequestHeaders.Accept.Clear();
         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
