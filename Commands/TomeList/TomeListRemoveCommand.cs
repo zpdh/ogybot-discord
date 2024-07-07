@@ -18,7 +18,7 @@ public class TomeListRemoveCommand : ICommand
 
         var result = await _controller.RemovePlayerAsync(new User { UserName = username.ToString() });
         
-        await command.RespondAsync(result, ephemeral: true);
+        await command.RespondAsync(result);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

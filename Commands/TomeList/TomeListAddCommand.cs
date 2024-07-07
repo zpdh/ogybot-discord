@@ -18,7 +18,7 @@ namespace test.Commands
 
             var result = await _controller.AddPlayerAsync(new User { UserName = username.ToString() });
             
-            await command.RespondAsync(result, ephemeral: true);
+            await command.RespondAsync(result);
         }
 
         public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
