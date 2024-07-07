@@ -5,7 +5,7 @@ namespace test.Api;
 
 public class TomeController
 {
-    private readonly DataContext _dataContext = new DataContext();
+    private DataContext _dataContext { get; set; }
 
     public async Task<IEnumerable<User>> GetTomeQueueAsync()
     {

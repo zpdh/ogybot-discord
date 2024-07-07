@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Net;
 using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using test.Api;
 using test.SlashCommands;
@@ -10,7 +11,6 @@ namespace test.Commands.TomeList;
 public class TomeListCommand : ICommand
 {
     private static TomeController _controller = new();
-    
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
         
