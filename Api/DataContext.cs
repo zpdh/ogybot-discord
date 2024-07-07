@@ -1,5 +1,6 @@
 ﻿using System.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using test.Services;
 
 namespace test.Api;
@@ -7,7 +8,6 @@ namespace test.Api;
 public class DataContext : DbContext
 {
     public DbSet<User> Users { get; set; }
-    
     public DataContext(DbContextOptions<DataContext> options) : base(options) { }
     public DataContext() {}
     
@@ -15,7 +15,7 @@ public class DataContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseMySQL(ConfigurationManager.AppSettings["ConnectionString"]);
+            optionsBuilder.UseMySQL("Server=monorail.proxy.rlwy.net;Port=37441;Database=railway;Uid=root;Pwd=isttWVKUfJaELPJEYdxJaNzOZHMmCUjF;Protocol=tcp;");
         }
     }
 }
