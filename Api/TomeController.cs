@@ -18,7 +18,7 @@ public class TomeController
         var dbUser = await _dataContext.Users.FirstOrDefaultAsync(u => u.UserName.ToUpper() == user.UserName.ToUpper());
         if (dbUser == null) return "User not found";
         
-        _dataContext.Users.Remove(user);
+        _dataContext.Users.Remove(dbUser);
         await _dataContext.SaveChangesAsync();
         
         return "Successfully removed player from tome list";
