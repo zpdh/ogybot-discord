@@ -16,10 +16,10 @@ namespace test.Services
 
         public async Task Client_Ready()
         {
-            //ulong guildId = 810258030201143328;
+            ulong guildId = 810258030201143328;
             // ^^^ MAIN SERVER
 
-            ulong guildId = 1255321257956605963;
+            //ulong guildId = 1255321257956605963;
             // ^^^ TEST SERVER
 
             var guild = _socketClient.GetGuild(guildId);
@@ -74,7 +74,7 @@ namespace test.Services
                     var roles = user.Roles.Where(rol => rol.Id == 1060001967868485692 || rol.Id == 1097935496442810419);
                     if (roles == null || !roles.Any())
                     {
-                        await command.RespondAsync("You do not have permissions to use this command.", ephemeral: true)
+                        await command.RespondAsync("You do not have permissions to use this command.", ephemeral: true);
                         break;
                     }
                     
