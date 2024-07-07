@@ -49,6 +49,14 @@
             "Discord.Net": {
               "target": "Package",
               "version": "[3.15.2, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[7.0.20, )"
+            },
+            "MySql.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.5, )"
             }
           },
           "imports": [
