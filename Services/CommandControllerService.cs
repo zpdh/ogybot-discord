@@ -11,7 +11,7 @@ namespace test.Services
 
         public CommandsControllerService(DiscordSocketClient socketClient)
         {
-            _socketClient=socketClient;
+            _socketClient = socketClient;
         }
 
         public async Task Client_Ready()
@@ -19,7 +19,7 @@ namespace test.Services
             //ulong guildId = 810258030201143328;
             // ^^^ MAIN SERVER
 
-             ulong guildId = 1255321257956605963;
+            ulong guildId = 1255321257956605963;
             // ^^^ TEST SERVER
 
             var guild = _socketClient.GetGuild(guildId);
@@ -61,14 +61,28 @@ namespace test.Services
                     await OutdatedCommands.ExecuteCommandAsync(command);
                     break;
                 case "tomelist":
+                    if (command.ChannelId != 1125517737188409364) await InvalidChannelCommand(command);
                     await TomeListCommand.ExecuteCommandAsync(command);
                     break;
                 case "tomelist-add":
+                    if (command.ChannelId != 1125517737188409364) await InvalidChannelCommand(command);
                     await TomeListAddCommand.ExecuteCommandAsync(command);
                     break;
                 case "tomelist-remove":
-                    await TomeListRemoveCommand.ExecuteCommandAsync(command);
-                    break;
+                    if (command.ChannelId != 1125517737188409364) await InvalidChannelCommand(command);
+                    var user = command.User as SocketGuildUser;
+                    var roles = user.Roles.Where(rol => rol.Id == 1060001967868485692 || rol.Id == 1097935496442810419);
+                    if (roles == null || !roles.Any())
+                    {
+                        await command.RespondAsync("You do not have permissions to use this command.", ephemeral: true)
+                        break;
+                    }
+                    
+                    else
+                    {
+                        await TomeListRemoveCommand.ExecuteCommandAsync(command);
+                        break;
+                    }
             }
         }
 
