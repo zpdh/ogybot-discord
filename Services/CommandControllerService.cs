@@ -1,16 +1,6 @@
-﻿using Discord.Net;
-using Discord.WebSocket;
-using Discord;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using test.Login;
-using Discord.Rest;
-using Discord.Commands;
-using System.Reactive.Concurrency;
+﻿using Discord.WebSocket;
+using test.Commands;
+using test.Commands.TomeList;
 using test.SlashCommands;
 
 namespace test.Services
@@ -26,10 +16,10 @@ namespace test.Services
 
         public async Task Client_Ready()
         {
-            ulong guildId = 810258030201143328;
+            //ulong guildId = 810258030201143328;
             // ^^^ MAIN SERVER
 
-            // ulong guildId = 1255321257956605963;
+             ulong guildId = 1255321257956605963;
             // ^^^ TEST SERVER
 
             var guild = _socketClient.GetGuild(guildId);
@@ -39,6 +29,9 @@ namespace test.Services
             await WarQuestionCommand.GenerateCommandAsync(_socketClient, guildId);
             await OutdatedCommands.GenerateCommandAsync(_socketClient, guildId);
             await PingChiefsCommand.GenerateCommandAsync(_socketClient, guildId);
+            await TomeListCommand.GenerateCommandAsync(_socketClient, guildId);
+            await TomeListAddCommand.GenerateCommandAsync(_socketClient, guildId);
+            await TomeListRemoveCommand.GenerateCommandAsync(_socketClient, guildId);
         }
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
@@ -66,6 +59,15 @@ namespace test.Services
 
                 case "build-help":
                     await OutdatedCommands.ExecuteCommandAsync(command);
+                    break;
+                case "tomelist":
+                    await TomeListCommand.ExecuteCommandAsync(command);
+                    break;
+                case "tomelist-add":
+                    await TomeListAddCommand.ExecuteCommandAsync(command);
+                    break;
+                case "tomelist-remove":
+                    await TomeListRemoveCommand.ExecuteCommandAsync(command);
                     break;
             }
         }
