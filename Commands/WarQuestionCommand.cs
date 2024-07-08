@@ -2,13 +2,9 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using test.SlashCommands;
 
-namespace test.SlashCommands
+namespace test.Commands
 {
     public class WarQuestionCommand : ICommand
     {

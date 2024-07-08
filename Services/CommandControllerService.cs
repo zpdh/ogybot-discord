@@ -32,6 +32,7 @@ namespace test.Services
             await TomeListCommand.GenerateCommandAsync(_socketClient, guildId);
             await TomeListAddCommand.GenerateCommandAsync(_socketClient, guildId);
             await TomeListRemoveCommand.GenerateCommandAsync(_socketClient, guildId);
+            await ZingusCommand.GenerateCommandAsync(_socketClient, guildId);
         }
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
@@ -77,12 +78,14 @@ namespace test.Services
                         await command.RespondAsync("You do not have permissions to use this command.", ephemeral: true);
                         break;
                     }
-                    
                     else
                     {
                         await TomeListRemoveCommand.ExecuteCommandAsync(command);
                         break;
                     }
+                case "zingus":
+                    await ZingusCommand.ExecuteCommandAsync(command);
+                    break;
             }
         }
 
