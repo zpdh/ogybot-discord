@@ -21,6 +21,8 @@
 	<ItemGroup>
 	  <Compile Remove="Services\Api\**" />
 	  <Compile Remove="Services\Database\**" />
+	  <Compile Remove="Commands\TomeList\WaitlistCommand.cs" />
+	  <Compile Remove="Commands\TomeList\WaitlistAddCommand.cs" />
 	</ItemGroup>
 
 	<ItemGroup>

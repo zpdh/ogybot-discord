@@ -8,6 +8,7 @@ namespace test.Api;
 public class DataContext : DbContext
 {
     public DbSet<User> Users { get; set; }
+    public DbSet<UserWaitlist> UserWaitlists { get; set; }
     public DataContext() : base()
     {
     }

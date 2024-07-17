@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using test.Commands;
 using test.Commands.TomeList;
+using test.Commands.Waitlist;
 using test.SlashCommands;
 
 namespace test.Services
@@ -33,6 +34,9 @@ namespace test.Services
             await TomeListAddCommand.GenerateCommandAsync(_socketClient, guildId);
             await TomeListRemoveCommand.GenerateCommandAsync(_socketClient, guildId);
             await ZingusCommand.GenerateCommandAsync(_socketClient, guildId);
+            await WaitlistCommand.GenerateCommandAsync(_socketClient, guildId);
+            await WaitlistAddCommand.GenerateCommandAsync(_socketClient, guildId);
+            await WaitlistRemoveCommand.GenerateCommandAsync(_socketClient, guildId);
         }
 
         public async Task SlashCommandHandler(SocketSlashCommand command)
@@ -83,6 +87,31 @@ namespace test.Services
                         await TomeListRemoveCommand.ExecuteCommandAsync(command);
                         break;
                     }
+
+                case "waitlist":
+                    if (command.ChannelId != 1135296640803147806) await InvalidChannelCommand(command);
+                    await WaitlistCommand.ExecuteCommandAsync(command);
+                    break;
+                case "waitlist-add":
+                    if (command.ChannelId != 1135296640803147806) await InvalidChannelCommand(command);
+                    await WaitlistAddCommand.ExecuteCommandAsync(command);
+                    break;
+                case "waitlist-remove":
+                    if (command.ChannelId != 1135296640803147806) await InvalidChannelCommand(command);
+                    var discUser = command.User as SocketGuildUser;
+                    var userRoles = discUser.Roles.Where(rol =>
+                        rol.Id == 1060001967868485692 || rol.Id == 1097935496442810419 || rol.Id == 810680884193787974);
+                    if (userRoles == null || !userRoles.Any())
+                    {
+                        await command.RespondAsync("You do not have permissions to use this command.", ephemeral: true);
+                        break;
+                    }
+                    else
+                    {
+                        await WaitlistRemoveCommand.ExecuteCommandAsync(command);
+                        break;
+                    }
+
                 case "zingus":
                     await ZingusCommand.ExecuteCommandAsync(command);
                     break;
