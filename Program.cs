@@ -16,8 +16,7 @@ public class Program
 
     public static async Task Main()
     {
-
-        _discordClient = new(new DiscordSocketClient());
+        _discordClient = new Client(new DiscordSocketClient());
 
         CommandsControllerService commands = new(_discordClient.client);
 
@@ -25,9 +24,16 @@ public class Program
 
         await _discordClient.Login();
 
-        _discordClient.client.Ready += commands.Client_Ready;
+        /*
+         * Have to instance command below every bot migration.
+         * It is responsible for creating the commands and only
+         * needs to run once.
+         */
+
+        //_discordClient.client.Ready += commands.Client_Ready;
+
         _discordClient.client.SlashCommandExecuted += commands.SlashCommandHandler;
-        
+
 
         await Task.Delay(-1);
     }

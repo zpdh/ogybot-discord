@@ -7,6 +7,10 @@ public class TomeController
 {
     private DataContext _dataContext = new DataContext();
 
+    /* TODO: Rewrite these endpoints for better readability and maintenance.
+     * Idea: Make a guard utility class for guard clauses 
+     */
+    
     public async Task<IEnumerable<User>> GetTomeQueueAsync()
     {
         var userList = await _dataContext.Users.AsNoTracking().ToListAsync();

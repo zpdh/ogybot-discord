@@ -15,7 +15,11 @@ namespace test.SlashCommands
         public static async Task ExecuteCommandAsync(SocketSlashCommand command)
         {
             var user = command.User;
-
+            
+            /* TODO: Transform these walls of text into a StringBuilder result
+             * Seriously. It's awful
+             */
+            
             var textContent = "**/raid [Required: Raid Type] [Optional: Guild Name]**\n" +
                               "Pings either heavy/light raid and you may choose whether or not to inform the guild currently attacking ICo.\n\n" +
                               "**/war-build-help [Required: Classes] [Required: Mythics Owned] [Required: Budget]**\n" +
@@ -28,12 +32,12 @@ namespace test.SlashCommands
                               "/tomelist-remove [Required: username] removes player from queue.";
 
             var embedBuilder = new EmbedBuilder()
-            .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
-            .WithTitle($"List of commands")
-            .WithDescription(textContent)
-            .WithColor(Color.Teal)
-            .WithCurrentTimestamp()
-            .WithFooter($"Bot made by oxzy");
+                .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+                .WithTitle($"List of commands")
+                .WithDescription(textContent)
+                .WithColor(Color.Teal)
+                .WithCurrentTimestamp()
+                .WithFooter($"Bot made by oxzy");
 
             await command.RespondAsync(embed: embedBuilder.Build());
         }
@@ -43,8 +47,8 @@ namespace test.SlashCommands
             try
             {
                 var guildCommand = new SlashCommandBuilder()
-                .WithName("ogy-cmdlist")
-                .WithDescription("Provides a list of commands for ogybot");
+                    .WithName("ogy-cmdlist")
+                    .WithDescription("Provides a list of commands for ogybot");
 
                 await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
             }

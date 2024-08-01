@@ -1,28 +1,30 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using test.Loggers;
 
 namespace test.Login
 {
     public class Client
     {
-        private string _token = "MTI1MjQ2MzAyODAyNTQyNjAzMQ.GgbYj2.ItzY4IqZxVmZ2ol3BLoPZkuhifWlj-S1u9oR0k";
-        // ^^^^^ ogybot token
+        private static readonly Dictionary<string, string> _botBranch = new Dictionary<string, string>
+        {
+            {
+                "main",
+                "MTI1MjQ2MzAyODAyNTQyNjAzMQ.GgbYj2.ItzY4IqZxVmZ2ol3BLoPZkuhifWlj-S1u9oR0k"
+            },
+            {
+                "test",
+                "MTI1NTUwNDYyNTQyMzg3NjE3OA.G4Jg5o.K7e54OtKLTmGcKEa0E7mt4VZz5N36Cel42cSQw"
+            }
+        };
 
-        //private string _token = "MTI1NTUwNDYyNTQyMzg3NjE3OA.G4Jg5o.K7e54OtKLTmGcKEa0E7mt4VZz5N36Cel42cSQw";
-        // ^^^^^ testing bot token
+        private readonly string _token = _botBranch["main"];
 
         public DiscordSocketClient client {  get; set; }
 
-        public Client(DiscordSocketClient client2)
+        public Client(DiscordSocketClient client)
         {
-            client = client2;
+            this.client = client;
         }
 
         public async Task Login()

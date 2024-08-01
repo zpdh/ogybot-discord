@@ -9,18 +9,21 @@ public class DataContext : DbContext
 {
     public DbSet<User> Users { get; set; }
     public DbSet<UserWaitlist> UserWaitlists { get; set; }
-    public DataContext() : base()
+
+    public DataContext()
     {
     }
+
     public DataContext(DbContextOptions<DataContext> options) : base(options)
     {
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseMySQL("Server=monorail.proxy.rlwy.net;Port=37441;Database=railway;Uid=root;Pwd=isttWVKUfJaELPJEYdxJaNzOZHMmCUjF;");
-        }
+        if (optionsBuilder.IsConfigured) return;
+
+        const string connectionString =
+            "Server=monorail.proxy.rlwy.net;Port=37441;Database=railway;Uid=root;Pwd=isttWVKUfJaELPJEYdxJaNzOZHMmCUjF;";
+        optionsBuilder.UseMySQL(connectionString);
     }
 }

@@ -25,7 +25,7 @@ namespace test.Commands
             .WithCurrentTimestamp();
 
             var channel = command.Channel as ITextChannel;
-            var newThread = await channel.CreateThreadAsync($"{user.GlobalName}'s Build Help");
+            var newThread = await channel!.CreateThreadAsync($"{user.GlobalName}'s Build Help");
             await newThread.SendMessageAsync(embed: embedBuilder.Build());
             await Task.Delay(200);
             await newThread.SendMessageAsync(text: $"||<@&1255013857995395094><@{user.Id}>||", allowedMentions: AllowedMentions.All);
