@@ -1,7 +1,5 @@
-﻿using System.Configuration;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using test.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using test.Api.Entities;
 
 namespace test.Api;
 

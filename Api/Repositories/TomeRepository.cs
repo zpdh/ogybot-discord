@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using test.Api.Entities;
 using test.Services;
 
 namespace test.Api.Repositories;

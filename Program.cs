@@ -1,13 +1,6 @@
 ﻿using Discord.WebSocket;
-using Discord;
-using Discord.Net;
-using Newtonsoft.Json;
-using test.Loggers;
 using test.Login;
 using test.Services;
-using test.SlashCommands;
-using Discord.Commands;
-using test.Api;
 
 namespace test;
 
@@ -17,11 +10,6 @@ public class Program
 
     public static async Task Main()
     {
-        //Data instances
-        
-        
-        // Discord client stuff downwards
-        
         _discordClient = new Client(new DiscordSocketClient());
 
         CommandsControllerService commands = new(_discordClient.client);

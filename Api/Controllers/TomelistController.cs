@@ -9,7 +9,7 @@ public class TomelistController
     private readonly TomeRepository _tomeRepository = new();
     private readonly UnitOfWork _unitOfWork = new();
 
-    public async Task<List<UserTomelist>> GetTomeQueueAsync()
+    public async Task<List<UserTomelist>> GetTomelistAsync()
     {
         var userList = await _tomeRepository.SelectAllAsync();
         return userList;

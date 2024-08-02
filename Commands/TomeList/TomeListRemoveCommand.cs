@@ -2,24 +2,26 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.Api;
 using test.Api.Controllers;
-using test.Services;
-using test.SlashCommands;
+using test.Api.Entities;
 
 namespace test.Commands.TomeList;
 
-public class TomeListRemoveCommand : ICommand
+public abstract class TomeListRemoveCommand : ICommand
 {
-    private static TomelistController _controller = new();
-    
+    private static readonly TomelistController Controller = new();
+
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        var username = command.Data.Options.FirstOrDefault().Value;
+        var username = command.Data.Options.FirstOrDefault()!.Value;
 
-        var result = await _controller.RemovePlayerAsync(new UserBase { Username = username.ToString() });
-        
-        await command.RespondAsync(result);
+        var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = username.ToString() });
+
+        var msg = result.Status
+            ? $"Successfully removed player '{result.Username}' from the tome list."
+            : $"Player '{result.Username}' is not on tome list.";
+
+        await command.RespondAsync(msg);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

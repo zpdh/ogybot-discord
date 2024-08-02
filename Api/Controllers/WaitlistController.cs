@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using test.Api.Entities;
+﻿using test.Api.Entities;
 using test.Api.Repositories;
 
-namespace test.Api;
+namespace test.Api.Controllers;
 
 public class WaitlistController
 {

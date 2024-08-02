@@ -1,6 +1,4 @@
-﻿using test.Services;
-
-namespace test.Api;
+﻿namespace test.Api.Entities;
 
 public class UserWaitlist : UserBase
 {

@@ -2,39 +2,38 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.Api;
-using test.SlashCommands;
+using test.Api.Controllers;
 
 namespace test.Commands.Waitlist;
 
-public class WaitlistCommand : ICommand
+public abstract class WaitlistCommand : ICommand
 {
-    private static WaitlistController _controller = new();
+    private static readonly WaitlistController Controller = new();
+
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        
         var user = command.User;
-        var list = await _controller.GetWaitlistAsync();
-        var description = "";
-        var queueSize = "Players in queue: " + list.Count();
 
-        var i = 1;
-        foreach (var u in list)
+        var list = await Controller.GetWaitlistAsync();
+
+        var description = "";
+
+        var queueSize = "Players in queue: " + list.Count;
+
+        for (var i = 1; i <= list.Count; i++)
         {
-            description += i + ". " + u.Username.ToString() + "\n";
-            i++;
+            description += i + ". " + list[i - 1].Username + "\n";
         }
-        
+
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
-            .WithTitle($"Waitlist")
+            .WithTitle("Wait list")
             .WithDescription(description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
         await command.RespondAsync(embed: embedBuilder.Build());
-        
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
@@ -43,7 +42,7 @@ public class WaitlistCommand : ICommand
         {
             var guildCommand = new SlashCommandBuilder()
                 .WithName("waitlist")
-                .WithDescription("Displays waitlist");
+                .WithDescription("Displays wait list");
             await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
         }
         catch (HttpException exception)

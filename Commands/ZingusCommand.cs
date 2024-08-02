@@ -2,11 +2,10 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.SlashCommands;
 
 namespace test.Commands;
 
-public class ZingusCommand : ICommand
+public abstract class ZingusCommand : ICommand
 {
          public static async Task ExecuteCommandAsync(SocketSlashCommand command)
         {

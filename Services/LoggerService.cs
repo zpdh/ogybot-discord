@@ -1,18 +1,12 @@
 ﻿using Discord;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace test.Loggers
+namespace test.Services;
+
+public static class LoggerService
 {
-    public static class LoggerService
+    public static Task Log(LogMessage msg)
     {
-        public static Task Log(LogMessage msg)
-        {
-            Console.WriteLine(msg.ToString());
-            return Task.CompletedTask;
-        }
+        Console.WriteLine(msg.ToString());
+        return Task.CompletedTask;
     }
 }

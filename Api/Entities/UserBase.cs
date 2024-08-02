@@ -1,4 +1,4 @@
-﻿namespace test.Services;
+﻿namespace test.Api.Entities;
 
 public abstract class UserBase
 {

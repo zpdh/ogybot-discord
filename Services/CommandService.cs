@@ -2,7 +2,6 @@
 using test.Commands;
 using test.Commands.TomeList;
 using test.Commands.Waitlist;
-using test.SlashCommands;
 
 namespace test.Services;
 
@@ -27,12 +26,12 @@ public class CommandsControllerService
         {
             {
                 "ogy-cmdlist",
-                async command => await ExecuteGlobalCommand(command,
+                async command => await ExecuteGlobalCommand(
                     ListCommand.ExecuteCommandAsync(command))
             },
             {
                 "zingus",
-                async command => await ExecuteGlobalCommand(command,
+                async command => await ExecuteGlobalCommand(
                     ZingusCommand.ExecuteCommandAsync(command))
             },
             {
@@ -121,7 +120,7 @@ public class CommandsControllerService
         await WaitlistRemoveCommand.GenerateCommandAsync(_socketClient, guildId);
     }
 
-    private async Task ExecuteGlobalCommand(SocketSlashCommand command, Task method)
+    private async Task ExecuteGlobalCommand(Task method)
     {
         await method;
     }
