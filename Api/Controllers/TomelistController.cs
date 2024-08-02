@@ -6,8 +6,16 @@ namespace test.Api.Controllers;
 
 public class TomelistController
 {
-    private readonly TomeRepository _tomeRepository = new();
-    private readonly UnitOfWork _unitOfWork = new();
+    private readonly TomeRepository _tomeRepository;
+    private readonly UnitOfWork _unitOfWork;
+
+    public TomelistController()
+    {
+        var context = new DataContext();
+
+        _tomeRepository = new TomeRepository(context);
+        _unitOfWork = new UnitOfWork(context);
+    }
 
     public async Task<List<UserTomelist>> GetTomelistAsync()
     {
@@ -32,8 +40,8 @@ public class TomelistController
         var dbUser = await _tomeRepository.SelectSingleAsync(user);
         if (dbUser is not null) return new Response(user.Username!, false);
 
-        _tomeRepository.Delete(user);
-        await _unitOfWork.CommitAsync();
+         await _tomeRepository.InsertAsync(user);
+         await _unitOfWork.CommitAsync();
 
         return new Response(user.Username!, true);
     }

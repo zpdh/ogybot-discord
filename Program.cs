@@ -1,4 +1,7 @@
 ﻿using Discord.WebSocket;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using test.Api;
 using test.Login;
 using test.Services;
 
@@ -10,6 +13,11 @@ public class Program
 
     public static async Task Main()
     {
+       //TODO: Add dependency injection
+       //TODO: Make an appsettings.json to store info such as bot branch, guild id, database connections, etc
+       //TODO: Refactor commands for cleaner code
+        
+        
         _discordClient = new Client(new DiscordSocketClient());
 
         CommandsControllerService commands = new(_discordClient.client);
@@ -27,8 +35,7 @@ public class Program
         //_discordClient.client.Ready += commands.Client_Ready;
 
         _discordClient.client.SlashCommandExecuted += commands.SlashCommandHandler;
-
-
+        
         await Task.Delay(-1);
     }
 }

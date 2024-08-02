@@ -6,7 +6,7 @@ namespace test.Api;
 public class DataContext : DbContext
 {
     public DbSet<UserTomelist> UsersInTomelist { get; set; }
-    public DbSet<UserWaitlist> UsersWaitlists { get; set; }
+    public DbSet<UserWaitlist> UsersInWaitlist { get; set; }
 
     public DataContext()
     {
@@ -20,8 +20,11 @@ public class DataContext : DbContext
     {
         if (optionsBuilder.IsConfigured) return;
 
-        const string connectionString =
+        const string localConnectionString =
+            "Server=localhost;Port=3306;Database=ogybotdb;Uid=root;Pwd=1234";
+        
+        const string railwayConnectionString =
             "Server=monorail.proxy.rlwy.net;Port=37441;Database=railway;Uid=root;Pwd=isttWVKUfJaELPJEYdxJaNzOZHMmCUjF;";
-        optionsBuilder.UseMySQL(connectionString);
+        optionsBuilder.UseMySQL(railwayConnectionString);
     }
 }

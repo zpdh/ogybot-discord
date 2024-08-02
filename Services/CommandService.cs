@@ -22,6 +22,7 @@ public class CommandsControllerService
             { "test", 1255321257956605963 }
         };
 
+        //Start
         _botCommand = new Dictionary<string, Func<SocketSlashCommand, Task>>
         {
             {
@@ -37,7 +38,7 @@ public class CommandsControllerService
             {
                 "raid",
                 async command => await ExecuteChannelCommand(command, 863553410813001759,
-                    ZingusCommand.ExecuteCommandAsync(command))
+                    RaidPingCommand.ExecuteCommandAsync(command))
             },
             {
                 "war-build-help",
@@ -46,7 +47,7 @@ public class CommandsControllerService
             },
             {
                 "chiefs",
-                async command => await ExecuteChannelCommand(command, 1255506035091968010,
+                async command => await ExecuteChannelCommand(command, 863553410813001759,
                     PingChiefsCommand.ExecuteCommandAsync(command))
             },
             {
@@ -84,7 +85,7 @@ public class CommandsControllerService
 
     public async Task Client_Ready()
     {
-        await InstantiateCommands(_guildId["test"]);
+        await InstantiateCommands(_guildId["main"]);
     }
 
     public async Task SlashCommandHandler(SocketSlashCommand command)

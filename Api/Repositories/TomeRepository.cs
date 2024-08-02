@@ -6,6 +6,10 @@ namespace test.Api.Repositories;
 
 public sealed class TomeRepository : UserRepository<UserTomelist>
 {
+    public TomeRepository(DataContext dataContext) : base(dataContext)
+    {
+    }
+    
     public async Task<UserTomelist?> SelectSingleAsync(UserTomelist entity)
     {
         var user = await DataContext.UsersInTomelist.FirstOrDefaultAsync(user =>

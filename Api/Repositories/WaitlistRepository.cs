@@ -5,9 +5,13 @@ namespace test.Api.Repositories;
 
 public sealed class WaitlistRepository : UserRepository<UserWaitlist>
 {
+    public WaitlistRepository(DataContext dataContext) : base(dataContext)
+    {
+    }
+    
     public async Task<UserWaitlist?> SelectSingleAsync(UserWaitlist entity)
     {
-        var user = await DataContext.UsersWaitlists.FirstOrDefaultAsync(user =>
+        var user = await DataContext.UsersInWaitlist.FirstOrDefaultAsync(user =>
             user.Username!.Equals(entity.Username));
 
         return user;

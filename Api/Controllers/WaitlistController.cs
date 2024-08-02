@@ -5,8 +5,15 @@ namespace test.Api.Controllers;
 
 public class WaitlistController
 {
-    private readonly WaitlistRepository _waitlistRepository = new();
-    private readonly UnitOfWork _unitOfWork = new();
+    private readonly WaitlistRepository _waitlistRepository;
+    private readonly UnitOfWork _unitOfWork;
+
+    public WaitlistController()
+    {
+        var context = new DataContext();
+        _waitlistRepository = new WaitlistRepository(context);
+        _unitOfWork = new UnitOfWork(context);
+    }
     
     public async Task<List<UserWaitlist>> GetWaitlistAsync()
     {
@@ -31,7 +38,7 @@ public class WaitlistController
         var dbUser = await _waitlistRepository.SelectSingleAsync(user);
         if (dbUser is not null) return new Response(user.Username!, false);
 
-        _waitlistRepository.Delete(user);
+        await _waitlistRepository.InsertAsync(user);
         await _unitOfWork.CommitAsync();
 
         return new Response(user.Username!, true);

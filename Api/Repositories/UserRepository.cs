@@ -6,8 +6,13 @@ public abstract class UserRepository<T> where T : class
 {
     
     //TODO: Add repository validations in case any exceptions occur.
-    
-    protected readonly DataContext DataContext = new();
+
+    protected readonly DataContext DataContext;
+
+    protected UserRepository(DataContext dataContext)
+    {
+        DataContext = dataContext;
+    }
 
     public async Task<List<T>> SelectAllAsync()
     {
