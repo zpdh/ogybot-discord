@@ -13,11 +13,6 @@ public class Program
 
     public static async Task Main()
     {
-       //TODO: Add dependency injection
-       //TODO: Make an appsettings.json to store info such as bot branch, guild id, database connections, etc
-       //TODO: Refactor commands for cleaner code
-        
-        
         _discordClient = new Client(new DiscordSocketClient());
 
         CommandsControllerService commands = new(_discordClient.client);
