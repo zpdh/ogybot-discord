@@ -5,14 +5,14 @@ using test.Commands.Waitlist;
 
 namespace test.Services;
 
-public class CommandsControllerService
+public class CommandService
 {
     private static DiscordSocketClient _socketClient = null!;
 
     private readonly Dictionary<string, ulong> _guildId;
     private readonly Dictionary<string, Func<SocketSlashCommand, Task>> _botCommand;
 
-    public CommandsControllerService(DiscordSocketClient socketClient)
+    public CommandService(DiscordSocketClient socketClient)
     {
         _socketClient = socketClient;
 

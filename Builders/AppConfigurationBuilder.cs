@@ -1,0 +1,22 @@
+﻿using Microsoft.Extensions.Configuration;
+
+namespace test.Builders;
+
+public static class AppConfigurationBuilder
+{
+    public static IConfiguration Build()
+    {
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json");
+
+        return builder.Build();
+    }
+
+    public static string GetBranch(this IConfiguration configuration)
+    {
+        var sect = configuration.GetValue<string>("Branch");
+
+        return sect == "Main" ? "Main" : "Dev";
+    }
+}

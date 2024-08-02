@@ -18,7 +18,7 @@ public class Client
         }
     };
 
-    private readonly string _token = BotBranch["main"];
+    private readonly string _token = BotBranch["test"];
 
     public DiscordSocketClient client {  get; set; }
 
