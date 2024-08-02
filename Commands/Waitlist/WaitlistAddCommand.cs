@@ -16,7 +16,7 @@ public class WaitlistAddCommand : ICommand
     {
         var username = command.Data.Options.FirstOrDefault().Value;
 
-        var result = await _controller.AddPlayerAsync(new UserWaitlist { UserName = username.ToString() });
+        var result = await _controller.AddPlayerAsync(new UserWaitlist { Username = username.ToString() });
             
         await command.RespondAsync(result);
     }

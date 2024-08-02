@@ -4,13 +4,14 @@ using Discord.WebSocket;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using test.Api;
+using test.Api.Controllers;
 using test.SlashCommands;
 
 namespace test.Commands.TomeList;
 
 public class TomeListCommand : ICommand
 {
-    private static TomeController _controller = new();
+    private static TomelistController _controller = new();
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
         
@@ -22,7 +23,7 @@ public class TomeListCommand : ICommand
         var i = 1;
         foreach (var u in list)
         {
-            description += i + ". " + u.UserName.ToString() + "\n";
+            description += i + ". " + u.Username.ToString() + "\n";
             i++;
         }
         

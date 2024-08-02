@@ -15,7 +15,7 @@ public class WaitlistRemoveCommand
     {
         var username = command.Data.Options.FirstOrDefault().Value;
 
-        var result = await _controller.RemovePlayerAsync(new UserWaitlist { UserName = username.ToString() });
+        var result = await _controller.RemovePlayerAsync(new UserWaitlist { Username = username.ToString() });
         
         await command.RespondAsync(result);
     }

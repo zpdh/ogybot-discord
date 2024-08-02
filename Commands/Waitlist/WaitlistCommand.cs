@@ -21,7 +21,7 @@ public class WaitlistCommand : ICommand
         var i = 1;
         foreach (var u in list)
         {
-            description += i + ". " + u.UserName.ToString() + "\n";
+            description += i + ". " + u.Username.ToString() + "\n";
             i++;
         }
         

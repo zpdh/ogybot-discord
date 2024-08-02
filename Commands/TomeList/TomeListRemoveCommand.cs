@@ -3,6 +3,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using test.Api;
+using test.Api.Controllers;
 using test.Services;
 using test.SlashCommands;
 
@@ -10,13 +11,13 @@ namespace test.Commands.TomeList;
 
 public class TomeListRemoveCommand : ICommand
 {
-    private static TomeController _controller = new();
+    private static TomelistController _controller = new();
     
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
         var username = command.Data.Options.FirstOrDefault().Value;
 
-        var result = await _controller.RemovePlayerAsync(new User { UserName = username.ToString() });
+        var result = await _controller.RemovePlayerAsync(new UserBase { Username = username.ToString() });
         
         await command.RespondAsync(result);
     }
