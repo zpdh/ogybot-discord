@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 using test.Commands;
 using test.Commands.TomeList;
 using test.Commands.Waitlist;
@@ -9,18 +10,13 @@ public class CommandService
 {
     private static DiscordSocketClient _socketClient = null!;
 
-    private readonly Dictionary<string, ulong> _guildId;
+    private readonly ulong _guildId;
     private readonly Dictionary<string, Func<SocketSlashCommand, Task>> _botCommand;
 
-    public CommandService(DiscordSocketClient socketClient)
+    public CommandService(DiscordSocketClient socketClient, ulong guildId)
     {
         _socketClient = socketClient;
-
-        _guildId = new Dictionary<string, ulong>
-        {
-            { "main", 810258030201143328 },
-            { "test", 1255321257956605963 }
-        };
+        _guildId = guildId;
 
         //Start
         _botCommand = new Dictionary<string, Func<SocketSlashCommand, Task>>
@@ -85,7 +81,7 @@ public class CommandService
 
     public async Task Client_Ready()
     {
-        await InstantiateCommands(_guildId["main"]);
+        await InstantiateCommands(_guildId);
     }
 
     public async Task SlashCommandHandler(SocketSlashCommand command)

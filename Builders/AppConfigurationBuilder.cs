@@ -7,7 +7,6 @@ public static class AppConfigurationBuilder
     public static IConfiguration Build()
     {
         var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json");
 
         return builder.Build();

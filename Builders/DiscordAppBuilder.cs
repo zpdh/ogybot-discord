@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using test.Login;
 using test.Services;
 
 namespace test.Builders;
@@ -19,9 +18,12 @@ public static class DiscordAppBuilder
         return discordClient;
     }
 
-    public static void AddCommands(this DiscordSocketClient discordClient)
+    public static void AddCommands(this DiscordSocketClient discordClient, IConfiguration configuration)
     {
-        CommandService commands = new(discordClient);
+        var branch = configuration["Branch"];
+        var id = configuration.GetValue<ulong>($"ServerIds{branch}");
+        
+        CommandService commands = new(discordClient, id);
         
         discordClient.Ready += commands.Client_Ready;
         discordClient.SlashCommandExecuted += commands.SlashCommandHandler;
@@ -29,8 +31,8 @@ public static class DiscordAppBuilder
 
     private static async Task ConnectAsync(this DiscordSocketClient client, IConfiguration configuration)
     {
-        var branch = configuration.GetBranch();
-        var token = configuration.GetValue<string>($"Token:{branch}");
+        var branch = configuration["Branch"];
+        var token = configuration[$"Tokens:{branch}"];
 
         await client.LoginAsync(TokenType.Bot, token);
         await client.StartAsync();

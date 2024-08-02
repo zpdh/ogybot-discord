@@ -21,6 +21,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="appsettings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Compile Remove="Services\Api\**" />
 	  <Compile Remove="Services\Database\**" />
 	  <Compile Remove="Commands\TomeList\WaitlistCommand.cs" />
