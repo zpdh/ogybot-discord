@@ -29,7 +29,7 @@ public class TomelistController
 
         if (dbUser is null) return new Response(user.Username!, false);
 
-        _tomeRepository.Delete(user);
+        _tomeRepository.Delete(dbUser);
         await _unitOfWork.CommitAsync();
         
         return new Response(user.Username!, true);

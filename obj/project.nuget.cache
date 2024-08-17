@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yfAZ3Xl1isiBzxHKIebp8/XiaDpoVT52NjTvZmk018OXxbyJSkecx766KBeKFPNQla0/7foNPGYLppDrgaHmPw==",
+  "dgSpecHash": "Gco+vtJqArALrPHbQSDPzGuF6xM4XY8FCF4l1zcPM4RP1XLfhlHGFJVK561zIt7m07P/X3TC8SuLmZgSRYvvXw==",
   "success": true,
-  "projectFilePath": "C:\\Code\\ogybot-discord\\test.csproj",
+  "projectFilePath": "C:\\Users\\Pedro\\RiderProjects\\ogybot-discord\\test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Pedro\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "C:\\Users\\Pedro\\.nuget\\packages\\discord.net\\3.15.2\\discord.net.3.15.2.nupkg.sha512",

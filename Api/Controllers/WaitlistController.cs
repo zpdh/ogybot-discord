@@ -27,7 +27,7 @@ public class WaitlistController
 
         if (dbUser is null) return new Response(user.Username!, false);
 
-        _waitlistRepository.Delete(user);
+        _waitlistRepository.Delete(dbUser);
         await _unitOfWork.CommitAsync();
         
         return new Response(user.Username!, true);

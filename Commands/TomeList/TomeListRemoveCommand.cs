@@ -13,14 +13,26 @@ public abstract class TomeListRemoveCommand : ICommand
 
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        var username = command.Data.Options.FirstOrDefault()!.Value;
+        var username = command.Data.Options.FirstOrDefault()!.Value as string;
 
-        var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = username.ToString() });
+        var listOfUsers = username!.Split(", ")
+            .Distinct()
+            .ToList();
+        
+        var returnList = new List<string>();
+        
+        foreach (var user in listOfUsers)
+        {
+            var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = user });
+            returnList.Add(result.Username);
+        }
 
-        var msg = result.Status
-            ? $"Successfully removed player '{result.Username}' from the tome list."
-            : $"Player '{result.Username}' is not on tome list.";
-
+        var users = returnList.Aggregate("", (current, user) => current + (user + ", "));
+        
+        var msg = returnList.Count != 0
+            ? $"Successfully removed players '{users[^2..]}' from the tome list."
+            : "One or more players provided are not on the tome list";
+        
         await command.RespondAsync(msg);
     }
 

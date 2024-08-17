@@ -24,7 +24,7 @@ public class DataContext : DbContext
             "Server=localhost;Port=3306;Database=ogybotdb;Uid=root;Pwd=1234";
         
         const string railwayConnectionString =
-            "Server=monorail.proxy.rlwy.net;Port=37441;Database=railway;Uid=root;Pwd=isttWVKUfJaELPJEYdxJaNzOZHMmCUjF;";
+            "Server=viaduct.proxy.rlwy.net;Port=19095;Database=railway;Uid=root;Pwd=syIGfHgjHFMvrKFNGvkqMrhgDaVgJkUc";
         optionsBuilder.UseMySQL(railwayConnectionString);
     }
 }
