@@ -82,8 +82,6 @@ public static class CommandDictionaryBuilder
          * user roles for the remove command.
          */
 
-        await command.DeferAsync();
-
         var user = command.User as SocketGuildUser;
         var userRoles = user!.Roles.Where(r =>
             r.Id is 1060001967868485692

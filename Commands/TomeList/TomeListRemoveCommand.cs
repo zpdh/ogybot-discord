@@ -15,22 +15,38 @@ public abstract class TomeListRemoveCommand : ICommand
     {
         var username = command.Data.Options.FirstOrDefault()!.Value as string;
 
+        if (username!.Contains(' ') && !username.Contains(','))
+        {
+            await command.FollowupAsync("You cannot submit usernames with whitespaces");
+            return;
+        }
+
         var listOfUsers = username!.Split(", ")
             .Distinct()
             .ToList();
 
         var returnList = new List<string>();
+        var statusList = new List<bool>();
 
         foreach (var user in listOfUsers)
         {
             var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = user });
+
             returnList.Add(result.Username);
+            statusList.Add(result.Status);
         }
 
-        var users = returnList.Aggregate("", (current, user) => current + (user + ", "));
+        if (statusList.Contains(false))
+        {
+            await command.FollowupAsync($"One or more players are invalid. Check the list for an update and try again");
+            return;
+        }
 
+        var users = returnList.Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
+
+        // [..^n] removes the last n characters of an array
         var msg = returnList.Count != 0
-            ? $"Successfully removed players '{users[^2..]}' from the tome list."
+            ? $"Successfully removed players {users[..^2]} from the tome list."
             : "One or more players provided are not on the tome list";
 
         await command.FollowupAsync(msg);

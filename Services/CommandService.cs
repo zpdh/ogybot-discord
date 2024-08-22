@@ -16,13 +16,13 @@ public class CommandService
     public CommandService(
         DiscordSocketClient socketClient,
         ulong guildId,
-        Dictionary<string, Func<SocketSlashCommand, Task>> cmds)
+        Dictionary<string, Func<SocketSlashCommand, Task>> commandDictionary)
     {
         _socketClient = socketClient;
         _guildId = guildId;
 
         //Start
-        _botCommand = cmds;
+        _botCommand = commandDictionary;
     }
 
     public async Task Client_Ready()
