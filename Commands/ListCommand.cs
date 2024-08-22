@@ -9,6 +9,7 @@ public abstract class ListCommand : ICommand
 {
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
+        
         var user = command.User;
             
         /* TODO: Transform these walls of text into a StringBuilder result
@@ -34,7 +35,7 @@ public abstract class ListCommand : ICommand
             .WithCurrentTimestamp()
             .WithFooter($"Bot made by oxzy");
 
-        await command.RespondAsync(embed: embedBuilder.Build());
+        await command.FollowupAsync(embed: embedBuilder.Build());
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

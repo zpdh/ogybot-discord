@@ -9,7 +9,7 @@ public abstract class ZingusCommand : ICommand
 {
          public static async Task ExecuteCommandAsync(SocketSlashCommand command)
         {
-            await command.RespondAsync("https://tenor.com/view/zingus-cat-kitty-caption-cat-walk-gif-19570879");
+            await command.FollowupAsync("https://tenor.com/view/zingus-cat-kitty-caption-cat-walk-gif-19570879");
         }
 
         public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

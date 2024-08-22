@@ -21,7 +21,7 @@ public abstract class WaitlistAddCommand : ICommand
             ? $"Successfully added player '{result.Username}' to the wait list."
             : $"Player '{result.Username}' is already on the wait list.";
 
-        await command.RespondAsync(msg);
+        await command.FollowupAsync(msg);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

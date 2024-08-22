@@ -9,6 +9,7 @@ public abstract class WarQuestionCommand : ICommand
 {
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
+        
         var user = command.User;
         var info = command.Data.Options.ToList();
 
@@ -28,7 +29,7 @@ public abstract class WarQuestionCommand : ICommand
         await newThread.SendMessageAsync(embed: embedBuilder.Build());
         await Task.Delay(200);
         await newThread.SendMessageAsync(text: $"||<@&1255013857995395094><@{user.Id}>||", allowedMentions: AllowedMentions.All);
-        await command.RespondAsync("Successfully started thread.", ephemeral: true);
+        await command.FollowupAsync("Successfully started thread.", ephemeral: true);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

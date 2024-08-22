@@ -9,7 +9,7 @@ public abstract class OutdatedCommands : ICommand
 {
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        await command.RespondAsync("<@1088133910807969855> lol this person used an outdated command (use /war-build-help)");
+        await command.FollowupAsync("<@1088133910807969855> lol this person used an outdated command (use /war-build-help)");
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

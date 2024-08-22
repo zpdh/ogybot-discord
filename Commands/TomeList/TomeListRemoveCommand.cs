@@ -18,9 +18,9 @@ public abstract class TomeListRemoveCommand : ICommand
         var listOfUsers = username!.Split(", ")
             .Distinct()
             .ToList();
-        
+
         var returnList = new List<string>();
-        
+
         foreach (var user in listOfUsers)
         {
             var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = user });
@@ -28,12 +28,12 @@ public abstract class TomeListRemoveCommand : ICommand
         }
 
         var users = returnList.Aggregate("", (current, user) => current + (user + ", "));
-        
+
         var msg = returnList.Count != 0
             ? $"Successfully removed players '{users[^2..]}' from the tome list."
             : "One or more players provided are not on the tome list";
-        
-        await command.RespondAsync(msg);
+
+        await command.FollowupAsync(msg);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

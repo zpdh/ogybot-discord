@@ -9,7 +9,7 @@ public abstract class PingChiefsCommand : ICommand
 {
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        await command.RespondAsync("<@&1097935496442810419> Wake up", allowedMentions: AllowedMentions.All);
+        await command.FollowupAsync("<@&1097935496442810419> Wake up", allowedMentions: AllowedMentions.All);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

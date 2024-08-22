@@ -19,23 +19,25 @@ public abstract class RaidPingCommand : ICommand
             //Heavy raid
             if (raidType.ToString() == "1")
             {
-                await command.RespondAsync($"<@&1044407292340211793>\n**Guild:** {guildAttacking}", allowedMentions: AllowedMentions.All);                  
+                await command.FollowupAsync($"<@&1044407292340211793>\n**Guild:** {guildAttacking}",
+                    allowedMentions: AllowedMentions.All);
             }
             //Light raid
             else
             {
-                await command.RespondAsync($"<@&1044407413345886238>\n**Guild:** {guildAttacking}", allowedMentions: AllowedMentions.All);
+                await command.FollowupAsync($"<@&1044407413345886238>\n**Guild:** {guildAttacking}",
+                    allowedMentions: AllowedMentions.All);
             }
         }
         catch
         {
             if (raidType.ToString() == "1")
             {
-                await command.RespondAsync("<@&1044407292340211793>", allowedMentions: AllowedMentions.All);
+                await command.FollowupAsync("<@&1044407292340211793>", allowedMentions: AllowedMentions.All);
             }
             else
             {
-                await command.RespondAsync("<@&1044407413345886238>", allowedMentions: AllowedMentions.All);
+                await command.FollowupAsync("<@&1044407413345886238>", allowedMentions: AllowedMentions.All);
             }
         }
     }
@@ -64,6 +66,5 @@ public abstract class RaidPingCommand : ICommand
 
             Console.WriteLine(json);
         }
-
     }
 }

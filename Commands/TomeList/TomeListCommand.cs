@@ -33,7 +33,7 @@ public abstract class TomeListCommand : ICommand
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
-        await command.RespondAsync(embed: embedBuilder.Build());
+        await command.FollowupAsync(embed: embedBuilder.Build());
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

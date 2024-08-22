@@ -21,7 +21,7 @@ public abstract class WaitlistRemoveCommand : ICommand
             ? $"Successfully removed player '{result.Username}' from the wait list"
             : $"User '{result.Username}' is not on the wait list";
         
-        await command.RespondAsync(msg);
+        await command.FollowupAsync(msg);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
