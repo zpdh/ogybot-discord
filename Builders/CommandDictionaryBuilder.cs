@@ -1,5 +1,6 @@
 ﻿using Discord.WebSocket;
 using test.Commands;
+using test.Commands.AspectList;
 using test.Commands.TomeList;
 using test.Commands.Waitlist;
 
@@ -14,68 +15,79 @@ public static class CommandDictionaryBuilder
             {
                 "ogy-cmdlist",
                 async command => await ExecuteGlobalCommand(
-                    command, ListCommand.ExecuteCommandAsync(command))
+                    command, ListCommand.ExecuteCommandAsync)
             },
             {
                 "zingus",
                 async command => await ExecuteGlobalCommand(
-                    command, ZingusCommand.ExecuteCommandAsync(command))
+                    command, ZingusCommand.ExecuteCommandAsync)
             },
             {
                 "raid",
                 async command => await ExecuteChannelCommand(command, 863553410813001759,
-                    RaidPingCommand.ExecuteCommandAsync(command))
+                    RaidPingCommand.ExecuteCommandAsync)
             },
             {
                 "war-build-help",
                 async command => await ExecuteChannelCommand(command, 1255011451056423013,
-                    WarQuestionCommand.ExecuteCommandAsync(command))
+                    WarQuestionCommand.ExecuteCommandAsync)
             },
             {
                 "chiefs",
                 async command => await ExecuteChannelCommand(command, 863553410813001759,
-                    PingChiefsCommand.ExecuteCommandAsync(command))
+                    PingChiefsCommand.ExecuteCommandAsync)
             },
             {
                 "tomelist",
                 async command => await ExecuteChannelCommand(command, 1125517737188409364,
-                    TomeListCommand.ExecuteCommandAsync(command))
+                    TomeListCommand.ExecuteCommandAsync)
             },
             {
                 "tomelist-add",
                 async command => await ExecuteChannelCommand(command, 1125517737188409364,
-                    TomeListAddCommand.ExecuteCommandAsync(command))
+                    TomeListAddCommand.ExecuteCommandAsync)
             },
             {
                 "tomelist-remove",
                 async command => await ExecuteRemoveCommand(command, 1125517737188409364,
-                    TomeListRemoveCommand.ExecuteCommandAsync(command))
+                    TomeListRemoveCommand.ExecuteCommandAsync)
             },
             {
                 "waitlist",
                 async command => await ExecuteChannelCommand(command, 1135296640803147806,
-                    WaitlistCommand.ExecuteCommandAsync(command))
+                    WaitlistCommand.ExecuteCommandAsync)
             },
             {
                 "waitlist-add",
                 async command => await ExecuteChannelCommand(command, 1135296640803147806,
-                    WaitlistAddCommand.ExecuteCommandAsync(command))
+                    WaitlistAddCommand.ExecuteCommandAsync)
             },
             {
                 "waitlist-remove",
                 async command => await ExecuteRemoveCommand(command, 1135296640803147806,
-                    WaitlistRemoveCommand.ExecuteCommandAsync(command))
+                    WaitlistRemoveCommand.ExecuteCommandAsync)
+            },
+            {
+                "aspectlist",
+                async command => await ExecuteChannelCommand(command, 1255506035091968010,
+                    AspectListCommand.ExecuteCommandAsync)
+            },
+            {
+                "aspectlist-decrement",
+                async command => await ExecuteRemoveCommand(command, 1255506035091968010,
+                    DecrementAspectCommand.ExecuteCommandAsync)
             }
         };
     }
 
-    private static async Task ExecuteGlobalCommand(SocketSlashCommand command, Task method)
+    private static async Task ExecuteGlobalCommand(SocketSlashCommand command, Func<SocketSlashCommand, Task> method)
     {
         await command.DeferAsync();
-        await method;
+        await method(command);
     }
 
-    private static async Task ExecuteRemoveCommand(SocketSlashCommand command, ulong validChannelId, Task method)
+    private static async Task ExecuteRemoveCommand(SocketSlashCommand command, ulong validChannelId,
+        Func<SocketSlashCommand, Task> method)
     {
         /*
          * Similar to last method, but also has to validate
@@ -97,7 +109,8 @@ public static class CommandDictionaryBuilder
         await ExecuteChannelCommand(command, validChannelId, method);
     }
 
-    private static async Task ExecuteChannelCommand(SocketSlashCommand command, ulong validChannelId, Task method)
+    private static async Task ExecuteChannelCommand(SocketSlashCommand command, ulong validChannelId,
+        Func<SocketSlashCommand, Task> method)
     {
         /*
          * Tries to get channel id using the dictionary instanced at the constructor.
@@ -109,7 +122,7 @@ public static class CommandDictionaryBuilder
 
         if (command.ChannelId == validChannelId)
         {
-            await method;
+            await method(command);
         }
         else
         {

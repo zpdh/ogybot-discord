@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using test.Commands;
+using test.Commands.AspectList;
 using test.Commands.TomeList;
 using test.Commands.Waitlist;
 
@@ -50,6 +51,7 @@ public class CommandService
         await WaitlistCommand.GenerateCommandAsync(_socketClient, guildId);
         await WaitlistAddCommand.GenerateCommandAsync(_socketClient, guildId);
         await WaitlistRemoveCommand.GenerateCommandAsync(_socketClient, guildId);
+        await AspectListCommand.GenerateCommandAsync(_socketClient, guildId);
+        await DecrementAspectCommand.GenerateCommandAsync(_socketClient, guildId);
     }
-
 }
