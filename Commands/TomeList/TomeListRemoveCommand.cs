@@ -23,6 +23,7 @@ public abstract class TomeListRemoveCommand : ICommand
 
         var listOfUsers = username!.Split(", ")
             .Distinct()
+            .Select(user => user.Trim())
             .ToList();
 
         var returnList = new List<string>();

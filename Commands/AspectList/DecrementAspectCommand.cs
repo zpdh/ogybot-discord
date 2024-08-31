@@ -21,16 +21,19 @@ public class DecrementAspectCommand
             return;
         }
 
-        var listOfUsers = username!.Split(", ")
+        var listOfUsers = username!.Split(",")
             .Distinct()
+            .Select(user => user.Trim())
             .ToList();
 
-        await Controller.DecrementPlayersAspectsAsync(listOfUsers);
+        var result = await Controller.DecrementPlayersAspectsAsync(listOfUsers);
 
         var users = listOfUsers.Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
 
         // [..^n] removes the last n characters of an array
-        var msg = $"Successfully decremented an aspect from players {users[..^2]} from the aspect list.";
+        var msg = result.Status
+            ? $"Successfully decremented an aspect from players {users[..^2]} from the aspect list."
+            : $"There was an error decrementing the players {users[..^2]}. Perhaps the API is down?";
 
         await command.FollowupAsync(msg);
     }

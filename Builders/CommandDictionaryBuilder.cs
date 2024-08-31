@@ -69,12 +69,12 @@ public static class CommandDictionaryBuilder
             },
             {
                 "aspectlist",
-                async command => await ExecuteChannelCommand(command, 1255506035091968010,
+                async command => await ExecuteChannelCommand(command, 1272044811771449365,
                     AspectListCommand.ExecuteCommandAsync)
             },
             {
                 "aspectlist-decrement",
-                async command => await ExecuteRemoveCommand(command, 1255506035091968010,
+                async command => await ExecuteRemoveCommand(command, 1272044811771449365,
                     DecrementAspectCommand.ExecuteCommandAsync)
             }
         };
@@ -99,7 +99,7 @@ public static class CommandDictionaryBuilder
             r.Id is 1060001967868485692
                 or 810680884193787974
                 or 1097935496442810419);
-
+        
         if (!userRoles.Any())
         {
             await NoPermissionCommand(command);
