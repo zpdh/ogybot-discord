@@ -1,6 +1,7 @@
 ﻿using Discord.WebSocket;
 using test.Commands;
 using test.Commands.AspectList;
+using test.Commands.Other;
 using test.Commands.TomeList;
 using test.Commands.Waitlist;
 

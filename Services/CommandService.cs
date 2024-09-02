@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using test.Commands;
 using test.Commands.AspectList;
+using test.Commands.Other;
 using test.Commands.TomeList;
 using test.Commands.Waitlist;
 

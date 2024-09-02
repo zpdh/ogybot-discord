@@ -2,7 +2,7 @@
 
 namespace test.Commands;
 
-internal interface ICommand
+public interface ICommand
 {
     // STATIC ABSTRACT METHODS LETS GOOOOOOOO
     static abstract Task ExecuteCommandAsync(SocketSlashCommand command);

@@ -3,7 +3,7 @@ using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 
-namespace test.Commands;
+namespace test.Commands.Other;
 
 public abstract class PingChiefsCommand : ICommand
 {
