@@ -8,6 +8,11 @@ using test.Commands.Waitlist;
 
 namespace test.Services;
 
+/// <summary>
+/// Class responsible for the management and instantiation of slash commands.
+/// When a command gets executed, this class gives it instructions on
+/// what to do next.
+/// </summary>
 public class CommandService
 {
     private static DiscordSocketClient _socketClient = null!;
