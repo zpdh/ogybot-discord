@@ -2,6 +2,9 @@
 
 namespace test.Builders;
 
+/// <summary>
+/// Class responsible for <see cref="IConfiguration"/> generation.
+/// </summary>
 public static class AppConfigurationBuilder
 {
     public static IConfiguration Build()

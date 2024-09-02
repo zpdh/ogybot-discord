@@ -8,6 +8,9 @@ using test.Services;
 
 namespace test.Builders;
 
+/// <summary>
+/// Class responsible for the setup of a <see cref="DiscordSocketClient"/>.
+/// </summary>
 public static class DiscordAppBuilder
 {
     public static async Task<DiscordSocketClient> SetupDiscordClientAsync(IConfiguration configuration)

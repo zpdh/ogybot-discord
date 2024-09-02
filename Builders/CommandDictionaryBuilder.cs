@@ -7,8 +7,15 @@ using test.Commands.Waitlist;
 
 namespace test.Builders;
 
+/// <summary>
+/// Class responsible the generation of a dictionary with all of the possible bot commands.
+/// </summary>
 public static class CommandDictionaryBuilder
 {
+    /// <summary>
+    /// Generates a dictionary with all of the bot commands
+    /// </summary>
+    /// <returns>A dictionary of string:Func type</returns>
     public static Dictionary<string, Func<SocketSlashCommand, Task>> Build()
     {
         return new Dictionary<string, Func<SocketSlashCommand, Task>>
@@ -81,6 +88,7 @@ public static class CommandDictionaryBuilder
         };
     }
 
+
     private static async Task ExecuteGlobalCommand(SocketSlashCommand command, Func<SocketSlashCommand, Task> method)
     {
         await command.DeferAsync();
@@ -100,7 +108,7 @@ public static class CommandDictionaryBuilder
             r.Id is 1060001967868485692
                 or 810680884193787974
                 or 1097935496442810419);
-        
+
         if (!userRoles.Any())
         {
             await NoPermissionCommand(command);
