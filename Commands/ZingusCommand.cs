@@ -2,15 +2,14 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.SlashCommands;
 
 namespace test.Commands;
 
-public class ZingusCommand : ICommand
+public abstract class ZingusCommand : ICommand
 {
          public static async Task ExecuteCommandAsync(SocketSlashCommand command)
         {
-            await command.RespondAsync("https://tenor.com/view/zingus-cat-kitty-caption-cat-walk-gif-19570879");
+            await command.FollowupAsync("https://tenor.com/view/zingus-cat-kitty-caption-cat-walk-gif-19570879");
         }
 
         public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

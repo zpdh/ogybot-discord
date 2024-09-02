@@ -1,42 +1,44 @@
-﻿using Discord.Net;
+﻿using Discord;
+using Discord.Net;
 using Discord.WebSocket;
-using Discord;
 using Newtonsoft.Json;
-using test.Api;
-using test.Services;
-using test.SlashCommands;
+using test.DataAccess.Controllers;
+using test.DataAccess.Entities;
 
-namespace test.Commands
+namespace test.Commands.TomeList;
+
+public abstract class TomeListAddCommand : ICommand
 {
-    internal class TomeListAddCommand : ICommand
+    private static readonly TomelistController Controller = new();
+
+    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        private static TomeController _controller = new();
-        
-        public static async Task ExecuteCommandAsync(SocketSlashCommand command)
-        {
-            var username = command.Data.Options.FirstOrDefault().Value;
+        var username = command.Data.Options.FirstOrDefault()!.Value;
 
-            var result = await _controller.AddPlayerAsync(new User { UserName = username.ToString() });
-            
-            await command.RespondAsync(result);
+        var result = await Controller.AddPlayerAsync(new UserTomelist { Username = username.ToString() });
+
+        var msg = result.Status
+            ? $"Successfully added player '{result.Username}' to the tome list."
+            : result.Error;
+
+        await command.FollowupAsync(msg);
+    }
+
+    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
+    {
+        try
+        {
+            var guildCommand = new SlashCommandBuilder()
+                .WithName("tomelist-add")
+                .WithDescription("Adds user to tome list")
+                .AddOption("username", ApplicationCommandOptionType.String, "User you're adding", true);
+            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
         }
-
-        public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
+        catch (HttpException exception)
         {
-            try
-            {
-                var guildCommand = new SlashCommandBuilder()
-                    .WithName("tomelist-add")
-                    .WithDescription("Adds user to tome list")
-                    .AddOption("username", ApplicationCommandOptionType.String, "User you're adding", true);
-                await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-            }
-            catch (HttpException exception)
-            {
-                var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
 
-                Console.WriteLine(json);
-            }
+            Console.WriteLine(json);
         }
     }
 }

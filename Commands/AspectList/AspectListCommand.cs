@@ -1,20 +1,22 @@
-﻿using Discord;
+﻿using System.Globalization;
+using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using test.DataAccess.Controllers;
 
-namespace test.Commands.TomeList;
+namespace test.Commands.AspectList;
 
-public abstract class TomeListCommand : ICommand
+public class AspectListCommand : ICommand
 {
-    private static readonly TomelistController Controller = new();
+    private static readonly AspectsController Controller = new();
 
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
         var user = command.User;
 
-        var list = await Controller.GetTomelistAsync();
+        var aspectEnum = await Controller.GetAspectListAsync();
+        var list = aspectEnum!.ToList();
 
         var description = "";
 
@@ -22,12 +24,13 @@ public abstract class TomeListCommand : ICommand
 
         for (var i = 1; i <= list.Count; i++)
         {
-            description += i + ". " + list[i - 1].Username + "\n";
+            var player = list[i - 1];
+            description += $"{i}. {player.Username} - {player.Aspects.ToString(CultureInfo.InvariantCulture)}\n";
         }
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
-            .WithTitle("Tome list")
+            .WithTitle("Aspect list")
             .WithDescription(description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
@@ -41,8 +44,8 @@ public abstract class TomeListCommand : ICommand
         try
         {
             var guildCommand = new SlashCommandBuilder()
-                .WithName("tomelist")
-                .WithDescription("Displays tome list");
+                .WithName("aspectlist")
+                .WithDescription("Displays aspect list");
             await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
         }
         catch (HttpException exception)

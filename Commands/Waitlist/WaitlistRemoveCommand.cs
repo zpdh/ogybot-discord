@@ -2,22 +2,26 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.Api;
-using test.Services;
+using test.DataAccess.Controllers;
+using test.DataAccess.Entities;
 
 namespace test.Commands.Waitlist;
 
-public class WaitlistRemoveCommand
+public abstract class WaitlistRemoveCommand : ICommand
 {
-    private static WaitlistController _controller = new();
+    private static readonly WaitlistController Controller = new();
     
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        var username = command.Data.Options.FirstOrDefault().Value;
+        var username = command.Data.Options.FirstOrDefault()!.Value;
 
-        var result = await _controller.RemovePlayerAsync(new UserWaitlist { UserName = username.ToString() });
+        var result = await Controller.RemovePlayerAsync(new UserWaitlist { Username = username.ToString() });
         
-        await command.RespondAsync(result);
+        var msg = result.Status
+            ? $"Successfully removed player '{result.Username}' from the wait list"
+            : $"User '{result.Username}' is not on the wait list";
+        
+        await command.FollowupAsync(msg);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
@@ -26,7 +30,7 @@ public class WaitlistRemoveCommand
         {
             var guildCommand = new SlashCommandBuilder()
                 .WithName("waitlist-remove")
-                .WithDescription("Removes user from waitlist")
+                .WithDescription("Removes user from wait list")
                 .AddOption("username", ApplicationCommandOptionType.String, "User you're removing", true);
             await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
         }

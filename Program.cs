@@ -1,33 +1,16 @@
-﻿using Discord.WebSocket;
-using Discord;
-using Discord.Net;
-using Newtonsoft.Json;
-using test.Loggers;
-using test.Login;
-using test.Services;
-using test.SlashCommands;
-using Discord.Commands;
+﻿using System.Net.WebSockets;
+using test.Builders;
 
 namespace test;
 
-public class Program
+public static class Program
 {
-    private static Client? _discordClient;
-
     public static async Task Main()
     {
+        var config = AppConfigurationBuilder.Build();
+        var discordClient = await DiscordAppBuilder.SetupDiscordClientAsync(config);
 
-        _discordClient = new(new DiscordSocketClient());
-
-        CommandsControllerService commands = new(_discordClient.client);
-
-        _discordClient.Log();
-
-        await _discordClient.Login();
-
-        _discordClient.client.Ready += commands.Client_Ready;
-        _discordClient.client.SlashCommandExecuted += commands.SlashCommandHandler;
-        
+        discordClient.AddCommands(config);
 
         await Task.Delay(-1);
     }
