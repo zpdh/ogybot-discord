@@ -12,12 +12,7 @@ public static class DiscordAppBuilder
 {
     public static async Task<DiscordSocketClient> SetupDiscordClientAsync(IConfiguration configuration)
     {
-        var config = new DiscordSocketConfig
-        {
-            UseInteractionSnowflakeDate = false
-        };
-        
-        var discordClient = new DiscordSocketClient(config);
+        var discordClient = new DiscordSocketClient();
 
         await discordClient.ConnectAsync(configuration);
 
@@ -29,11 +24,13 @@ public static class DiscordAppBuilder
     public static void AddCommands(this DiscordSocketClient discordClient, IConfiguration configuration)
     {
         var branch = configuration["Branch"];
-        var id = configuration.GetValue<ulong>($"ServerIds{branch}");
+        var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
 
         CommandService commands = new(discordClient, id, CommandDictionaryBuilder.Build());
 
-        //discordClient.Ready += commands.Client_Ready;
+        discordClient.Ready += commands.Client_Ready;
+        // Only uncomment if you need to instance commands. Takes up startup time
+
         discordClient.SlashCommandExecuted += commands.SlashCommandHandler;
     }
 
