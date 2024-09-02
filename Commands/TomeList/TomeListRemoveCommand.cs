@@ -21,34 +21,40 @@ public abstract class TomeListRemoveCommand : ICommand
             return;
         }
 
-        var listOfUsers = username!.Split(", ")
+        var nameList = username!.Split(", ")
             .Distinct()
             .Select(user => user.Trim())
             .ToList();
 
-        var returnList = new List<string>();
-        var statusList = new List<bool>();
+        var responseList = new List<Response>();
 
-        foreach (var user in listOfUsers)
+        foreach (var user in nameList)
         {
             var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = user });
 
-            returnList.Add(result.Username);
-            statusList.Add(result.Status);
+            responseList.Add(result);
         }
+
+        var statusList = responseList
+            .Select(response => response.Status);
+
+        var errorList = responseList
+            .Select(response => response.Error)
+            .Distinct()
+            .Select(error => error is not null);
 
         if (statusList.Contains(false))
         {
-            await command.FollowupAsync($"One or more players are invalid. Check the list for an update and try again");
+            var formattedErrorList = errorList.Aggregate("", (current, error) => current + $"'{error}'" + ", ");
+
+            await command.FollowupAsync($"One or multiple errors occurred: {formattedErrorList}");
             return;
         }
 
-        var users = returnList.Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
+        var users = nameList.Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
 
         // [..^n] removes the last n characters of an array
-        var msg = returnList.Count != 0
-            ? $"Successfully removed players {users[..^2]} from the tome list."
-            : "One or more players provided are not on the tome list";
+        var msg = $"Successfully removed players {users[..^2]} from the tome list.";
 
         await command.FollowupAsync(msg);
     }

@@ -19,7 +19,7 @@ public abstract class TomeListAddCommand : ICommand
 
         var msg = result.Status
             ? $"Successfully added player '{result.Username}' to the tome list."
-            : $"Player '{result.Username}' is already on the tome list.";
+            : result.Error;
 
         await command.FollowupAsync(msg);
     }

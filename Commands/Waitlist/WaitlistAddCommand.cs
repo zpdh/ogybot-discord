@@ -19,7 +19,7 @@ public abstract class WaitlistAddCommand : ICommand
 
         var msg = result.Status
             ? $"Successfully added player '{result.Username}' to the wait list."
-            : $"Player '{result.Username}' is already on the wait list.";
+            : result.Error;
 
         await command.FollowupAsync(msg);
     }
