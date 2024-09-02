@@ -1,5 +1,8 @@
 ﻿namespace test.Util;
 
+/// <summary>
+/// Class used to store common error messages used throughout the entire application
+/// </summary>
 public class ErrorMessages
 {
     public const string GetTokenError = "Error getting token";
