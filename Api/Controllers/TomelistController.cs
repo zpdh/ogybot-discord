@@ -4,45 +4,28 @@ using test.Services;
 
 namespace test.Api.Controllers;
 
+/// <summary>
+/// Class responsible for handling tome-related command requests
+/// </summary>
 public class TomelistController
 {
-    private readonly TomeRepository _tomeRepository;
-    private readonly UnitOfWork _unitOfWork;
-
-    public TomelistController()
-    {
-        var context = new DataContext();
-
-        _tomeRepository = new TomeRepository(context);
-        _unitOfWork = new UnitOfWork(context);
-    }
+    private readonly TomeClient _client = new();
 
     public async Task<List<UserTomelist>> GetTomelistAsync()
     {
-        var userList = await _tomeRepository.SelectAllAsync();
+        var userList = await _client.GetListAsync();
         return userList;
     }
 
     public async Task<Response> RemovePlayerAsync(UserTomelist user)
     {
-        var dbUser = await _tomeRepository.SelectSingleAsync(user);
-
-        if (dbUser is null) return new Response(user.Username!, false);
-
-        _tomeRepository.Delete(dbUser);
-        await _unitOfWork.CommitAsync();
-        
-        return new Response(user.Username!, true);
+        var result = await _client.RemoveUserAsync(user);
+        return result;
     }
 
     public async Task<Response> AddPlayerAsync(UserTomelist user)
     {
-        var dbUser = await _tomeRepository.SelectSingleAsync(user);
-        if (dbUser is not null) return new Response(user.Username!, false);
-
-         await _tomeRepository.InsertAsync(user);
-         await _unitOfWork.CommitAsync();
-
-        return new Response(user.Username!, true);
+        var result = await _client.PostUserAsync(user);
+        return result;
     }
 }

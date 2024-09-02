@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Globalization;
+using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -24,7 +25,7 @@ public class AspectListCommand : ICommand
         for (var i = 1; i <= list.Count; i++)
         {
             var player = list[i - 1];
-            description += $"{i}. {player.User} - {player.Aspects}\n";
+            description += $"{i}. {player.Username} - {player.Aspects.ToString(CultureInfo.InvariantCulture)}\n";
         }
 
         var embedBuilder = new EmbedBuilder()

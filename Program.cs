@@ -11,7 +11,7 @@ public static class Program
         var discordClient = await DiscordAppBuilder.SetupDiscordClientAsync(config);
 
         discordClient.AddCommands(config);
-        
-                await Task.Delay(-1);
+
+        await Task.Delay(-1);
     }
 }

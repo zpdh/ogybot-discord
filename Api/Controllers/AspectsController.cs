@@ -3,6 +3,9 @@ using test.Api.Repositories;
 
 namespace test.Api.Controllers;
 
+/// <summary>
+/// Class responsible for handling aspect-related command requests
+/// </summary>
 public class AspectsController
 {
     private readonly AspectClient _aspectClient = new AspectClient();

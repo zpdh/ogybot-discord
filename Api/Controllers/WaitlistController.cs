@@ -3,44 +3,28 @@ using test.Api.Repositories;
 
 namespace test.Api.Controllers;
 
+/// <summary>
+/// Class responsible for handling waitlist-related command requests
+/// </summary>
 public class WaitlistController
 {
-    private readonly WaitlistRepository _waitlistRepository;
-    private readonly UnitOfWork _unitOfWork;
+    private readonly WaitlistClient _client = new();
 
-    public WaitlistController()
-    {
-        var context = new DataContext();
-        _waitlistRepository = new WaitlistRepository(context);
-        _unitOfWork = new UnitOfWork(context);
-    }
-    
     public async Task<List<UserWaitlist>> GetWaitlistAsync()
     {
-        var userList = await _waitlistRepository.SelectAllAsync();
-        return userList;
+        var list = await _client.GetListAsync();
+        return list;
     }
 
     public async Task<Response> RemovePlayerAsync(UserWaitlist user)
     {
-        var dbUser = await _waitlistRepository.SelectSingleAsync(user);
-
-        if (dbUser is null) return new Response(user.Username!, false);
-
-        _waitlistRepository.Delete(dbUser);
-        await _unitOfWork.CommitAsync();
-        
-        return new Response(user.Username!, true);
+        var response = await _client.RemoveUserAsync(user);
+        return response;
     }
 
     public async Task<Response> AddPlayerAsync(UserWaitlist user)
     {
-        var dbUser = await _waitlistRepository.SelectSingleAsync(user);
-        if (dbUser is not null) return new Response(user.Username!, false);
-
-        await _waitlistRepository.InsertAsync(user);
-        await _unitOfWork.CommitAsync();
-
-        return new Response(user.Username!, true);
+        var response = await _client.PostUserAsync(user);
+        return response;
     }
 }

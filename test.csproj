@@ -43,8 +43,4 @@
 	  <None Remove="Services\Database\**" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Migrations\" />
-	</ItemGroup>
-
 </Project>

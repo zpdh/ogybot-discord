@@ -1,6 +1,6 @@
 ﻿namespace test.Api.Entities;
 
-public record AspectApiResponse
+public record TokenApiResponse
 {
     public bool Status { get; init; }
     public string? Token { get; init; }

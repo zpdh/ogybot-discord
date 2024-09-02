@@ -1,10 +1,12 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Newtonsoft.Json;
 using test.Api.Entities;
+using test.Util;
 
 namespace test.Api.Repositories;
 
@@ -16,16 +18,18 @@ public class AspectClient
 
     private readonly HttpClient _client = new()
     {
-        BaseAddress = new Uri("https://ico-server.onrender.com/")
+        BaseAddress = CommonConstants.ApiUri
     };
 
     public async Task<List<UserAspectlist>?> GetAspectsOwedListAsync()
     {
-        var userList = await _client.GetFromJsonAsync(
-            Endpoint,
-            typeof(List<UserAspectlist>));
+        var userJson = await _client.GetAsync(
+            Endpoint);
 
-        return userList as List<UserAspectlist>;
+        var userList = JsonConvert.DeserializeObject<List<UserAspectlist>>(
+            await userJson.Content.ReadAsStringAsync());
+
+        return userList;
     }
 
     public async Task<Response> DecrementAspectFromPlayerAsync(IEnumerable<string> players)
@@ -51,7 +55,7 @@ public class AspectClient
 
         if (string.IsNullOrWhiteSpace(token))
         {
-            return new Response("", false);
+            return new Response("", false, ErrorMessages.GetTokenError);
         }
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -63,19 +67,17 @@ public class AspectClient
             return new Response("", true);
         }
 
-        Console.WriteLine("Error retrieving aspect player list");
-        return new Response("", false);
+        Console.WriteLine("Error decrementing aspect");
+        return new Response("", false, ErrorMessages.DecrementUserAspectsError);
     }
 
     private async Task<string?> GetTokenAsync()
     {
-        const string validationKey = "P?DmuA*y7nsqHnt}.&2;pQ";
-
         // Convert to object since the endpoint
         // demands a key:value pair
         var json = JsonConvert.SerializeObject(new
         {
-            validationKey = validationKey
+            validationKey = CommonConstants.ValidationKey
         });
 
         // Convert to string content in order
@@ -90,7 +92,7 @@ public class AspectClient
 
         if (response.StatusCode == HttpStatusCode.OK)
         {
-            var apiResponse = await response.Content.ReadFromJsonAsync<AspectApiResponse>();
+            var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
             return apiResponse!.Token;
         }
 

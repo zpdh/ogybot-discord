@@ -1,8 +1,6 @@
 ﻿namespace test.Api.Entities;
 
-public class UserAspectlist
+public class UserAspectlist : UserBase
 {
-    public string Id { get; set; } = string.Empty;
-    public string User { get; set; } = string.Empty;
-    public int Aspects { get; set; }
+    public double Aspects { get; set; }
 }
