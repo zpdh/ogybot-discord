@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using test.DataAccess.Entities;
 using test.Util;
 
-namespace test.DataAccess.Repositories;
+namespace test.DataAccess.Clients;
 
 public class WaitlistClient
 {

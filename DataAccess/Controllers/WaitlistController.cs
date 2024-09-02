@@ -1,5 +1,5 @@
-﻿using test.DataAccess.Entities;
-using test.DataAccess.Repositories;
+﻿using test.DataAccess.Clients;
+using test.DataAccess.Entities;
 
 namespace test.DataAccess.Controllers;
 
