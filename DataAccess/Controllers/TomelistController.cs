@@ -12,6 +12,7 @@ public class TomelistController
 
     public async Task<List<UserTomelist>> GetTomelistAsync()
     {
+        // The list doesn't need to be sorted as the API already does it for us.
         var userList = await _client.GetListAsync();
         return userList;
     }
