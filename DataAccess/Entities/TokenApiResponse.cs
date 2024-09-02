@@ -1,5 +1,8 @@
 ﻿namespace test.DataAccess.Entities;
 
+/// <summary>
+/// Represents the response of a token API request.
+/// </summary>
 public record TokenApiResponse
 {
     public bool Status { get; init; }
