@@ -1,7 +1,7 @@
-﻿using test.Api.Entities;
-using test.Api.Repositories;
+﻿using test.DataAccess.Entities;
+using test.DataAccess.Repositories;
 
-namespace test.Api.Controllers;
+namespace test.DataAccess.Controllers;
 
 /// <summary>
 /// Class responsible for handling aspect-related command requests

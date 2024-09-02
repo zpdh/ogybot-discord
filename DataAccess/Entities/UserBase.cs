@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace test.Api.Entities;
+﻿namespace test.DataAccess.Entities;
 
 public abstract class UserBase
 {

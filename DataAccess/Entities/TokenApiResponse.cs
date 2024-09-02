@@ -1,4 +1,4 @@
-﻿namespace test.Api.Entities;
+﻿namespace test.DataAccess.Entities;
 
 public record TokenApiResponse
 {

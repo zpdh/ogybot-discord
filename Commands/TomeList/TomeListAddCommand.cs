@@ -2,8 +2,8 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.Api.Controllers;
-using test.Api.Entities;
+using test.DataAccess.Controllers;
+using test.DataAccess.Entities;
 
 namespace test.Commands.TomeList;
 

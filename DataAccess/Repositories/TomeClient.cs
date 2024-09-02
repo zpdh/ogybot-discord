@@ -3,10 +3,10 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Newtonsoft.Json;
-using test.Api.Entities;
+using test.DataAccess.Entities;
 using test.Util;
 
-namespace test.Api.Repositories;
+namespace test.DataAccess.Repositories;
 
 /// <summary>
 /// Class responsible for handling requests and responses from external tome API

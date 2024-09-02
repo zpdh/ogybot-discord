@@ -1,4 +1,4 @@
-﻿namespace test.Api.Entities;
+﻿namespace test.DataAccess.Entities;
 
 /// <summary>
 /// Class responsible for handling API responses
