@@ -68,13 +68,9 @@ public class TomeClient
         // Send request to API
         var response = await _client.PostAsync(Endpoint, content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return new Response(user.Username!, true);
-        }
-
-        Console.WriteLine("Error posting user to tome list");
-        return new Response(user.Username!, false, ErrorMessages.AddUserToListError);
+        return response.IsSuccessStatusCode
+            ? new Response(user.Username!, true)
+            : new Response(user.Username!, false, ErrorMessages.AddUserToListError);
     }
 
     /// <summary>
