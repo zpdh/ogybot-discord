@@ -63,13 +63,10 @@ public class AspectClient
 
         var response = await _client.PostAsync(Endpoint, content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return new Response("", true);
-        }
-
-        Console.WriteLine("Error decrementing aspect");
-        return new Response("", false, ErrorMessages.DecrementUserAspectsError);
+        // Return true if success status code, else return false and an error.
+        return response.IsSuccessStatusCode
+            ? new Response("", true)
+            : new Response("", false, ErrorMessages.DecrementUserAspectsError);
     }
 
     private async Task<string?> GetTokenAsync()
@@ -91,15 +88,9 @@ public class AspectClient
 
         var response = await _client.PostAsync("auth/gettoken", content);
 
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-            return apiResponse!.Token;
-        }
+        if (!response.IsSuccessStatusCode) return null;
 
-        Console.WriteLine("Error getting token");
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-
-        return null;
+        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
+        return apiResponse!.Token;
     }
 }

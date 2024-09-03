@@ -107,13 +107,10 @@ public class TomeClient
 
         var response = await _client.DeleteAsync($"{Endpoint}/{user.Username}");
 
-        if (response.IsSuccessStatusCode)
-        {
-            return new Response(user.Username!, true);
-        }
-
-        Console.WriteLine("Error removing user from tome list");
-        return new Response("", false, ErrorMessages.RemoveUserFromListError);
+        // Return true if success status code, else return false and an error.
+        return response.IsSuccessStatusCode
+            ? new Response(user.Username!, true)
+            : new Response("", false, ErrorMessages.RemoveUserFromListError);
     }
 
     /// <summary>
@@ -138,13 +135,9 @@ public class TomeClient
         // Get token response from API
         var response = await _client.PostAsync("auth/gettoken", content);
 
-        if (response.StatusCode.Equals(HttpStatusCode.OK))
-        {
-            var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-            return apiResponse!.Token;
-        }
+        if (!response.IsSuccessStatusCode) return null;
 
-        Console.WriteLine("Error getting token");
-        return null;
+        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
+        return apiResponse!.Token;
     }
 }
