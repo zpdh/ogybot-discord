@@ -2,10 +2,10 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.DataAccess.Controllers;
-using test.DataAccess.Entities;
+using ogybot.DataAccess.Controllers;
+using ogybot.DataAccess.Entities;
 
-namespace test.Commands.TomeList;
+namespace ogybot.Commands.TomeList;
 
 public abstract class TomeListRemoveCommand : ICommand
 {

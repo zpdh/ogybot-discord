@@ -3,10 +3,10 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Newtonsoft.Json;
-using test.DataAccess.Entities;
-using test.Util;
+using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
-namespace test.DataAccess.Clients;
+namespace ogybot.DataAccess.Clients;
 
 public class WaitlistClient
 {

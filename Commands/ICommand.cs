@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 
-namespace test.Commands;
+namespace ogybot.Commands;
 
 public interface ICommand
 {

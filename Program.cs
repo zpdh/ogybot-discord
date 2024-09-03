@@ -1,7 +1,6 @@
-﻿using System.Net.WebSockets;
-using test.Builders;
+﻿using ogybot.Builders;
 
-namespace test;
+namespace ogybot;
 
 public static class Program
 {

@@ -1,4 +1,4 @@
-﻿namespace test.DataAccess.Entities;
+﻿namespace ogybot.DataAccess.Entities;
 
 /// <summary>
 /// Represents the response of a token API request.

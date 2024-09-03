@@ -1,19 +1,19 @@
 ﻿using Discord.WebSocket;
-using test.Commands;
-using test.Commands.AspectList;
-using test.Commands.Other;
-using test.Commands.TomeList;
-using test.Commands.Waitlist;
+using ogybot.Commands.AspectList;
+using ogybot.Commands.Other;
+using ogybot.Commands.TomeList;
+using ogybot.Commands.Waitlist;
+using ogybot.Commands;
 
-namespace test.Builders;
+namespace ogybot.Builders;
 
 /// <summary>
-/// Class responsible the generation of a dictionary with all of the possible bot commands.
+/// Class responsible the generation of a dictionary with all the possible bot commands.
 /// </summary>
 public static class CommandDictionaryBuilder
 {
     /// <summary>
-    /// Generates a dictionary with all of the bot commands
+    /// Generates a dictionary with all the bot commands
     /// </summary>
     /// <returns>A dictionary of string:Func type</returns>
     public static Dictionary<string, Func<SocketSlashCommand, Task>> Build()

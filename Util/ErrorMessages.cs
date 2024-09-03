@@ -1,4 +1,4 @@
-﻿namespace test.Util;
+﻿namespace ogybot.Util;
 
 /// <summary>
 /// Class used to store common error messages used throughout the entire application

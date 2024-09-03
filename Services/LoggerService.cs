@@ -1,6 +1,6 @@
 ﻿using Discord;
 
-namespace test.Services;
+namespace ogybot.Services;
 
 /// <summary>
 /// Class responsible for logging. Only command errors are logged on this application.

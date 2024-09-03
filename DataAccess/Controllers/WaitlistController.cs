@@ -1,7 +1,7 @@
-﻿using test.DataAccess.Clients;
-using test.DataAccess.Entities;
+﻿using ogybot.DataAccess.Clients;
+using ogybot.DataAccess.Entities;
 
-namespace test.DataAccess.Controllers;
+namespace ogybot.DataAccess.Controllers;
 
 /// <summary>
 /// Class responsible for handling waitlist-related command requests

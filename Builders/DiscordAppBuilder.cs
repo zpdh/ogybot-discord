@@ -1,12 +1,12 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using test.Commands;
-using test.Commands.TomeList;
-using test.Commands.Waitlist;
-using test.Services;
+using ogybot.Services;
+using ogybot.Commands;
+using ogybot.Commands.TomeList;
+using ogybot.Commands.Waitlist;
 
-namespace test.Builders;
+namespace ogybot.Builders;
 
 /// <summary>
 /// Class responsible for the setup of a <see cref="DiscordSocketClient"/>.

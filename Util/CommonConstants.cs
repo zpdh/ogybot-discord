@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using test.Builders;
+using ogybot.Builders;
 
-namespace test.Util;
+namespace ogybot.Util;
 
 /// <summary>
 /// Class used to store common constants used throughout the entire application
