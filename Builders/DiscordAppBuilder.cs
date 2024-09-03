@@ -2,9 +2,6 @@
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.Services;
-using ogybot.Commands;
-using ogybot.Commands.TomeList;
-using ogybot.Commands.Waitlist;
 
 namespace ogybot.Builders;
 

@@ -21,7 +21,7 @@ public abstract class TomeListRemoveCommand : ICommand
             return;
         }
 
-        var nameList = username!.Split(", ")
+        var nameList = username.Split(", ")
             .Distinct()
             .Select(user => user.Trim())
             .ToList();

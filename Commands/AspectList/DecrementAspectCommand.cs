@@ -20,7 +20,7 @@ public class DecrementAspectCommand
             return;
         }
 
-        var listOfUsers = username!.Split(",")
+        var listOfUsers = username.Split(",")
             .Distinct()
             .Select(user => user.Trim())
             .ToList();

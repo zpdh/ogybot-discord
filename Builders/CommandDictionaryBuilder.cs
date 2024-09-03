@@ -3,7 +3,6 @@ using ogybot.Commands.AspectList;
 using ogybot.Commands.Other;
 using ogybot.Commands.TomeList;
 using ogybot.Commands.Waitlist;
-using ogybot.Commands;
 
 namespace ogybot.Builders;
 
