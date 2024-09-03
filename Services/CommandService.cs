@@ -1,12 +1,18 @@
 ﻿using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
-using test.Commands;
-using test.Commands.AspectList;
-using test.Commands.TomeList;
-using test.Commands.Waitlist;
+using ogybot.Commands.AspectList;
+using ogybot.Commands.Other;
+using ogybot.Commands.TomeList;
+using ogybot.Commands.Waitlist;
+using ogybot.Commands;
 
-namespace test.Services;
+namespace ogybot.Services;
 
+/// <summary>
+/// Class responsible for the management and instantiation of slash commands.
+/// When a command gets executed, this class gives it instructions on
+/// what to do next.
+/// </summary>
 public class CommandService
 {
     private static DiscordSocketClient _socketClient = null!;

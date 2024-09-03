@@ -3,17 +3,14 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Newtonsoft.Json;
-using test.DataAccess.Entities;
-using test.Util;
+using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
-namespace test.DataAccess.Repositories;
+namespace ogybot.DataAccess.Clients;
 
-/// <summary>
-/// Class responsible for handling requests and responses from external tome API
-/// </summary>
-public class TomeClient
+public class WaitlistClient
 {
-    private const string Endpoint = "tomes";
+    private const string Endpoint = "waitlist";
 
     private readonly HttpClient _client = new()
     {
@@ -21,28 +18,28 @@ public class TomeClient
     };
 
     /// <summary>
-    /// Gets users queued on the tome list
+    /// Gets users queued on the wait list
     /// </summary>
     /// <returns>
     /// List of users in tome queue
     /// </returns>
-    public async Task<List<UserTomelist>> GetListAsync()
+    public async Task<List<UserWaitlist>> GetListAsync()
     {
         var listJson = await _client.GetAsync(Endpoint);
 
         var listOfUsers = JsonConvert
-            .DeserializeObject<List<UserTomelist>>(
+            .DeserializeObject<List<UserWaitlist>>(
                 await listJson.Content.ReadAsStringAsync());
 
         return listOfUsers!;
     }
 
     /// <summary>
-    /// Adds user to tome queue
+    /// Adds user to waitlist queue
     /// </summary>
     /// <param name="user">User to be added on the list</param>
     /// <returns>Response of type <see cref="Response"/></returns>
-    public async Task<Response> PostUserAsync(UserTomelist user)
+    public async Task<Response> PostUserAsync(UserWaitlist user)
     {
         // Convert object to json and send
         // username for verification
@@ -69,21 +66,18 @@ public class TomeClient
         // Send request to API
         var response = await _client.PostAsync(Endpoint, content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return new Response(user.Username!, true);
-        }
-
-        Console.WriteLine("Error posting user to tome list");
-        return new Response(user.Username!, false, ErrorMessages.AddUserToListError);
+        // Return true if success status code, else return false and an error.
+        return response.IsSuccessStatusCode
+            ? new Response(user.Username!, true)
+            : new Response(user.Username!, false, ErrorMessages.AddUserToListError);
     }
 
     /// <summary>
-    /// Removes user from tome queue
+    /// Removes user from waitlist queue
     /// </summary>
     /// <param name="user">User to be removed</param>
     /// <returns>Response of type <see cref="Response"/></returns>
-    public async Task<Response> RemoveUserAsync(UserTomelist user)
+    public async Task<Response> RemoveUserAsync(UserWaitlist user)
     {
         var json = JsonConvert.SerializeObject(new
         {
@@ -107,13 +101,10 @@ public class TomeClient
 
         var response = await _client.DeleteAsync($"{Endpoint}/{user.Username}");
 
-        if (response.IsSuccessStatusCode)
-        {
-            return new Response(user.Username!, true);
-        }
-
-        Console.WriteLine("Error removing user from tome list");
-        return new Response("", false, ErrorMessages.RemoveUserFromListError);
+        // Return true if success status code, else return false and an error.
+        return response.IsSuccessStatusCode
+            ? new Response(user.Username!, true)
+            : new Response("", false, ErrorMessages.RemoveUserFromListError);
     }
 
     /// <summary>
@@ -138,13 +129,9 @@ public class TomeClient
         // Get token response from API
         var response = await _client.PostAsync("auth/gettoken", content);
 
-        if (response.StatusCode.Equals(HttpStatusCode.OK))
-        {
-            var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-            return apiResponse!.Token;
-        }
+        if (!response.IsSuccessStatusCode) return null;
 
-        Console.WriteLine("Error getting token");
-        return null;
+        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
+        return apiResponse!.Token;
     }
 }

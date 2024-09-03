@@ -1,7 +1,7 @@
-﻿using test.DataAccess.Entities;
-using test.DataAccess.Repositories;
+﻿using ogybot.DataAccess.Clients;
+using ogybot.DataAccess.Entities;
 
-namespace test.DataAccess.Controllers;
+namespace ogybot.DataAccess.Controllers;
 
 /// <summary>
 /// Class responsible for handling waitlist-related command requests
@@ -12,6 +12,7 @@ public class WaitlistController
 
     public async Task<List<UserWaitlist>> GetWaitlistAsync()
     {
+        // The list doesn't need to be sorted as the API already does it for us.
         var list = await _client.GetListAsync();
         return list;
     }

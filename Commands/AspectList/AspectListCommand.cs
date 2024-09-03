@@ -3,9 +3,9 @@ using Discord;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.DataAccess.Controllers;
+using ogybot.DataAccess.Controllers;
 
-namespace test.Commands.AspectList;
+namespace ogybot.Commands.AspectList;
 
 public class AspectListCommand : ICommand
 {

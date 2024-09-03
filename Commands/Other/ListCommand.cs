@@ -3,19 +3,18 @@ using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 
-namespace test.Commands;
+namespace ogybot.Commands.Other;
 
 public abstract class ListCommand : ICommand
 {
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        
         var user = command.User;
-            
+
         /* TODO: Transform these walls of text into a StringBuilder result
          * Seriously. It's awful
          */
-            
+
         var textContent = "**/raid [Required: Raid Type] [Optional: Guild Name]**\n" +
                           "Pings either heavy/light raid and you may choose whether or not to inform the guild currently attacking ICo.\n\n" +
                           "**/war-build-help [Required: Classes] [Required: Mythics Owned] [Required: Budget]**\n" +

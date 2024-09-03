@@ -3560,9 +3560,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pedro\\RiderProjects\\ogybot-discord\\test.csproj",
-      "projectName": "test",
-      "projectPath": "C:\\Users\\Pedro\\RiderProjects\\ogybot-discord\\test.csproj",
+      "projectUniqueName": "C:\\Users\\Pedro\\RiderProjects\\ogybot-discord\\ogybot.csproj",
+      "projectName": "ogybot",
+      "projectPath": "C:\\Users\\Pedro\\RiderProjects\\ogybot-discord\\ogybot.csproj",
       "packagesPath": "C:\\Users\\Pedro\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\Pedro\\RiderProjects\\ogybot-discord\\obj\\",
       "projectStyle": "PackageReference",

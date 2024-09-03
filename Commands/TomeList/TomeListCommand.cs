@@ -2,9 +2,9 @@
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
-using test.DataAccess.Controllers;
+using ogybot.DataAccess.Controllers;
 
-namespace test.Commands.TomeList;
+namespace ogybot.Commands.TomeList;
 
 public abstract class TomeListCommand : ICommand
 {

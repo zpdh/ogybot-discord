@@ -1,13 +1,15 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using Newtonsoft.Json;
-using test.DataAccess.Entities;
-using test.Util;
+using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
-namespace test.DataAccess.Repositories;
+namespace ogybot.DataAccess.Clients;
 
+/// <summary>
+/// Class responsible for handling requests and responses from external tome API
+/// </summary>
 public class AspectClient
 {
     // Needs to be cleaned up
@@ -60,13 +62,10 @@ public class AspectClient
 
         var response = await _client.PostAsync(Endpoint, content);
 
-        if (response.IsSuccessStatusCode)
-        {
-            return new Response("", true);
-        }
-
-        Console.WriteLine("Error decrementing aspect");
-        return new Response("", false, ErrorMessages.DecrementUserAspectsError);
+        // Return true if success status code, else return false and an error.
+        return response.IsSuccessStatusCode
+            ? new Response("", true)
+            : new Response("", false, ErrorMessages.DecrementUserAspectsError);
     }
 
     private async Task<string?> GetTokenAsync()
@@ -88,15 +87,9 @@ public class AspectClient
 
         var response = await _client.PostAsync("auth/gettoken", content);
 
-        if (response.StatusCode == HttpStatusCode.OK)
-        {
-            var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-            return apiResponse!.Token;
-        }
+        if (!response.IsSuccessStatusCode) return null;
 
-        Console.WriteLine("Error getting token");
-        Console.WriteLine(await response.Content.ReadAsStringAsync());
-
-        return null;
+        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
+        return apiResponse!.Token;
     }
 }

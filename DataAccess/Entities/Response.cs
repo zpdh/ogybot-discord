@@ -1,4 +1,4 @@
-﻿namespace test.DataAccess.Entities;
+﻿namespace ogybot.DataAccess.Entities;
 
 /// <summary>
 /// Class responsible for handling API responses

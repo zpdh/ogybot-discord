@@ -1,7 +1,7 @@
-﻿using test.DataAccess.Entities;
-using test.DataAccess.Repositories;
+﻿using ogybot.DataAccess.Clients;
+using ogybot.DataAccess.Entities;
 
-namespace test.DataAccess.Controllers;
+namespace ogybot.DataAccess.Controllers;
 
 /// <summary>
 /// Class responsible for handling aspect-related command requests
@@ -16,12 +16,12 @@ public class AspectsController
         // then sorts its members by aspect
         // count.
         var list = await _aspectClient.GetAspectsOwedListAsync();
-        
         return list?.OrderByDescending(user => user.Aspects);
     }
 
     public async Task<Response> DecrementPlayersAspectsAsync(IEnumerable<string> players)
     {
-        return await _aspectClient.DecrementAspectFromPlayerAsync(players);
+        var result = await _aspectClient.DecrementAspectFromPlayerAsync(players);
+        return result;
     }
 }

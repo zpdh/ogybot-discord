@@ -3,13 +3,13 @@ using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 
-namespace test.Commands;
+namespace ogybot.Commands.Other;
 
-public abstract class PingChiefsCommand : ICommand
+public abstract class OutdatedCommands : ICommand
 {
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        await command.FollowupAsync("<@&1097935496442810419> Wake up", allowedMentions: AllowedMentions.All);
+        await command.FollowupAsync("<@1088133910807969855> lol this person used an outdated command (use /war-build-help)");
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
@@ -17,8 +17,8 @@ public abstract class PingChiefsCommand : ICommand
         try
         {
             var guildCommand = new SlashCommandBuilder()
-                .WithName("chiefs")
-                .WithDescription("Pings active chiefs (use if you need somebody to set headquarters)");
+                .WithName("build-help")
+                .WithDescription("Outdated command, use /war-build-help");
 
             await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
         }

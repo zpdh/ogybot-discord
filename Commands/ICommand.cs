@@ -1,10 +1,10 @@
 ﻿using Discord.WebSocket;
 
-namespace test.Commands;
+namespace ogybot.Commands;
 
-internal interface ICommand
+public interface ICommand
 {
-    static Task GenerateCommand() => throw new NotImplementedException();
-
-    static Task ExecuteCommandAsync(SocketSlashCommand command) => throw new NotImplementedException();
+    // STATIC ABSTRACT METHODS LETS GOOOOOOOO
+    static abstract Task ExecuteCommandAsync(SocketSlashCommand command);
+    static abstract Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId);
 }

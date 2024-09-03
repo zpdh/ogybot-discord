@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace test.Builders;
+namespace ogybot.Builders;
 
+/// <summary>
+/// Class responsible for <see cref="IConfiguration"/> generation.
+/// </summary>
 public static class AppConfigurationBuilder
 {
     public static IConfiguration Build()

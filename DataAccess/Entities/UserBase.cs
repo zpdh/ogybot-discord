@@ -1,4 +1,4 @@
-﻿namespace test.DataAccess.Entities;
+﻿namespace ogybot.DataAccess.Entities;
 
 public abstract class UserBase
 {
