@@ -3,7 +3,7 @@ using ogybot.Extensions;
 
 namespace ogybot.Builders;
 
-public class ServiceBuilder
+public static class ServiceBuilder
 {
     public static IServiceProvider Build()
     {

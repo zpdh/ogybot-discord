@@ -22,9 +22,10 @@ public static class ServiceExtensions
 
     private static void AddDiscordClient(this ServiceCollection services)
     {
-        services.AddSingleton(provider =>
+        services.AddSingleton<DiscordSocketClient>(provider =>
         {
             var config = provider.GetRequiredService<IConfiguration>();
+
 
             var discordClient = DiscordAppBuilder.SetupDiscordClientAsync(config).GetAwaiter().GetResult();
             return discordClient;
@@ -33,11 +34,11 @@ public static class ServiceExtensions
 
     private static void AddInteractionService(this ServiceCollection services)
     {
-        services.AddSingleton(provider =>
+        services.AddSingleton<InteractionService>(provider =>
         {
             var client = provider.GetRequiredService<DiscordSocketClient>();
 
-            return services.AddSingleton(new InteractionService(client.Rest));
+            return new InteractionService(client.Rest);
         });
     }
 }
