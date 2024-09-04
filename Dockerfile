@@ -1,19 +1,22 @@
-# Use the official .NET Core SDK image as the base image
+#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+WORKDIR /app
+
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["ogybot.csproj", "."]
+RUN dotnet restore "./ogybot.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "./ogybot.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./ogybot.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM base AS final
 WORKDIR /app
-
-# Copy the .csproj and restore as distinct layers
-COPY *.csproj ./
-RUN dotnet restore
-
-# Copy the remaining source code and build the application
-COPY . ./
-RUN dotnet publish -c Release -o out
-
-# Build the runtime image
-FROM mcr.microsoft.com/dotnet/runtime:7.0
-WORKDIR /app
-COPY --from=build /app/out .
-
-# Entry point when the container starts
-ENTRYPOINT ["dotnet", "test.dll"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "ogybot.dll"]
