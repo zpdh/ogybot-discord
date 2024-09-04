@@ -21,9 +21,9 @@ public abstract class TomeListRemoveCommand : ICommand
             return;
         }
 
-        var nameList = username.Split(", ")
-            .Distinct()
+        var nameList = username.Split(',')
             .Select(user => user.Trim())
+            .Distinct()
             .ToList();
 
         var responseList = new List<Response>();
@@ -40,8 +40,8 @@ public abstract class TomeListRemoveCommand : ICommand
 
         var errorList = responseList
             .Select(response => response.Error)
-            .Distinct()
-            .Select(error => error is not null);
+            .Where(error => error is not null)
+            .Distinct();
 
         if (statusList.Contains(false))
         {
