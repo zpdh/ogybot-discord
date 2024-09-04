@@ -22,8 +22,6 @@ public class WaitlistRemoveCommand : BaseRemoveCommand
     [SlashCommand("waitlist-remove", "removes user from waitlist by name or index")]
     public async Task ExecuteCommandAsync([Summary("user-or-index", "the user or their index")] string input)
     {
-        await DeferAsync();
-
         if (await ValidateChannelAndRolesAsync(GuildChannels.LayoffsChannel)) return;
 
         // Checks if input can be converted to an integer. If so, removes user by index instead of name.

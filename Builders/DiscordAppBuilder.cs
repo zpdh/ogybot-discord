@@ -14,7 +14,12 @@ public static class DiscordAppBuilder
 {
     public static async Task<DiscordSocketClient> SetupDiscordClientAsync(IConfiguration configuration)
     {
-        var discordClient = new DiscordSocketClient();
+        var discordConfig = new DiscordSocketConfig
+        {
+            UseInteractionSnowflakeDate = false
+        };
+
+        var discordClient = new DiscordSocketClient(discordConfig);
 
         await discordClient.ConnectAsync(configuration);
 
@@ -33,6 +38,8 @@ public static class DiscordAppBuilder
 
         client.InteractionCreated += async (interaction) =>
         {
+            await interaction.DeferAsync();
+
             var context = new SocketInteractionContext(client, interaction);
             var result = await interactionService.ExecuteCommandAsync(context, services); // Change once DI gets added
 
@@ -54,8 +61,7 @@ public static class DiscordAppBuilder
         {
             await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
 
-            // Register commands
-            await interactionService.RegisterCommandsGloballyAsync();
+            await interactionService.RegisterCommandsToGuildAsync(id);
         };
     }
 

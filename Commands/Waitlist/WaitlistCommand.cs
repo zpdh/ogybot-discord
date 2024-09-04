@@ -21,8 +21,6 @@ public class WaitlistCommand : BaseCommand
     [SlashCommand("waitlist", "displays the wait list")]
     public async Task ExecuteCommandAsync()
     {
-        await DeferAsync();
-
         if (await ValidateChannelAsync(GuildChannels.LayoffsChannel)) return;
 
         var user = Context.User;

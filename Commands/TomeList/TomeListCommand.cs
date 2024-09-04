@@ -21,7 +21,6 @@ public class TomeListCommand : BaseCommand
     [SlashCommand("tomelist", "displays the tome list")]
     public async Task ExecuteCommandAsync()
     {
-        await DeferAsync();
 
         var user = Context.User;
 

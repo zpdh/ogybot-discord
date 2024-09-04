@@ -22,8 +22,6 @@ public class AspectListCommand : BaseCommand
     [SlashCommand("aspectlist", "displays aspect list")]
     public async Task ExecuteCommandAsync()
     {
-        await DeferAsync();
-
         if (await ValidateChannelAsync(GuildChannels.RaidsChannel)) return;
 
         var user = Context.User;

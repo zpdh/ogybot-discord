@@ -22,8 +22,6 @@ public class TomeListRemoveCommand : BaseRemoveCommand
     [SlashCommand("tomelist-remove", "removes user from tomelist by name or index")]
     public async Task ExecuteCommandAsync([Summary("user-or-index", "the user or their index")] string input)
     {
-        await DeferAsync();
-
         if (await ValidateChannelAndRolesAsync(GuildChannels.TomeChannel)) return;
 
         if (input!.Contains(' ') && !input.Contains(','))

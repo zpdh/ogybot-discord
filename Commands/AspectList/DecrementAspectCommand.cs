@@ -21,8 +21,6 @@ public class DecrementAspectCommand : BaseRemoveCommand
     [SlashCommand("aspectlist-decrement", "decrements an aspect by the user's name")]
     public async Task ExecuteCommandAsync([Summary("user", "user you're removing")] string username)
     {
-        await DeferAsync();
-
         if (await ValidateChannelAndRolesAsync(GuildChannels.RaidsChannel)) return;
 
         if (username.Contains(' ') && !username.Contains(','))

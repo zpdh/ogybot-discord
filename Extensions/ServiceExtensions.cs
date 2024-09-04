@@ -30,7 +30,6 @@ public static class ServiceExtensions
         {
             var config = provider.GetRequiredService<IConfiguration>();
 
-
             var discordClient = DiscordAppBuilder.SetupDiscordClientAsync(config).GetAwaiter().GetResult();
             return discordClient;
         });

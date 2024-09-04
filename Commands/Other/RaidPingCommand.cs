@@ -22,8 +22,6 @@ public class RaidPingCommand : BaseCommand
         [Summary("guild", "the guild attacking us")]
         string? guildAttacking = null)
     {
-        await DeferAsync();
-
         if (await ValidateChannelAsync(GuildChannels.WarChannel)) return;
 
         var guildMessage = guildAttacking is not null
