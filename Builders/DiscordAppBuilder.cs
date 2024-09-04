@@ -23,10 +23,12 @@ public static class DiscordAppBuilder
         return discordClient;
     }
 
-    public static async Task SetupInteractionAsync(this DiscordSocketClient client, IConfiguration configuration)
+    public static void SetupInteractionAsync(
+        this DiscordSocketClient client,
+        IConfiguration configuration,
+        InteractionService interactionService)
     {
         // Create interaction service and register it
-        var interactionService = new InteractionService(client);
 
         client.InteractionCreated += async (interaction) =>
         {
@@ -37,7 +39,8 @@ public static class DiscordAppBuilder
             {
                 // Pings me and logs error in console for debugging
                 await context.Channel.SendMessageAsync(
-                    "An error occurred executing this command, <@$264097995325177856> HELP!!!");
+                    "An error occurred executing this command, <@264097995325177856> HELP!!!",
+                    allowedMentions: AllowedMentions.All);
                 Console.WriteLine(result.Error);
             }
         };
@@ -46,28 +49,14 @@ public static class DiscordAppBuilder
         var branch = configuration["Branch"];
         var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
 
-        // Register commands
         client.Ready += async () =>
         {
+            await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
+
+            // Register commands
             await interactionService.RegisterCommandsGloballyAsync();
-            await interactionService.RegisterCommandsToGuildAsync(id);
         };
-
-        await interactionService.AddModulesAsync(Assembly.GetEntryAssembly(), null);
     }
-
-    // public static void AddCommands(this DiscordSocketClient client, IConfiguration configuration)
-    // {
-    //     var branch = configuration["Branch"];
-    //     var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
-    //
-    //     CommandService commands = new(client, id, CommandDictionaryBuilder.Build());
-    //
-    //     client.Ready += commands.Client_Ready;
-    //     // Only uncomment if you need to instance commands. Takes up startup time
-    //
-    //     client.SlashCommandExecuted += commands.SlashCommandHandler;
-    // }
 
     private static async Task ConnectAsync(this DiscordSocketClient client, IConfiguration configuration)
     {

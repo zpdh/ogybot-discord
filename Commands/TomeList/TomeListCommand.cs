@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
@@ -6,15 +7,19 @@ using ogybot.DataAccess.Controllers;
 
 namespace ogybot.Commands.TomeList;
 
-public abstract class TomeListCommand : ICommand
+public class TomeListCommand : InteractionModuleBase<SocketInteractionContext>
 {
-    private static readonly TomelistController Controller = new();
+    private readonly TomelistController _controller = new();
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("tomelist", "displays the tome list")]
+    public async Task ExecuteCommandAsync()
     {
-        var user = command.User;
+        await DeferAsync();
 
-        var list = await Controller.GetTomelistAsync();
+        var user = Context.User;
+
+        var list = await _controller.GetTomelistAsync();
 
         var description = "";
 
@@ -33,23 +38,6 @@ public abstract class TomeListCommand : ICommand
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
-        await command.FollowupAsync(embed: embedBuilder.Build());
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("tomelist")
-                .WithDescription("Displays tome list");
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(embed: embedBuilder.Build());
     }
 }
