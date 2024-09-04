@@ -3,6 +3,8 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Builders;
+using ogybot.DataAccess.Clients;
+using ogybot.DataAccess.Controllers;
 
 namespace ogybot.Extensions;
 
@@ -13,6 +15,8 @@ public static class ServiceExtensions
         services.AddConfiguration();
         services.AddDiscordClient();
         services.AddInteractionService();
+        services.AddClients();
+        services.AddControllers();
     }
 
     private static void AddConfiguration(this ServiceCollection services)
@@ -40,5 +44,19 @@ public static class ServiceExtensions
 
             return new InteractionService(client.Rest);
         });
+    }
+
+    private static void AddClients(this ServiceCollection services)
+    {
+        services.AddSingleton<TomeClient>();
+        services.AddSingleton<WaitlistClient>();
+        services.AddSingleton<AspectClient>();
+    }
+
+    private static void AddControllers(this ServiceCollection services)
+    {
+        services.AddSingleton<TomelistController>();
+        services.AddSingleton<WaitlistController>();
+        services.AddSingleton<AspectsController>();
     }
 }

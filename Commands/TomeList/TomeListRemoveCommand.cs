@@ -1,23 +1,34 @@
 ﻿using Discord;
+using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
 namespace ogybot.Commands.TomeList;
 
-public abstract class TomeListRemoveCommand : ICommand
+public class TomeListRemoveCommand : BaseRemoveCommand
 {
-    private static readonly TomelistController Controller = new();
+    private readonly TomelistController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public TomeListRemoveCommand(TomelistController controller)
     {
-        var input = command.Data.Options.FirstOrDefault()!.Value.ToString();
+        _controller = controller;
+    }
+
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("tomelist-remove", "removes user from tomelist by name or index")]
+    public async Task ExecuteCommandAsync([Summary("user-or-index", "the user or their index")] string input)
+    {
+        await DeferAsync();
+
+        if (await ValidateChannelAndRolesAsync(GuildChannels.TomeChannel)) return;
 
         if (input!.Contains(' ') && !input.Contains(','))
         {
-            await command.FollowupAsync("You cannot submit usernames with whitespaces");
+            await FollowupAsync("You cannot submit usernames with whitespaces");
             return;
         }
 
@@ -53,7 +64,7 @@ public abstract class TomeListRemoveCommand : ICommand
         {
             var formattedErrorList = errorList.Aggregate("", (current, error) => current + $"'{error}'" + ", ");
 
-            await command.FollowupAsync($"One or multiple errors occurred: {formattedErrorList[..^2]}");
+            await FollowupAsync($"One or multiple errors occurred: {formattedErrorList[..^2]}");
             return;
         }
 
@@ -64,41 +75,23 @@ public abstract class TomeListRemoveCommand : ICommand
         // [..^n] removes the last n characters of an array
         var msg = $"Successfully removed players {users[..^2]} from the tome list.";
 
-        await command.FollowupAsync(msg);
+        await FollowupAsync(msg);
     }
 
-    private static async Task RemoveByName(string username, List<Response> responseList)
+    private async Task RemoveByName(string username, List<Response> responseList)
     {
-        var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = username });
+        var result = await _controller.RemovePlayerAsync(new UserTomelist { Username = username });
 
         responseList.Add(result);
     }
 
-    private static async Task RemoveByIndex(int index, List<Response> responseList)
+    private async Task RemoveByIndex(int index, List<Response> responseList)
     {
-        var list = await Controller.GetTomelistAsync();
+        var list = await _controller.GetTomelistAsync();
         var username = list[index - 1].Username;
 
-        var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = username });
+        var result = await _controller.RemovePlayerAsync(new UserTomelist { Username = username });
 
         responseList.Add(result);
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("tomelist-remove")
-                .WithDescription("Removes user from tome list")
-                .AddOption("username-or-index", ApplicationCommandOptionType.String, "User you're removing or their index on the list", true);
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
     }
 }

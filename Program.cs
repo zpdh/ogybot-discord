@@ -1,4 +1,8 @@
-﻿using ogybot.Builders;
+﻿using Discord.Interactions;
+using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using ogybot.Builders;
 
 namespace ogybot;
 
@@ -6,11 +10,12 @@ public static class Program
 {
     public static async Task Main()
     {
-        // Instance and setup IConfiguration and DiscordSocketClient
-        var config = AppConfigurationBuilder.Build();
-        var discordClient = await DiscordAppBuilder.SetupDiscordClientAsync(config);
+        var services = ServiceBuilder.Build();
+        var config = services.GetRequiredService<IConfiguration>();
+        var discordClient = services.GetRequiredService<DiscordSocketClient>();
+        var interactionService = services.GetRequiredService<InteractionService>();
 
-        await discordClient.SetupInteractionAsync(config);
+        discordClient.SetupInteractionAsync(config, services, interactionService);
 
         // Delay the task until program is closed
         await Task.Delay(-1);

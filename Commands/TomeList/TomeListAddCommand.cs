@@ -1,33 +1,47 @@
 ﻿using Discord;
+using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
 namespace ogybot.Commands.TomeList;
 
-public abstract class TomeListAddCommand : ICommand
+/// <summary>
+/// Adds the specified user to the tome list
+/// </summary>
+public class TomeListAddCommand : BaseCommand
 {
-    private static readonly TomelistController Controller = new();
+    private readonly TomelistController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public TomeListAddCommand(TomelistController controller)
     {
-        var username = command.Data.Options.FirstOrDefault()!.Value;
+        _controller = controller;
+    }
 
-        if (username.ToString()!.Contains(' '))
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("tomelist-add", "Adds user to tome list")]
+    public async Task ExecuteCommandAsync([Summary("username", "the user's name you're adding")] string username)
+    {
+        await DeferAsync();
+
+        if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
+
+        if (username.Contains(' '))
         {
-            await command.FollowupAsync("You cannot submit usernames with whitespaces");
+            await FollowupAsync("You cannot submit usernames with whitespaces");
             return;
         }
 
-        var result = await Controller.AddPlayerAsync(new UserTomelist { Username = username.ToString() });
+        var result = await _controller.AddPlayerAsync(new UserTomelist { Username = username.ToString() });
 
         var msg = result.Status
             ? $"Successfully added player '{result.Username}' to the tome list."
             : result.Error;
 
-        await command.FollowupAsync(msg);
+        await FollowupAsync(msg);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)

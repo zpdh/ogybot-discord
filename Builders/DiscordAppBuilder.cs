@@ -26,6 +26,7 @@ public static class DiscordAppBuilder
     public static void SetupInteractionAsync(
         this DiscordSocketClient client,
         IConfiguration configuration,
+        IServiceProvider services,
         InteractionService interactionService)
     {
         // Create interaction service and register it
@@ -33,7 +34,7 @@ public static class DiscordAppBuilder
         client.InteractionCreated += async (interaction) =>
         {
             var context = new SocketInteractionContext(client, interaction);
-            var result = await interactionService.ExecuteCommandAsync(context, null); // Change once DI gets added
+            var result = await interactionService.ExecuteCommandAsync(context, services); // Change once DI gets added
 
             if (!result.IsSuccess)
             {
@@ -51,7 +52,7 @@ public static class DiscordAppBuilder
 
         client.Ready += async () =>
         {
-            await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), null);
+            await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
 
             // Register commands
             await interactionService.RegisterCommandsGloballyAsync();

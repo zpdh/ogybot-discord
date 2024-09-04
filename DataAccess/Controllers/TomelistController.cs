@@ -8,7 +8,12 @@ namespace ogybot.DataAccess.Controllers;
 /// </summary>
 public class TomelistController
 {
-    private readonly TomeClient _client = new();
+    private readonly TomeClient _client;
+
+    public TomelistController(TomeClient client)
+    {
+        _client = client;
+    }
 
     public async Task<List<UserTomelist>> GetTomelistAsync()
     {
