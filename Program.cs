@@ -10,7 +10,7 @@ public static class Program
         var config = AppConfigurationBuilder.Build();
         var discordClient = await DiscordAppBuilder.SetupDiscordClientAsync(config);
 
-        discordClient.AddCommands(config);
+        await discordClient.SetupInteractionAsync(config);
 
         // Delay the task until program is closed
         await Task.Delay(-1);
