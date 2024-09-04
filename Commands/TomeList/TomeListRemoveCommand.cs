@@ -13,26 +13,32 @@ public abstract class TomeListRemoveCommand : ICommand
 
     public static async Task ExecuteCommandAsync(SocketSlashCommand command)
     {
-        var username = command.Data.Options.FirstOrDefault()!.Value as string;
+        var input = command.Data.Options.FirstOrDefault()!.Value.ToString();
 
-        if (username!.Contains(' ') && !username.Contains(','))
+        if (input!.Contains(' ') && !input.Contains(','))
         {
             await command.FollowupAsync("You cannot submit usernames with whitespaces");
             return;
         }
 
-        var nameList = username.Split(',')
+        var inputList = input.Split(',')
             .Select(user => user.Trim())
             .Distinct()
             .ToList();
 
         var responseList = new List<Response>();
 
-        foreach (var user in nameList)
+        foreach (var singleInput in inputList)
         {
-            var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = user });
+            // Check if the input can be converted to an integer. if so, remove user in that position in the list.
+            if (int.TryParse(singleInput, out var index))
+            {
+                await RemoveByIndex(index, responseList);
+                continue;
+            }
 
-            responseList.Add(result);
+            // In this case, the input is the user's name
+            await RemoveByName(singleInput, responseList);
         }
 
         var statusList = responseList
@@ -51,12 +57,31 @@ public abstract class TomeListRemoveCommand : ICommand
             return;
         }
 
-        var users = nameList.Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
+        var users = responseList
+            .Select(user => user.Username)
+            .Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
 
         // [..^n] removes the last n characters of an array
         var msg = $"Successfully removed players {users[..^2]} from the tome list.";
 
         await command.FollowupAsync(msg);
+    }
+
+    private static async Task RemoveByName(string username, List<Response> responseList)
+    {
+        var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = username });
+
+        responseList.Add(result);
+    }
+
+    private static async Task RemoveByIndex(int index, List<Response> responseList)
+    {
+        var list = await Controller.GetTomelistAsync();
+        var username = list[index - 1].Username;
+
+        var result = await Controller.RemovePlayerAsync(new UserTomelist { Username = username });
+
+        responseList.Add(result);
     }
 
     public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
