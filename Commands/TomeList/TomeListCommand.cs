@@ -23,7 +23,7 @@ public class TomeListCommand : BaseCommand
     {
         await DeferAsync();
 
-        var user = Context.User as IGuildUser;
+        var user = Context.User;
 
         // Checks if user is in correct channel and has perms to execute the command
         if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
@@ -48,23 +48,5 @@ public class TomeListCommand : BaseCommand
             .WithFooter(queueSize);
 
         await FollowupAsync(embed: embedBuilder.Build());
-    }
-
-    private async Task<bool> ValidateChannelAndRoles(IGuildUser user)
-    {
-        if (Context.Channel.Id != GuildChannels.TomeChannel)
-        {
-            await FollowupAsync(ErrorMessages.InvalidChannelError);
-            return true;
-        }
-
-        var roles = user
-            .RoleIds
-            .Where(role => role is 1060001967868485692 or 810680884193787974 or 1097935496442810419);
-
-        if (roles.Any()) return false;
-
-        await FollowupAsync(ErrorMessages.NoPermissionError);
-        return true;
     }
 }

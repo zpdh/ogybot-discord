@@ -2,5 +2,6 @@
 
 public class GuildChannels
 {
-    public const ulong TomeChannel = 1255506035091968010;
+    public const ulong TomeChannel = 1125517737188409364;
+    public const ulong LayoffsChannel = 1135296640803147806;
 }

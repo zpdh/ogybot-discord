@@ -1,73 +1,63 @@
 ﻿using Discord;
+using Discord.Interactions;
 using Discord.Net;
 using Discord.WebSocket;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
 namespace ogybot.Commands.Waitlist;
 
-public abstract class WaitlistRemoveCommand : ICommand
+public class WaitlistRemoveCommand : BaseRemoveCommand
 {
-    private static readonly WaitlistController Controller = new();
+    private readonly WaitlistController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public WaitlistRemoveCommand(WaitlistController controller)
     {
-        var inputAsString = command.Data.Options.FirstOrDefault()!.Value.ToString();
+        _controller = controller;
+    }
+
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("waitlist-remove", "removes user from waitlist by name or index")]
+    public async Task ExecuteCommandAsync([Summary("user-or-index", "the user or their index")] string input)
+    {
+        await DeferAsync();
+
+        if (await ValidateChannelAndRolesAsync(GuildChannels.LayoffsChannel)) return;
 
         // Checks if input can be converted to an integer. If so, removes user by index instead of name.
-        if (int.TryParse(inputAsString, out var index))
+        if (int.TryParse(input, out var index))
         {
-            await RemoveByIndex(command, index);
+            await RemoveByIndex(index);
             return;
         }
 
-        await RemoveByName(command, inputAsString!);
+        await RemoveByName(input);
     }
 
-    private static async Task RemoveByName(SocketSlashCommand command, string username)
+    private async Task RemoveByName(string username)
     {
-        var result = await Controller.RemovePlayerAsync(new UserWaitlist { Username = username });
+        var result = await _controller.RemovePlayerAsync(new UserWaitlist { Username = username });
 
         var msg = result.Status
             ? $"Successfully removed player '{result.Username}' from the wait list"
             : $"User '{result.Username}' is not on the wait list";
 
-        await command.FollowupAsync(msg);
+        await FollowupAsync(msg);
     }
 
-    private static async Task RemoveByIndex(SocketSlashCommand command, int index)
+    private async Task RemoveByIndex(int index)
     {
-        var list = await Controller.GetWaitlistAsync();
+        var list = await _controller.GetWaitlistAsync();
 
         var username = list[index - 1].Username;
-        var result = await Controller.RemovePlayerAsync(new UserWaitlist { Username = username });
+        var result = await _controller.RemovePlayerAsync(new UserWaitlist { Username = username });
 
         var msg = result.Status
             ? $"Successfully removed player '{result.Username}' from the wait list"
             : $"User '{result.Username}' is not on the wait list";
 
-        await command.FollowupAsync(msg);
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("waitlist-remove")
-                .WithDescription("Removes user from wait list")
-                .AddOption(
-                    "username-or-index",
-                    ApplicationCommandOptionType.String,
-                    "User you're removing or their index on the list", true);
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(msg);
     }
 }
