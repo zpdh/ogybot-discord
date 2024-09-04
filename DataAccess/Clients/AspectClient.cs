@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
 using ogybot.Util;
@@ -16,10 +17,18 @@ public class AspectClient
 
     private const string Endpoint = "aspects";
 
-    private readonly HttpClient _client = new()
+    private readonly HttpClient _client;
+    private readonly string _validationKey;
+
+    public AspectClient(IConfiguration configuration)
     {
-        BaseAddress = CommonConstants.ApiUri
-    };
+        _client = new HttpClient
+        {
+            BaseAddress = new Uri(configuration["Api:Uri"]!)
+        };
+
+        _validationKey = configuration["Api:ValidationKey"]!;
+    }
 
     public async Task<List<UserAspectlist>?> GetAspectsOwedListAsync()
     {
@@ -51,6 +60,7 @@ public class AspectClient
             "application/json"
         );
 
+        // Get token, validate if it's null and add to headers
         var token = await GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
@@ -60,6 +70,7 @@ public class AspectClient
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+        // Make request
         var response = await _client.PostAsync(Endpoint, content);
 
         // Return true if success status code, else return false and an error.
@@ -74,7 +85,7 @@ public class AspectClient
         // demands a key:value pair
         var json = JsonConvert.SerializeObject(new
         {
-            validationKey = CommonConstants.ValidationKey
+            validationKey = _validationKey
         });
 
         // Convert to string content in order
