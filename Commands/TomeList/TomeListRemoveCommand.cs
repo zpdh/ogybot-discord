@@ -91,7 +91,7 @@ public abstract class TomeListRemoveCommand : ICommand
             var guildCommand = new SlashCommandBuilder()
                 .WithName("tomelist-remove")
                 .WithDescription("Removes user from tome list")
-                .AddOption("username", ApplicationCommandOptionType.String, "User you're removing", true);
+                .AddOption("username-or-index", ApplicationCommandOptionType.String, "User you're removing or their index on the list", true);
             await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
         }
         catch (HttpException exception)
