@@ -1,22 +1,33 @@
 ﻿using Discord;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Discord.Interactions;
 using ogybot.DataAccess.Controllers;
+using ogybot.Util;
 
 namespace ogybot.Commands.AspectList;
 
-public class DecrementAspectCommand
+/// <summary>
+/// Command used to decrement an aspect from a user
+/// </summary>
+public class DecrementAspectCommand : BaseRemoveCommand
 {
-    private static readonly AspectsController Controller = new();
+    private readonly AspectsController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public DecrementAspectCommand(AspectsController controller)
     {
-        var username = command.Data.Options.FirstOrDefault()!.Value as string;
+        _controller = controller;
+    }
 
-        if (username!.Contains(' ') && !username.Contains(','))
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("aspectlist-decrement", "decrements an aspect by the user's name")]
+    public async Task ExecuteCommandAsync([Summary("user", "user you're removing")] string username)
+    {
+        await DeferAsync();
+
+        if (await ValidateChannelAndRolesAsync(GuildChannels.RaidsChannel)) return;
+
+        if (username.Contains(' ') && !username.Contains(','))
         {
-            await command.FollowupAsync("You cannot submit usernames with whitespaces");
+            await FollowupAsync("You cannot submit usernames with whitespaces");
             return;
         }
 
@@ -25,7 +36,7 @@ public class DecrementAspectCommand
             .Select(user => user.Trim())
             .ToList();
 
-        var result = await Controller.DecrementPlayersAspectsAsync(listOfUsers);
+        var result = await _controller.DecrementPlayersAspectsAsync(listOfUsers);
 
         var users = listOfUsers.Aggregate("", (current, user) => current + ($"'{user}'" + ", "));
 
@@ -34,24 +45,6 @@ public class DecrementAspectCommand
             ? $"Successfully decremented an aspect from players {users[..^2]} from the aspect list."
             : $"There was an error decrementing the players {users[..^2]}. Perhaps the API is down?";
 
-        await command.FollowupAsync(msg);
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("aspectlist-decrement")
-                .WithDescription("Decrements aspect count by 1")
-                .AddOption("user-list", ApplicationCommandOptionType.String, "Users you're decrementing", true);
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(msg);
     }
 }
