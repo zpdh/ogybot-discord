@@ -47,7 +47,7 @@ public abstract class TomeListRemoveCommand : ICommand
         {
             var formattedErrorList = errorList.Aggregate("", (current, error) => current + $"'{error}'" + ", ");
 
-            await command.FollowupAsync($"One or multiple errors occurred: {formattedErrorList}");
+            await command.FollowupAsync($"One or multiple errors occurred: {formattedErrorList[..^2]}");
             return;
         }
 

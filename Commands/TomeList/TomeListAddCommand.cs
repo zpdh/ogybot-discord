@@ -15,7 +15,7 @@ public abstract class TomeListAddCommand : ICommand
     {
         var username = command.Data.Options.FirstOrDefault()!.Value;
 
-        if (username.ToString().Contains(' '))
+        if (username.ToString()!.Contains(' '))
         {
             await command.FollowupAsync("You cannot submit usernames with whitespaces");
             return;
