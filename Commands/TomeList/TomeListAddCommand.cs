@@ -1,8 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
 using ogybot.Util;
@@ -15,10 +13,11 @@ namespace ogybot.Commands.TomeList;
 public class TomeListAddCommand : BaseCommand
 {
     private readonly TomelistController _controller;
+    private readonly string _allowedCharacters;
 
-    public TomeListAddCommand(TomelistController controller)
-    {
+    public TomeListAddCommand(TomelistController controller, IConfiguration configuration) {
         _controller = controller;
+        _allowedCharacters = configuration["AllowedCharacters"]!;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
@@ -27,13 +26,13 @@ public class TomeListAddCommand : BaseCommand
     {
         if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
 
-        if (username.Contains(' '))
+        if(username.Any(character => !_allowedCharacters.Contains(character)))
         {
-            await FollowupAsync("You cannot submit usernames with whitespaces");
-            return;
+                await FollowupAsync("You cannot submit usernames with one or more of those characters");
+                return;
         }
 
-        var result = await _controller.AddPlayerAsync(new UserTomelist { Username = username.ToString() });
+        var result = await _controller.AddPlayerAsync(new UserTomelist { Username = username });
 
         var msg = result.Status
             ? $"Successfully added player '{result.Username}' to the tome list."

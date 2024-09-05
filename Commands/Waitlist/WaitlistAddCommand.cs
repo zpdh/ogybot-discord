@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
 using ogybot.Util;
@@ -10,10 +11,12 @@ namespace ogybot.Commands.Waitlist;
 public class WaitlistAddCommand : BaseCommand
 {
     private readonly WaitlistController _controller;
+    private readonly string _allowedCharacters;
 
-    public WaitlistAddCommand(WaitlistController controller)
+    public WaitlistAddCommand(WaitlistController controller, IConfiguration configuration)
     {
         _controller = controller;
+        _allowedCharacters = configuration["AllowedCharacters"]!;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
@@ -22,9 +25,9 @@ public class WaitlistAddCommand : BaseCommand
     {
         if (await ValidateChannelAsync(GuildChannels.LayoffsChannel)) return;
 
-        if (username.Contains(' '))
+        if(username.Any(character => !_allowedCharacters.Contains(character)))
         {
-            await FollowupAsync("You cannot submit usernames with whitespaces");
+            await FollowupAsync("You cannot submit usernames with one or more of those characterss");
             return;
         }
 
