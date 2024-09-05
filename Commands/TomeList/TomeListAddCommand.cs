@@ -17,7 +17,7 @@ public class TomeListAddCommand : BaseCommand
 
     public TomeListAddCommand(TomelistController controller, IConfiguration configuration) {
         _controller = controller;
-        _allowedCharacters = configuration["AllowedCharacters"]!;
+        _allowedCharacters = configuration["ValidCharacters"]!;
     }
 
     [CommandContextType(InteractionContextType.Guild)]

@@ -16,7 +16,7 @@ public class WaitlistAddCommand : BaseCommand
     public WaitlistAddCommand(WaitlistController controller, IConfiguration configuration)
     {
         _controller = controller;
-        _allowedCharacters = configuration["AllowedCharacters"]!;
+        _allowedCharacters = configuration["ValidCharacters"]!;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
