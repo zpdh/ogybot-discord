@@ -1,8 +1,5 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
 using ogybot.Util;
@@ -24,7 +21,7 @@ public class TomeListRemoveCommand : BaseRemoveCommand
     {
         if (await ValidateChannelAndRolesAsync(GuildChannels.TomeChannel)) return;
 
-        if (input!.Contains(' ') && !input.Contains(','))
+        if (input.Contains(' ') && !input.Contains(','))
         {
             await FollowupAsync("You cannot submit usernames with whitespaces");
             return;
@@ -36,29 +33,38 @@ public class TomeListRemoveCommand : BaseRemoveCommand
             .ToList();
 
         var responseList = new List<Response>();
+        var indexList = new List<int>();
 
         foreach (var singleInput in inputList)
         {
             // Check if the input can be converted to an integer. if so, remove user in that position in the list.
             if (int.TryParse(singleInput, out var index))
             {
-                await RemoveByIndex(index, responseList);
-                continue;
+                indexList.Add(index);
             }
-
-            // In this case, the input is the user's name
-            await RemoveByName(singleInput, responseList);
+            else
+            {
+                // In this case, the input is the user's name
+                await RemoveByName(singleInput, responseList);
+            }
         }
 
-        var statusList = responseList
-            .Select(response => response.Status);
+        if (indexList.Any())
+        {
+            await RemoveByIndex(indexList, responseList);
+        }
 
+        await GenerateFollowupMessage(responseList);
+    }
+
+    private async Task GenerateFollowupMessage(List<Response> responseList) {
         var errorList = responseList
             .Select(response => response.Error)
             .Where(error => error is not null)
-            .Distinct();
+            .Distinct()
+            .ToList();
 
-        if (statusList.Contains(false))
+        if (errorList.Any())
         {
             var formattedErrorList = errorList.Aggregate("", (current, error) => current + $"'{error}'" + ", ");
 
@@ -83,13 +89,18 @@ public class TomeListRemoveCommand : BaseRemoveCommand
         responseList.Add(result);
     }
 
-    private async Task RemoveByIndex(int index, List<Response> responseList)
+    private async Task RemoveByIndex(List<int> indexList, List<Response> responseList)
     {
+        indexList = indexList.OrderDescending().ToList();
+
         var list = await _controller.GetTomelistAsync();
-        var username = list[index - 1].Username;
 
-        var result = await _controller.RemovePlayerAsync(new UserTomelist { Username = username });
+        var listOfUsernames = indexList.Select(index => list[index - 1].Username!);
 
-        responseList.Add(result);
+        foreach (var username in listOfUsernames)
+        {
+            var result = await _controller.RemovePlayerAsync(new UserTomelist { Username = username });
+            responseList.Add(result);
+        }
     }
 }
