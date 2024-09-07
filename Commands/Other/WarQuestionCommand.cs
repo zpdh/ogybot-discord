@@ -1,21 +1,31 @@
 ﻿using Discord;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Discord.Interactions;
+using ogybot.Util;
 
 namespace ogybot.Commands.Other;
 
-public abstract class WarQuestionCommand : ICommand
+/// <summary>
+/// Creates a thread for war question purposes.
+/// </summary>
+public class WarQuestionCommand : BaseCommand
 {
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("war-build-help", "creates a thread for build help")]
+    public async Task ExecuteCommandAsync(
+        [Summary("classes", "the classes you have available")]
+        string classes,
+        [Summary("mythics", "the mythics you have available")]
+        string mythics,
+        [Summary("budget", "your total budget in LE")]
+        string budget)
     {
-        
-        var user = command.User;
-        var info = command.Data.Options.ToList();
+        if (await ValidateChannelAsync(GuildChannels.WarQuestionsChannel)) return;
 
-        var textContent = $"**Classes:** {info[0].Value}\n" +
-                          $"**Mythics:** {info[1].Value}\n" +
-                          $"**Budget:** {info[2].Value}\n";
+        var user = Context.User;
+
+        var textContent = $"**Classes:** {classes}\n" +
+                          $"**Mythics:** {mythics}\n" +
+                          $"**Budget:** {budget}\n";
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
@@ -24,33 +34,13 @@ public abstract class WarQuestionCommand : ICommand
             .WithColor(Color.Teal)
             .WithCurrentTimestamp();
 
-        var channel = command.Channel as ITextChannel;
+        var channel = Context.Channel as ITextChannel;
         var newThread = await channel!.CreateThreadAsync($"{user.GlobalName}'s Build Help");
         await newThread.SendMessageAsync(embed: embedBuilder.Build());
         await Task.Delay(200);
-        await newThread.SendMessageAsync(text: $"||<@&1255013857995395094><@{user.Id}>||", allowedMentions: AllowedMentions.All);
-        await command.FollowupAsync("Successfully started thread.", ephemeral: true);
-    }
+        await newThread.SendMessageAsync(text: $"||<@&1255013857995395094><@{user.Id}>||",
+            allowedMentions: AllowedMentions.All);
 
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        //War question cmd
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("war-build-help")
-                .WithDescription("Put up a build help thread in war questions")
-                .AddOption("classes", ApplicationCommandOptionType.String, "Your available classes", isRequired: true)
-                .AddOption("mythics", ApplicationCommandOptionType.String, "The mythics you own", isRequired: true)
-                .AddOption("budget", ApplicationCommandOptionType.String, "Your budget in LE", isRequired: true);
-
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync("Successfully started thread.", ephemeral: true);
     }
 }

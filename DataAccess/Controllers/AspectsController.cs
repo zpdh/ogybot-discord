@@ -8,7 +8,13 @@ namespace ogybot.DataAccess.Controllers;
 /// </summary>
 public class AspectsController
 {
-    private readonly AspectClient _aspectClient = new AspectClient();
+    private readonly AspectClient _aspectClient;
+
+    public AspectsController(AspectClient aspectClient)
+    {
+        _aspectClient = aspectClient;
+    }
+
 
     public async Task<IEnumerable<UserAspectlist>?> GetAspectListAsync()
     {

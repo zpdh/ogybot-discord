@@ -1,50 +1,43 @@
 ﻿using Discord;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Discord.Interactions;
+using Microsoft.Extensions.Configuration;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
 namespace ogybot.Commands.TomeList;
 
-public abstract class TomeListAddCommand : ICommand
+/// <summary>
+/// Adds the specified user to the tome list
+/// </summary>
+public class TomeListAddCommand : BaseCommand
 {
-    private static readonly TomelistController Controller = new();
+    private readonly TomelistController _controller;
+    private readonly string _allowedCharacters;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public TomeListAddCommand(TomelistController controller, IConfiguration configuration) {
+        _controller = controller;
+        _allowedCharacters = configuration["ValidCharacters"]!;
+    }
+
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("tomelist-add", "Adds user to tome list")]
+    public async Task ExecuteCommandAsync([Summary("username", "the user's name you're adding")] string username)
     {
-        var username = command.Data.Options.FirstOrDefault()!.Value;
+        if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
 
-        if (username.ToString().Contains(' '))
+        if(username.Any(character => !_allowedCharacters.Contains(character)))
         {
-            await command.FollowupAsync("You cannot submit usernames with whitespaces");
-            return;
+                await FollowupAsync("You cannot submit usernames with one or more of those characters");
+                return;
         }
 
-        var result = await Controller.AddPlayerAsync(new UserTomelist { Username = username.ToString() });
+        var result = await _controller.AddPlayerAsync(new UserTomelist { Username = username });
 
         var msg = result.Status
             ? $"Successfully added player '{result.Username}' to the tome list."
             : result.Error;
 
-        await command.FollowupAsync(msg);
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("tomelist-add")
-                .WithDescription("Adds user to tome list")
-                .AddOption("username", ApplicationCommandOptionType.String, "User you're adding", true);
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(msg);
     }
 }

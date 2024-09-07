@@ -1,7 +1,7 @@
-﻿using System.Net;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
 using ogybot.Util;
@@ -12,10 +12,18 @@ public class WaitlistClient
 {
     private const string Endpoint = "waitlist";
 
-    private readonly HttpClient _client = new()
+    private readonly HttpClient _client;
+    private readonly string _validationKey;
+
+    public WaitlistClient(IConfiguration configuration)
     {
-        BaseAddress = CommonConstants.ApiUri
-    };
+        _client = new HttpClient
+        {
+            BaseAddress = new Uri(configuration["Api:Uri"]!)
+        };
+
+        _validationKey = configuration["Api:ValidationKey"]!;
+    }
 
     /// <summary>
     /// Gets users queued on the wait list
@@ -79,17 +87,7 @@ public class WaitlistClient
     /// <returns>Response of type <see cref="Response"/></returns>
     public async Task<Response> RemoveUserAsync(UserWaitlist user)
     {
-        var json = JsonConvert.SerializeObject(new
-        {
-            username = user.Username
-        });
-
-        var content = new StringContent(
-            json,
-            Encoding.UTF8,
-            "application/json");
-
-        // Get token and add to headers
+        // Get token, check if it's null and add to headers
         var token = await GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
@@ -99,6 +97,7 @@ public class WaitlistClient
 
         _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+        // Make request
         var response = await _client.DeleteAsync($"{Endpoint}/{user.Username}");
 
         // Return true if success status code, else return false and an error.
@@ -118,7 +117,7 @@ public class WaitlistClient
         // Serialize validation key to JSON
         var json = JsonConvert.SerializeObject(new
         {
-            validationKey = CommonConstants.ValidationKey
+            validationKey = _validationKey
         });
 
         var content = new StringContent(

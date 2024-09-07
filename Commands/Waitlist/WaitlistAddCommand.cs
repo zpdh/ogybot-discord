@@ -1,44 +1,42 @@
 ﻿using Discord;
-using Discord.Net;
+using Discord.Interactions;
 using Discord.WebSocket;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Entities;
+using ogybot.Util;
 
 namespace ogybot.Commands.Waitlist;
 
-public abstract class WaitlistAddCommand : ICommand
+public class WaitlistAddCommand : BaseCommand
 {
-    private static readonly WaitlistController Controller = new();
+    private readonly WaitlistController _controller;
+    private readonly string _allowedCharacters;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public WaitlistAddCommand(WaitlistController controller, IConfiguration configuration)
     {
-        var username = command.Data.Options.FirstOrDefault()!.Value;
+        _controller = controller;
+        _allowedCharacters = configuration["ValidCharacters"]!;
+    }
 
-        var result = await Controller.AddPlayerAsync(new UserWaitlist { Username = username.ToString() });
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("waitlist-add", "adds user to waitlist")]
+    public async Task ExecuteCommandAsync([Summary("user", "user you're adding")] string username)
+    {
+        if (await ValidateChannelAsync(GuildChannels.LayoffsChannel)) return;
+
+        if(username.Any(character => !_allowedCharacters.Contains(character)))
+        {
+            await FollowupAsync("You cannot submit usernames with one or more of those characterss");
+            return;
+        }
+
+        var result = await _controller.AddPlayerAsync(new UserWaitlist { Username = username });
 
         var msg = result.Status
             ? $"Successfully added player '{result.Username}' to the wait list."
             : result.Error;
 
-        await command.FollowupAsync(msg);
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("waitlist-add")
-                .WithDescription("Adds user to wait list")
-                .AddOption("username", ApplicationCommandOptionType.String, "User you're adding", true);
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(msg);
     }
 }

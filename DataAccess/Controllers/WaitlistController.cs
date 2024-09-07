@@ -8,7 +8,12 @@ namespace ogybot.DataAccess.Controllers;
 /// </summary>
 public class WaitlistController
 {
-    private readonly WaitlistClient _client = new();
+    private readonly WaitlistClient _client;
+
+    public WaitlistController(WaitlistClient client)
+    {
+        _client = client;
+    }
 
     public async Task<List<UserWaitlist>> GetWaitlistAsync()
     {

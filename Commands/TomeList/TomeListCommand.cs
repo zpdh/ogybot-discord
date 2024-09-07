@@ -1,20 +1,33 @@
 ﻿using Discord;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Discord.Interactions;
 using ogybot.DataAccess.Controllers;
+using ogybot.Util;
 
 namespace ogybot.Commands.TomeList;
 
-public abstract class TomeListCommand : ICommand
+/// <summary>
+/// Displays the tome list.
+/// </summary>
+public class TomeListCommand : BaseCommand
 {
-    private static readonly TomelistController Controller = new();
+    private readonly TomelistController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public TomeListCommand(TomelistController controller)
     {
-        var user = command.User;
+        _controller = controller;
+    }
 
-        var list = await Controller.GetTomelistAsync();
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("tomelist", "displays the tome list")]
+    public async Task ExecuteCommandAsync()
+    {
+
+        var user = Context.User;
+
+        // Checks if user is in correct channel and has perms to execute the command
+        if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
+
+        var list = await _controller.GetTomelistAsync();
 
         var description = "";
 
@@ -33,23 +46,6 @@ public abstract class TomeListCommand : ICommand
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
-        await command.FollowupAsync(embed: embedBuilder.Build());
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("tomelist")
-                .WithDescription("Displays tome list");
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(embed: embedBuilder.Build());
     }
 }

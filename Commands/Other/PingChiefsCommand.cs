@@ -1,32 +1,21 @@
 ﻿using Discord;
-using Discord.Net;
+using Discord.Interactions;
 using Discord.WebSocket;
-using Newtonsoft.Json;
+using ogybot.Util;
 
 namespace ogybot.Commands.Other;
 
-public abstract class PingChiefsCommand : ICommand
+/// <summary>
+/// Command responsible for pinging chiefs in war-chat
+/// </summary>
+public class PingChiefsCommand : BaseCommand
 {
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("chiefs", "pings active chiefs")]
+    public async Task ExecuteCommandAsync()
     {
-        await command.FollowupAsync("<@&1097935496442810419> Wake up", allowedMentions: AllowedMentions.All);
-    }
+        if (await ValidateChannelAsync(GuildChannels.WarChannel)) return;
 
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("chiefs")
-                .WithDescription("Pings active chiefs (use if you need somebody to set headquarters)");
-
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync("<@&1097935496442810419> Wake up", allowedMentions: AllowedMentions.All);
     }
 }

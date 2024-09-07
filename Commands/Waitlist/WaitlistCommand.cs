@@ -1,20 +1,31 @@
 ﻿using Discord;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Discord.Interactions;
 using ogybot.DataAccess.Controllers;
+using ogybot.Util;
 
 namespace ogybot.Commands.Waitlist;
 
-public abstract class WaitlistCommand : ICommand
+/// <summary>
+/// Displays the wait list.
+/// </summary>
+public class WaitlistCommand : BaseCommand
 {
-    private static readonly WaitlistController Controller = new();
+    private readonly WaitlistController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public WaitlistCommand(WaitlistController controller)
     {
-        var user = command.User;
+        _controller = controller;
+    }
 
-        var list = await Controller.GetWaitlistAsync();
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("waitlist", "displays the wait list")]
+    public async Task ExecuteCommandAsync()
+    {
+        if (await ValidateChannelAsync(GuildChannels.LayoffsChannel)) return;
+
+        var user = Context.User;
+
+        var list = await _controller.GetWaitlistAsync();
 
         var description = "";
 
@@ -33,23 +44,6 @@ public abstract class WaitlistCommand : ICommand
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
-        await command.FollowupAsync(embed: embedBuilder.Build());
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("waitlist")
-                .WithDescription("Displays wait list");
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(embed: embedBuilder.Build());
     }
 }

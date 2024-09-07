@@ -1,4 +1,6 @@
-﻿using Discord;
+﻿using System.Reflection;
+using Discord;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.Services;
@@ -12,7 +14,12 @@ public static class DiscordAppBuilder
 {
     public static async Task<DiscordSocketClient> SetupDiscordClientAsync(IConfiguration configuration)
     {
-        var discordClient = new DiscordSocketClient();
+        var discordConfig = new DiscordSocketConfig
+        {
+            UseInteractionSnowflakeDate = false
+        };
+
+        var discordClient = new DiscordSocketClient(discordConfig);
 
         await discordClient.ConnectAsync(configuration);
 
@@ -21,17 +28,41 @@ public static class DiscordAppBuilder
         return discordClient;
     }
 
-    public static void AddCommands(this DiscordSocketClient discordClient, IConfiguration configuration)
+    public static void SetupInteractionAsync(
+        this DiscordSocketClient client,
+        IConfiguration configuration,
+        IServiceProvider services,
+        InteractionService interactionService)
     {
+        // Create interaction service and register it
+
+        client.InteractionCreated += async (interaction) =>
+        {
+            await interaction.DeferAsync();
+
+            var context = new SocketInteractionContext(client, interaction);
+            var result = await interactionService.ExecuteCommandAsync(context, services); // Change once DI gets added
+
+            if (!result.IsSuccess)
+            {
+                // Pings me and logs error in console for debugging
+                await context.Channel.SendMessageAsync(
+                    "An error occurred executing this command, <@264097995325177856> HELP!!!",
+                    allowedMentions: AllowedMentions.All);
+                Console.WriteLine(result.Error);
+            }
+        };
+
+        // Get guild ID
         var branch = configuration["Branch"];
         var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
 
-        CommandService commands = new(discordClient, id, CommandDictionaryBuilder.Build());
+        client.Ready += async () =>
+        {
+            await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
 
-        discordClient.Ready += commands.Client_Ready;
-        // Only uncomment if you need to instance commands. Takes up startup time
-
-        discordClient.SlashCommandExecuted += commands.SlashCommandHandler;
+            await interactionService.RegisterCommandsToGuildAsync(id);
+        };
     }
 
     private static async Task ConnectAsync(this DiscordSocketClient client, IConfiguration configuration)

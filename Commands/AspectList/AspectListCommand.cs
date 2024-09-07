@@ -1,21 +1,32 @@
 ﻿using System.Globalization;
 using Discord;
-using Discord.Net;
-using Discord.WebSocket;
-using Newtonsoft.Json;
+using Discord.Interactions;
 using ogybot.DataAccess.Controllers;
+using ogybot.Util;
 
 namespace ogybot.Commands.AspectList;
 
-public class AspectListCommand : ICommand
+/// <summary>
+/// Command used to display the aspect list.
+/// </summary>
+public class AspectListCommand : BaseCommand
 {
-    private static readonly AspectsController Controller = new();
+    private readonly AspectsController _controller;
 
-    public static async Task ExecuteCommandAsync(SocketSlashCommand command)
+    public AspectListCommand(AspectsController controller)
     {
-        var user = command.User;
+        _controller = controller;
+    }
 
-        var aspectEnum = await Controller.GetAspectListAsync();
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("aspectlist", "displays aspect list")]
+    public async Task ExecuteCommandAsync()
+    {
+        if (await ValidateChannelAsync(GuildChannels.RaidsChannel)) return;
+
+        var user = Context.User;
+
+        var aspectEnum = await _controller.GetAspectListAsync();
         var list = aspectEnum!.ToList();
 
         var description = "";
@@ -36,23 +47,6 @@ public class AspectListCommand : ICommand
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
-        await command.FollowupAsync(embed: embedBuilder.Build());
-    }
-
-    public static async Task GenerateCommandAsync(DiscordSocketClient socketClient, ulong guildId)
-    {
-        try
-        {
-            var guildCommand = new SlashCommandBuilder()
-                .WithName("aspectlist")
-                .WithDescription("Displays aspect list");
-            await socketClient.Rest.CreateGuildCommand(guildCommand.Build(), guildId);
-        }
-        catch (HttpException exception)
-        {
-            var json = JsonConvert.SerializeObject(exception.Errors, Formatting.Indented);
-
-            Console.WriteLine(json);
-        }
+        await FollowupAsync(embed: embedBuilder.Build());
     }
 }
