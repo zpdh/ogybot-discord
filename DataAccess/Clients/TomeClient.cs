@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ogybot.DataAccess.Entities;
 using ogybot.Util;
 
@@ -76,10 +77,15 @@ public class TomeClient
 
         // Send request to API
         var response = await _client.PostAsync(Endpoint, content);
+        var errorMessage = ErrorMessages.AddUserToListError;
+        JObject resContent = JObject.Parse(JsonConvert.SerializeObject(response.Content));
+        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest && resContent["error"] != null) {
+            errorMessage = resContent["error"].ToString();
+        }
 
         return response.IsSuccessStatusCode
             ? new Response(user.Username!, true)
-            : new Response(user.Username!, false, ErrorMessages.AddUserToListError);
+            : new Response(user.Username!, false, errorMessage);
     }
 
     /// <summary>
