@@ -93,6 +93,21 @@ public class TomeClient
             }
         }
 
+        // Check for errors
+        var errorMessage = ErrorMessages.AddUserToListError;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(responseContent);
+
+            if (errorResponse != null)
+            {
+                errorMessage = errorResponse.Error;
+            }
+        }
+
         return response.IsSuccessStatusCode
             ? new Response(user.Username!, true)
             : new Response(user.Username!, false, errorMessage);
