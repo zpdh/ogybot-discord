@@ -77,10 +77,20 @@ public class TomeClient
 
         // Send request to API
         var response = await _client.PostAsync(Endpoint, content);
+
+        // Check for errors
         var errorMessage = ErrorMessages.AddUserToListError;
-        JObject resContent = JObject.Parse(JsonConvert.SerializeObject(response.Content));
-        if (response.StatusCode == System.Net.HttpStatusCode.BadRequest && resContent["error"] != null) {
-            errorMessage = resContent["error"].ToString();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(responseContent);
+
+            if (errorResponse != null)
+            {
+                errorMessage = errorResponse.Error;
+            }
         }
 
         return response.IsSuccessStatusCode
