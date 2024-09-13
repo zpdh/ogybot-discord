@@ -74,10 +74,26 @@ public class WaitlistClient
         // Send request to API
         var response = await _client.PostAsync(Endpoint, content);
 
+        // Check for errors
+        var errorMessage = ErrorMessages.AddUserToListError;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(responseContent);
+
+            if (errorResponse != null)
+            {
+                errorMessage = errorResponse.Error;
+            }
+        }
+
+
         // Return true if success status code, else return false and an error.
         return response.IsSuccessStatusCode
             ? new Response(user.Username!, true)
-            : new Response(user.Username!, false, ErrorMessages.AddUserToListError);
+            : new Response(user.Username!, false, errorMessage);
     }
 
     /// <summary>
