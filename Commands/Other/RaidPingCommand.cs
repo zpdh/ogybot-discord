@@ -29,7 +29,7 @@ public class RaidPingCommand : BaseCommand
             : "";
 
         //Heavy raid
-        if (raidType.ToString() == "1")
+        if (raidType.ToString() == "0")
         {
             await FollowupAsync($"<@&1044407292340211793>{guildMessage}",
                 allowedMentions: AllowedMentions.All);
