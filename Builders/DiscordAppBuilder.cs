@@ -28,7 +28,7 @@ public static class DiscordAppBuilder
         return discordClient;
     }
 
-    public static void SetupInteractionAsync(
+    public static void SetupInteraction(
         this DiscordSocketClient client,
         IConfiguration configuration,
         IServiceProvider services,

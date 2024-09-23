@@ -1,4 +1,6 @@
-﻿using Discord.Interactions;
+﻿using System.Net;
+using System.Net.WebSockets;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,8 +11,10 @@ using ogybot.DataAccess.Sockets;
 
 namespace ogybot.Extensions;
 
-public static class ServiceExtensions {
-    public static void AddServices(this ServiceCollection services) {
+public static class ServiceExtensions
+{
+    public static void AddServices(this ServiceCollection services)
+    {
         services.AddConfiguration();
         services.AddDiscordClient();
         services.AddInteractionService();
@@ -19,11 +23,13 @@ public static class ServiceExtensions {
         services.AddSockets();
     }
 
-    private static void AddConfiguration(this ServiceCollection services) {
+    private static void AddConfiguration(this ServiceCollection services)
+    {
         services.AddSingleton(AppConfigurationBuilder.Build());
     }
 
-    private static void AddDiscordClient(this ServiceCollection services) {
+    private static void AddDiscordClient(this ServiceCollection services)
+    {
         services.AddSingleton<DiscordSocketClient>(provider => {
             var config = provider.GetRequiredService<IConfiguration>();
 
@@ -33,7 +39,8 @@ public static class ServiceExtensions {
         });
     }
 
-    private static void AddInteractionService(this ServiceCollection services) {
+    private static void AddInteractionService(this ServiceCollection services)
+    {
         services.AddSingleton<InteractionService>(provider => {
             var client = provider.GetRequiredService<DiscordSocketClient>();
 
@@ -41,19 +48,24 @@ public static class ServiceExtensions {
         });
     }
 
-    private static void AddClients(this ServiceCollection services) {
+    private static void AddClients(this ServiceCollection services)
+    {
         services.AddSingleton<TomeClient>();
         services.AddSingleton<WaitlistClient>();
         services.AddSingleton<AspectClient>();
     }
 
-    private static void AddControllers(this ServiceCollection services) {
+    private static void AddControllers(this ServiceCollection services)
+    {
         services.AddSingleton<TomelistController>();
         services.AddSingleton<WaitlistController>();
         services.AddSingleton<AspectsController>();
     }
 
-    private static void AddSockets(this ServiceCollection services) {
-        services.AddSingleton<ChatSocket>();
+    private static void AddSockets(this ServiceCollection services)
+    {
+        services.AddSingleton(new ChatServer(
+            new HttpListener(),
+            new List<WebSocket>()));
     }
 }
