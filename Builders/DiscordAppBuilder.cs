@@ -3,6 +3,7 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using ogybot.DataAccess.Sockets;
 using ogybot.Services;
 
 namespace ogybot.Builders;
@@ -36,8 +37,7 @@ public static class DiscordAppBuilder
     {
         // Create interaction service and register it
 
-        client.InteractionCreated += async (interaction) =>
-        {
+        client.InteractionCreated += async (interaction) => {
             await interaction.DeferAsync();
 
             var context = new SocketInteractionContext(client, interaction);
@@ -57,12 +57,26 @@ public static class DiscordAppBuilder
         var branch = configuration["Branch"];
         var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
 
-        client.Ready += async () =>
-        {
+        client.Ready += async () => {
             await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
 
             await interactionService.RegisterCommandsToGuildAsync(id);
         };
+    }
+
+    public static async Task SetupListenerAsync(
+        this DiscordSocketClient client,
+        ChatServer server,
+        IConfiguration configuration)
+    {
+        var channelId = configuration.GetValue<ulong>("LoggingChannelId");
+
+        if (await client.GetChannelAsync(channelId) is IMessageChannel channel)
+        {
+            await server.StartServerAsync(channel);
+        }
+
+        Console.WriteLine("Could not find logging channel.");
     }
 
     private static async Task ConnectAsync(this DiscordSocketClient client, IConfiguration configuration)
