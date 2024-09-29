@@ -14,7 +14,7 @@ public static class Program
     {
         var services = ServiceBuilder.Build();
         var config = services.GetRequiredService<IConfiguration>();
-        var webSocketServer = services.GetRequiredService<ChatServer>();
+        var webSocketServer = services.GetRequiredService<ChatSocket>();
         var discordClient = services.GetRequiredService<DiscordSocketClient>();
         var interactionService = services.GetRequiredService<InteractionService>();
 

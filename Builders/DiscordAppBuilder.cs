@@ -66,14 +66,16 @@ public static class DiscordAppBuilder
 
     public static async Task SetupListenerAsync(
         this DiscordSocketClient client,
-        ChatServer server,
+        ChatSocket socket,
         IConfiguration configuration)
     {
         var channelId = configuration.GetValue<ulong>("LoggingChannelId");
 
         if (await client.GetChannelAsync(channelId) is IMessageChannel channel)
         {
-            await server.StartServerAsync(channel);
+            socket.Start(channel);
+
+            return;
         }
 
         Console.WriteLine("Could not find logging channel.");

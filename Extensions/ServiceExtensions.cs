@@ -8,6 +8,7 @@ using ogybot.Builders;
 using ogybot.DataAccess.Clients;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Sockets;
+using Quobject.SocketIoClientDotNet.Client;
 
 namespace ogybot.Extensions;
 
@@ -64,8 +65,11 @@ public static class ServiceExtensions
 
     private static void AddSockets(this ServiceCollection services)
     {
-        services.AddSingleton(new ChatServer(
-            new HttpListener(),
-            new List<WebSocket>()));
+        services.AddSingleton(provider => {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var serverUri = config["WebsocketServerUrl"];
+
+            return new ChatSocket(serverUri!);
+        });
     }
 }
