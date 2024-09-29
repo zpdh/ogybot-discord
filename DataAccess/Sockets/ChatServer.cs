@@ -6,6 +6,9 @@ using Discord.WebSocket;
 
 namespace ogybot.DataAccess.Sockets;
 
+/// <summary>
+/// Class responsible for the startup of a <see cref="WebSocket"/> server and handling requests.
+/// </summary>
 public class ChatServer
 {
     private readonly HttpListener _listener;
@@ -47,7 +50,7 @@ public class ChatServer
             {
                 // Small delay to ensure the bot won't get banned in case somebody spams too many requests
                 await Task.Delay(100);
-                await channel.SendMessageAsync(message);
+                await FormatAndSendMessageAsync(channel, message);
             }
         }
     }
@@ -77,5 +80,27 @@ public class ChatServer
                 context.Response.Close();
             }
         }
+    }
+
+    private async Task FormatAndSendMessageAsync(IMessageChannel channel, string message)
+    {
+        var formattedMessage = message;
+
+        if (message.Contains(':'))
+        {
+            // Making the username bold
+            var parts = message.Split(':', 2);
+            formattedMessage = $"**{parts[0]}:**{parts[1]}";
+        }
+
+        var embedBuilder = new EmbedBuilder();
+        embedBuilder
+            .WithDescription(formattedMessage)
+            .WithColor(Color.Teal);
+
+        var embed = embedBuilder.Build();
+
+        await Task.Delay(100);
+        await channel.SendMessageAsync(embed: embed);
     }
 }
