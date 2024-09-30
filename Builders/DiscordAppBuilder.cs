@@ -64,7 +64,7 @@ public static class DiscordAppBuilder
         };
     }
 
-    public static async Task SetupListenerAsync(
+    public static async Task SetupListenersAsync(
         this DiscordSocketClient client,
         ChatSocket socket,
         IConfiguration configuration)
@@ -75,10 +75,26 @@ public static class DiscordAppBuilder
         {
             socket.Start(channel);
 
+            client.MessageReceived += message => SetupMessageReceiverAsync(message, channelId, socket);
+
             return;
         }
 
+
         Console.WriteLine("Could not find logging channel.");
+    }
+
+    private static async Task SetupMessageReceiverAsync(
+        SocketMessage message,
+        ulong channelId,
+        ChatSocket socket)
+    {
+        if (message.Author.IsBot) return;
+
+        if (message.Channel.Id == channelId)
+        {
+            await socket.EmitMessageAsync(message);
+        }
     }
 
     private static async Task ConnectAsync(this DiscordSocketClient client, IConfiguration configuration)

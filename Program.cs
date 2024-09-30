@@ -1,5 +1,4 @@
-﻿using Discord;
-using Discord.Interactions;
+﻿using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +18,7 @@ public static class Program
         var interactionService = services.GetRequiredService<InteractionService>();
 
         discordClient.SetupInteraction(config, services, interactionService);
-        await discordClient.SetupListenerAsync(webSocketServer, config);
+        await discordClient.SetupListenersAsync(webSocketServer, config);
 
         // Delay the task until program is closed
         await Task.Delay(-1);

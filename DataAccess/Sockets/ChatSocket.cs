@@ -1,4 +1,5 @@
 ﻿using Discord;
+using Discord.WebSocket;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -16,7 +17,7 @@ public class ChatSocket
 
     public async void Start(IMessageChannel channel)
     {
-        _socket.On("message",
+        _socket.On("wynnMessage",
             async response => {
                 var text = response.GetValue<string>();
 
@@ -29,6 +30,16 @@ public class ChatSocket
         _socket.OnConnected += (_, _) => Console.WriteLine("Successfully connected to Websocket Server");
 
         await _socket.ConnectAsync();
+    }
+
+    public async Task EmitMessageAsync(SocketMessage message)
+    {
+        await _socket.EmitAsync("discordMessage",
+            new
+            {
+                Author = message.Author,
+                Content = message.Content
+            });
     }
 
     private static async Task FormatAndSendMessageAsync(IMessageChannel channel, string message)
