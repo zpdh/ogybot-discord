@@ -69,7 +69,7 @@ public static class DiscordAppBuilder
         ChatSocket socket,
         IConfiguration configuration)
     {
-        var channelId = configuration.GetValue<ulong>("LoggingChannelId");
+        var channelId = configuration.GetValue<ulong>("Websocket:LoggingChannelId");
 
         if (await client.GetChannelAsync(channelId) is IMessageChannel channel)
         {

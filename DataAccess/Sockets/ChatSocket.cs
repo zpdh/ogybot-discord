@@ -1,9 +1,4 @@
-﻿using System.Net;
-using System.Net.WebSockets;
-using System.Text;
-using Discord;
-using Discord.WebSocket;
-using Quobject.SocketIoClientDotNet.Client;
+﻿using Discord;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -12,32 +7,28 @@ namespace ogybot.DataAccess.Sockets;
 /// </summary>
 public class ChatSocket
 {
-    private readonly Socket _socket;
+    private readonly SocketIOClient.SocketIO _socket;
 
-    public ChatSocket(string url)
+    public ChatSocket(string websocketUrl)
     {
-        _socket = IO.Socket(url);
+        _socket = new SocketIOClient.SocketIO(websocketUrl);
     }
 
-    public void Start(IMessageChannel channel)
+    public async void Start(IMessageChannel channel)
     {
-        _socket.On("connect",
-            () => {
-                Console.WriteLine("Successfully connected to Websocket Server.");
-            });
-
-        _socket.On("disconnect",
-            () => {
-                Console.WriteLine("Disconnected from Websocket Server");
-            });
-
         _socket.On("message",
-            (msg) => {
-                if (msg is string msgAsString)
+            async response => {
+                var text = response.GetValue<string>();
+
+                if (!string.IsNullOrWhiteSpace(text))
                 {
-                    _ = FormatAndSendMessageAsync(channel, msgAsString);
+                    await FormatAndSendMessageAsync(channel, text);
                 }
             });
+
+        _socket.OnConnected += (_, _) => Console.WriteLine("Successfully connected to Websocket Server");
+
+        await _socket.ConnectAsync();
     }
 
     private static async Task FormatAndSendMessageAsync(IMessageChannel channel, string message)
@@ -52,12 +43,15 @@ public class ChatSocket
         }
 
         var embedBuilder = new EmbedBuilder();
+
         embedBuilder
             .WithDescription(formattedMessage)
             .WithColor(Color.Teal);
 
         var embed = embedBuilder.Build();
 
+        // Small delay to prevent going over discord's rate limit
+        await Task.Delay(100);
         await channel.SendMessageAsync(embed: embed);
     }
 }
