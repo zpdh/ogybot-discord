@@ -1,6 +1,4 @@
-﻿using System.Net.Sockets;
-using Discord;
-using SocketIOClient;
+﻿using Discord;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -11,25 +9,26 @@ public class ChatSocket
 {
     private readonly SocketIOClient.SocketIO _socket;
 
-    public ChatSocket(string url)
+    public ChatSocket(string websocketUrl)
     {
-       _socket = new SocketIOClient.SocketIO(url);
+        _socket = new SocketIOClient.SocketIO(websocketUrl);
     }
 
     public async void Start(IMessageChannel channel)
     {
-        _socket.On("message", async response => {
-            string text = response.GetValue<string>();
-            if (text != null) {
-                await FormatAndSendMessageAsync(channel, text);
-            }
-        });
-        Console.WriteLine("connecting");
-        _socket.OnConnected += async (s, e) => {
-            Console.WriteLine("socket io server connected");
-            await _socket.EmitAsync("test", "hi");
-        };
-       await _socket.ConnectAsync();
+        _socket.On("message",
+            async response => {
+                var text = response.GetValue<string>();
+
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    await FormatAndSendMessageAsync(channel, text);
+                }
+            });
+
+        _socket.OnConnected += (_, _) => Console.WriteLine("Successfully connected to Websocket Server");
+
+        await _socket.ConnectAsync();
     }
 
     private static async Task FormatAndSendMessageAsync(IMessageChannel channel, string message)
@@ -44,12 +43,15 @@ public class ChatSocket
         }
 
         var embedBuilder = new EmbedBuilder();
+
         embedBuilder
             .WithDescription(formattedMessage)
             .WithColor(Color.Teal);
 
         var embed = embedBuilder.Build();
 
+        // Small delay to prevent going over discord's rate limit
+        await Task.Delay(100);
         await channel.SendMessageAsync(embed: embed);
     }
 }
