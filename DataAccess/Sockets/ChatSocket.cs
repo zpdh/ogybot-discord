@@ -1,9 +1,6 @@
-﻿using System.Net;
-using System.Net.WebSockets;
-using System.Text;
+﻿using System.Net.Sockets;
 using Discord;
-using Discord.WebSocket;
-using Quobject.SocketIoClientDotNet.Client;
+using SocketIOClient;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -12,32 +9,27 @@ namespace ogybot.DataAccess.Sockets;
 /// </summary>
 public class ChatSocket
 {
-    private readonly Socket _socket;
+    private readonly SocketIOClient.SocketIO _socket;
 
     public ChatSocket(string url)
     {
-        _socket = IO.Socket(url);
+       _socket = new SocketIOClient.SocketIO(url);
     }
 
-    public void Start(IMessageChannel channel)
+    public async void Start(IMessageChannel channel)
     {
-        _socket.On("connect",
-            () => {
-                Console.WriteLine("Successfully connected to Websocket Server.");
-            });
-
-        _socket.On("disconnect",
-            () => {
-                Console.WriteLine("Disconnected from Websocket Server");
-            });
-
-        _socket.On("message",
-            (msg) => {
-                if (msg is string msgAsString)
-                {
-                    _ = FormatAndSendMessageAsync(channel, msgAsString);
-                }
-            });
+        _socket.On("testmessage", async response => {
+            string text = response.GetValue<string>();
+            if (text != null) {
+                await FormatAndSendMessageAsync(channel, text);
+            }
+        });
+        Console.WriteLine("connecting");
+        _socket.OnConnected += async (s, e) => {
+            Console.WriteLine("socket io server connected");
+            await _socket.EmitAsync("test", "hi");
+        };
+       await _socket.ConnectAsync();
     }
 
     private static async Task FormatAndSendMessageAsync(IMessageChannel channel, string message)

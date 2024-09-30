@@ -8,7 +8,6 @@ using ogybot.Builders;
 using ogybot.DataAccess.Clients;
 using ogybot.DataAccess.Controllers;
 using ogybot.DataAccess.Sockets;
-using Quobject.SocketIoClientDotNet.Client;
 
 namespace ogybot.Extensions;
 
