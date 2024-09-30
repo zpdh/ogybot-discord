@@ -18,7 +18,7 @@ public class ChatSocket
 
     public async void Start(IMessageChannel channel)
     {
-        _socket.On("testmessage", async response => {
+        _socket.On("message", async response => {
             string text = response.GetValue<string>();
             if (text != null) {
                 await FormatAndSendMessageAsync(channel, text);
