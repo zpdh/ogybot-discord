@@ -66,7 +66,7 @@ public static class ServiceExtensions
     {
         services.AddSingleton(provider => {
             var config = provider.GetRequiredService<IConfiguration>();
-            var serverUri = config["WebsocketServerUrl"];
+            var serverUri = config["Websocket:WebsocketServerUrl"];
 
             return new ChatSocket(serverUri!);
         });
