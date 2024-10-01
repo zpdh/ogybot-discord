@@ -37,8 +37,8 @@ public class ChatSocket
         await _socket.EmitAsync("discordMessage",
             new
             {
-                Author = message.Author,
-                Content = message.Content
+                Author = message.Author.Username,
+                Content = message.CleanContent
             });
     }
 
