@@ -17,7 +17,8 @@ public static class DiscordAppBuilder
     {
         var discordConfig = new DiscordSocketConfig
         {
-            UseInteractionSnowflakeDate = false
+            UseInteractionSnowflakeDate = false,
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
         };
 
         var discordClient = new DiscordSocketClient(discordConfig);
