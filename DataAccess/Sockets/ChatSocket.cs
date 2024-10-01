@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using ogybot.DataAccess.Entities;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -19,11 +20,11 @@ public class ChatSocket
     {
         _socket.On("wynnMessage",
             async response => {
-                var text = response.GetValue<string>();
+                var socketResponse = response.GetValue<SocketResponse>();
 
-                if (!string.IsNullOrWhiteSpace(text))
+                if (!string.IsNullOrWhiteSpace(socketResponse.TextContent))
                 {
-                    await FormatAndSendMessageAsync(channel, text);
+                    await FormatAndSendMessageAsync(channel, socketResponse);
                 }
             });
 
@@ -42,15 +43,13 @@ public class ChatSocket
             });
     }
 
-    private static async Task FormatAndSendMessageAsync(IMessageChannel channel, string message)
+    private static async Task FormatAndSendMessageAsync(IMessageChannel channel, SocketResponse response)
     {
-        var formattedMessage = message;
+        var formattedMessage = response.TextContent;
 
-        if (message.Contains(':'))
+        if (!string.IsNullOrWhiteSpace(response.Username))
         {
-            // Making the username bold
-            var parts = message.Split(':', 2);
-            formattedMessage = $"**{parts[0]}:**{parts[1]}";
+            formattedMessage = $"**{response.Username}:** {response.TextContent}";
         }
 
         var embedBuilder = new EmbedBuilder();
