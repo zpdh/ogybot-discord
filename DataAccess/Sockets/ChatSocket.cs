@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Text.Json.Serialization;
+using Discord;
 using Discord.WebSocket;
 
 namespace ogybot.DataAccess.Sockets;
@@ -35,10 +36,9 @@ public class ChatSocket
     public async Task EmitMessageAsync(SocketMessage message)
     {
         await _socket.EmitAsync("discordMessage",
-            new
-            {
-                Author = message.Author,
-                Content = message.Content
+            new Dictionary<string, string> {
+                {"Author", message.Author.Username},
+                {"Content", message.CleanContent},
             });
     }
 
