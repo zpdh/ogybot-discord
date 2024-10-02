@@ -1,7 +1,9 @@
-﻿using Discord;
+﻿using System.Text.RegularExpressions;
+using Discord;
 using Discord.WebSocket;
 using ogybot.DataAccess.Entities;
 using ogybot.DataAccess.Enum;
+using ogybot.DataAccess.Services;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -17,7 +19,7 @@ public class ChatSocket
         _socket = new SocketIOClient.SocketIO(websocketUrl);
     }
 
-    public async void Start(IMessageChannel channel)
+    public async Task Start(IMessageChannel channel)
     {
         _socket.On("wynnMessage",
             async response => {
@@ -49,6 +51,7 @@ public class ChatSocket
         var formattedMessage = response.TextContent;
         var embedBuilder = new EmbedBuilder();
 
+        // Add extra embed options based on the selected message type
         switch (response.MessageType)
         {
             case SocketMessageType.ChatMessage:
@@ -70,7 +73,9 @@ public class ChatSocket
                 return;
         }
 
-        embedBuilder.WithDescription(formattedMessage.Trim());
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
+
+        embedBuilder.WithDescription(cleanedString);
 
         var embed = embedBuilder.Build();
 
