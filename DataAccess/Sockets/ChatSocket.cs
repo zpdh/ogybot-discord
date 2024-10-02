@@ -1,7 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.RegularExpressions;
 using Discord;
 using Discord.WebSocket;
 using ogybot.DataAccess.Entities;
+using ogybot.DataAccess.Enum;
+using ogybot.DataAccess.Services;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -17,7 +19,7 @@ public class ChatSocket
         _socket = new SocketIOClient.SocketIO(websocketUrl);
     }
 
-    public async void Start(IMessageChannel channel)
+    public async Task Start(IMessageChannel channel)
     {
         _socket.On("wynnMessage",
             async response => {
@@ -47,17 +49,33 @@ public class ChatSocket
     private static async Task FormatAndSendMessageAsync(IMessageChannel channel, SocketResponse response)
     {
         var formattedMessage = response.TextContent;
-
-        if (!string.IsNullOrWhiteSpace(response.Username))
-        {
-            formattedMessage = $"**{response.Username}:** {response.TextContent}";
-        }
-
         var embedBuilder = new EmbedBuilder();
 
-        embedBuilder
-            .WithDescription(formattedMessage)
-            .WithColor(Color.Teal);
+        // Add extra embed options based on the selected message type
+        switch (response.MessageType)
+        {
+            case SocketMessageType.ChatMessage:
+                embedBuilder
+                    .WithColor(Color.Teal);
+
+                formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
+
+                break;
+
+            case SocketMessageType.GuildMessage:
+                embedBuilder
+                    .WithAuthor(response.HeaderContent)
+                    .WithColor(Color.DarkTeal);
+
+                break;
+
+            default:
+                return;
+        }
+
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
+
+        embedBuilder.WithDescription(cleanedString);
 
         var embed = embedBuilder.Build();
 
