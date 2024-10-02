@@ -70,7 +70,7 @@ public class ChatSocket
                 return;
         }
 
-        embedBuilder.WithDescription(formattedMessage);
+        embedBuilder.WithDescription(formattedMessage.Trim());
 
         var embed = embedBuilder.Build();
 
