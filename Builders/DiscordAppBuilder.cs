@@ -74,7 +74,7 @@ public static class DiscordAppBuilder
 
         if (await client.GetChannelAsync(channelId) is IMessageChannel channel)
         {
-            socket.Start(channel);
+            await socket.StartAsync(channel);
 
             client.MessageReceived += message => SetupMessageReceiverAsync(message, channelId, socket);
 
