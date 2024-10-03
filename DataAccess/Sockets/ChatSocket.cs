@@ -13,6 +13,7 @@ namespace ogybot.DataAccess.Sockets;
 public class ChatSocket
 {
     private readonly SocketIOClient.SocketIO _socket;
+    private const int DelayBetweenMessages = 250;
 
     public ChatSocket(string websocketUrl)
     {
@@ -82,7 +83,7 @@ public class ChatSocket
         var embed = embedBuilder.Build();
 
         // Small delay to prevent going over discord's rate limit
-        await Task.Delay(100);
+        await Task.Delay(DelayBetweenMessages);
         await channel.SendMessageAsync(embed: embed);
     }
 }
