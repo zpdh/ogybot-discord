@@ -11,6 +11,6 @@ public static partial class WhitespaceRemovalService
             .Trim();
     }
 
-    [GeneratedRegex("\\s+")]
+    [GeneratedRegex("[\\sÀ]+")]
     private static partial Regex RemoveWhitespacesRegex();
 }

@@ -38,11 +38,13 @@ public class ChatSocket
 
     public async Task EmitMessageAsync(SocketMessage message)
     {
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+
         await _socket.EmitAsync("discordMessage",
             new
             {
                 Author = message.Author.Username,
-                Content = message.CleanContent
+                Content = cleanedString
             });
     }
 
