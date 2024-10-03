@@ -13,6 +13,7 @@ namespace ogybot.DataAccess.Sockets;
 public class ChatSocket
 {
     private readonly SocketIOClient.SocketIO _socket;
+    private const int DelayBetweenMessages = 250;
 
     public ChatSocket(string websocketUrl)
     {
@@ -38,11 +39,13 @@ public class ChatSocket
 
     public async Task EmitMessageAsync(SocketMessage message)
     {
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+
         await _socket.EmitAsync("discordMessage",
             new
             {
                 Author = message.Author.Username,
-                Content = message.CleanContent
+                Content = cleanedString
             });
     }
 
@@ -80,7 +83,7 @@ public class ChatSocket
         var embed = embedBuilder.Build();
 
         // Small delay to prevent going over discord's rate limit
-        await Task.Delay(100);
+        await Task.Delay(DelayBetweenMessages);
         await channel.SendMessageAsync(embed: embed);
     }
 }
