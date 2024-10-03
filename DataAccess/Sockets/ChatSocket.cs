@@ -19,7 +19,7 @@ public class ChatSocket
         _socket = new SocketIOClient.SocketIO(websocketUrl);
     }
 
-    public async Task Start(IMessageChannel channel)
+    public async Task StartAsync(IMessageChannel channel)
     {
         _socket.On("wynnMessage",
             async response => {
@@ -56,7 +56,7 @@ public class ChatSocket
         {
             case SocketMessageType.ChatMessage:
                 embedBuilder
-                    .WithColor(Color.Teal);
+                    .WithColor(Color.Blue);
 
                 formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
 
@@ -65,7 +65,7 @@ public class ChatSocket
             case SocketMessageType.GuildMessage:
                 embedBuilder
                     .WithAuthor(response.HeaderContent)
-                    .WithColor(Color.DarkTeal);
+                    .WithColor(Color.Teal);
 
                 break;
 
