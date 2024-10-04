@@ -13,7 +13,9 @@ namespace ogybot.DataAccess.Sockets;
 public class ChatSocket
 {
     private readonly SocketIOClient.SocketIO _socket;
+
     private const int DelayBetweenMessages = 250;
+    private const string DiscordMessageAuthor = "Discord Only";
 
     public ChatSocket(string websocketUrl)
     {
@@ -69,6 +71,13 @@ public class ChatSocket
                 embedBuilder
                     .WithAuthor(response.HeaderContent)
                     .WithColor(Color.Teal);
+
+                break;
+
+            case SocketMessageType.DiscordMessage:
+                embedBuilder
+                    .WithAuthor(DiscordMessageAuthor)
+                    .WithColor(Color.Purple);
 
                 break;
 
