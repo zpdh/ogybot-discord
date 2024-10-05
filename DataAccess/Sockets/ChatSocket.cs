@@ -67,17 +67,19 @@ public class ChatSocket
 
                 break;
 
-            case SocketMessageType.GuildMessage:
-                embedBuilder
-                    .WithAuthor(response.HeaderContent)
-                    .WithColor(Color.Teal);
-
-                break;
-
             case SocketMessageType.DiscordMessage:
                 embedBuilder
                     .WithAuthor(DiscordMessageAuthor)
                     .WithColor(Color.Purple);
+
+                formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
+
+                break;
+
+            case SocketMessageType.GuildMessage:
+                embedBuilder
+                    .WithAuthor(response.HeaderContent)
+                    .WithColor(Color.Teal);
 
                 break;
 
