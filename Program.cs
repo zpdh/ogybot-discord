@@ -18,7 +18,7 @@ public static class Program
         var interactionService = services.GetRequiredService<InteractionService>();
 
         discordClient.SetupInteraction(config, services, interactionService);
-        await discordClient.SetupListenersAsync(webSocketServer, config);
+        await discordClient.SetupListenersAsync(webSocketServer);
 
         // Delay the task until program is closed
         await Task.Delay(-1);

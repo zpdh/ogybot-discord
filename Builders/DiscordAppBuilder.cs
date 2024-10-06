@@ -5,6 +5,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.DataAccess.Sockets;
 using ogybot.Services;
+using ogybot.Util;
 
 namespace ogybot.Builders;
 
@@ -67,10 +68,9 @@ public static class DiscordAppBuilder
 
     public static async Task SetupListenersAsync(
         this DiscordSocketClient client,
-        ChatSocket socket,
-        IConfiguration configuration)
+        ChatSocket socket)
     {
-        var channelId = configuration.GetValue<ulong>("Websocket:LoggingChannelId");
+        const ulong channelId = GuildChannels.WebsocketLogChannel;
 
         if (await client.GetChannelAsync(channelId) is IMessageChannel channel)
         {
