@@ -83,8 +83,7 @@ public class ChatSocket
 
                 break;
 
-            default:
-                return;
+            default: return;
         }
 
         var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
