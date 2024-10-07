@@ -41,12 +41,21 @@ public class ChatSocket
 
     public async Task EmitMessageAsync(SocketMessage message)
     {
-        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+        if (message is not SocketUserMessage userMessage) return;
+
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(userMessage.CleanContent).Trim();
+
+        // Checks if message is reply, if it is, concat the author of the reply in the message
+        if (userMessage.ReferencedMessage is not null)
+        {
+            var referencedMessageAuthor = userMessage.ReferencedMessage.Author;
+            cleanedString += $"(replying to {referencedMessageAuthor})";
+        }
 
         await _socket.EmitAsync("discordMessage",
             new
             {
-                Author = message.Author.Username,
+                Author = userMessage.Author.Username,
                 Content = cleanedString
             });
     }
