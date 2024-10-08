@@ -20,6 +20,7 @@ public static class ServiceExtensions
         services.AddDiscordClient();
         services.AddInteractionService();
         services.AddHttpClient();
+        services.AddTokenGenerator();
         services.AddClients();
         services.AddControllers();
         services.AddSockets();
@@ -52,7 +53,7 @@ public static class ServiceExtensions
 
     private static void AddHttpClient(this ServiceCollection services)
     {
-        services.AddSingleton(provider => {
+        services.AddSingleton<HttpClient>(provider => {
             var config = provider.GetRequiredService<IConfiguration>();
             var baseAddress = config["Api:Uri"]!;
 
@@ -79,12 +80,18 @@ public static class ServiceExtensions
 
     private static void AddSockets(this ServiceCollection services)
     {
-        services.AddSingleton<ChatSocket>();
+        services.AddSingleton<ChatSocket>(provider => {
+            var tokenGenerator = provider.GetRequiredService<TokenGenerator>();
+            var config = provider.GetRequiredService<IConfiguration>();
+            var webSocketUrl = config["Websocket:WebsocketServerUrl"]!;
+
+            return new ChatSocket(tokenGenerator, webSocketUrl);
+        });
     }
 
     private static void AddTokenGenerator(this ServiceCollection services)
     {
-        services.AddSingleton(provider => {
+        services.AddSingleton<TokenGenerator>(provider => {
             var config = provider.GetRequiredService<IConfiguration>();
             var validationKey = config["Api:ValidationKey"]!;
 
