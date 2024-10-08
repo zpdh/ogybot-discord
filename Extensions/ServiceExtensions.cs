@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using ogybot.Builders;
 using ogybot.DataAccess.Clients;
 using ogybot.DataAccess.Controllers;
+using ogybot.DataAccess.Security;
 using ogybot.DataAccess.Sockets;
 
 namespace ogybot.Extensions;
@@ -18,6 +19,7 @@ public static class ServiceExtensions
         services.AddConfiguration();
         services.AddDiscordClient();
         services.AddInteractionService();
+        services.AddHttpClient();
         services.AddClients();
         services.AddControllers();
         services.AddSockets();
@@ -48,6 +50,19 @@ public static class ServiceExtensions
         });
     }
 
+    private static void AddHttpClient(this ServiceCollection services)
+    {
+        services.AddSingleton(provider => {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var baseAddress = config["Api:Uri"]!;
+
+            return new HttpClient
+            {
+                BaseAddress = new Uri(baseAddress)
+            };
+        });
+    }
+
     private static void AddClients(this ServiceCollection services)
     {
         services.AddSingleton<TomeClient>();
@@ -64,10 +79,18 @@ public static class ServiceExtensions
 
     private static void AddSockets(this ServiceCollection services)
     {
+        services.AddSingleton<ChatSocket>();
+    }
+
+    private static void AddTokenGenerator(this ServiceCollection services)
+    {
         services.AddSingleton(provider => {
             var config = provider.GetRequiredService<IConfiguration>();
+            var validationKey = config["Api:ValidationKey"]!;
 
-            return new ChatSocket(config);
+            var httpClient = provider.GetRequiredService<HttpClient>();
+
+            return new TokenGenerator(httpClient, validationKey);
         });
     }
 }
