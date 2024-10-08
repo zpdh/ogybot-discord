@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
+using ogybot.DataAccess.Security;
 using ogybot.Util;
 
 namespace ogybot.DataAccess.Clients;
@@ -13,16 +14,12 @@ public class WaitlistClient
     private const string Endpoint = "waitlist";
 
     private readonly HttpClient _client;
-    private readonly string _validationKey;
+    private readonly TokenGenerator _tokenGenerator;
 
-    public WaitlistClient(IConfiguration configuration)
+    public WaitlistClient(HttpClient client, TokenGenerator tokenGenerator)
     {
-        _client = new HttpClient
-        {
-            BaseAddress = new Uri(configuration["Api:Uri"]!)
-        };
-
-        _validationKey = configuration["Api:ValidationKey"]!;
+        _client = client;
+        _tokenGenerator = tokenGenerator;
     }
 
     /// <summary>
@@ -62,7 +59,7 @@ public class WaitlistClient
             "application/json");
 
         // Get token and add to headers
-        var token = await GetTokenAsync();
+        var token = await _tokenGenerator.GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -104,7 +101,7 @@ public class WaitlistClient
     public async Task<Response> RemoveUserAsync(UserWaitlist user)
     {
         // Get token, check if it's null and add to headers
-        var token = await GetTokenAsync();
+        var token = await _tokenGenerator.GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -120,33 +117,5 @@ public class WaitlistClient
         return response.IsSuccessStatusCode
             ? new Response(user.Username!, true)
             : new Response("", false, ErrorMessages.RemoveUserFromListError);
-    }
-
-    /// <summary>
-    /// Requests and gets a validation token from API
-    /// </summary>
-    /// <returns>
-    /// Token or null if request is invalid
-    /// </returns>
-    private async Task<string?> GetTokenAsync()
-    {
-        // Serialize validation key to JSON
-        var json = JsonConvert.SerializeObject(new
-        {
-            validationKey = _validationKey
-        });
-
-        var content = new StringContent(
-            json,
-            Encoding.UTF8,
-            "application/json");
-
-        // Get token response from API
-        var response = await _client.PostAsync("auth/gettoken", content);
-
-        if (!response.IsSuccessStatusCode) return null;
-
-        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-        return apiResponse!.Token;
     }
 }

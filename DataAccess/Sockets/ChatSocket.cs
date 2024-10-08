@@ -1,9 +1,14 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net.Http.Json;
+using System.Text;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
 using ogybot.DataAccess.Enum;
+using ogybot.DataAccess.Security;
 using ogybot.DataAccess.Services;
+using SocketIOClient;
 
 namespace ogybot.DataAccess.Sockets;
 
@@ -13,17 +18,28 @@ namespace ogybot.DataAccess.Sockets;
 public class ChatSocket
 {
     private readonly SocketIOClient.SocketIO _socket;
+    private readonly TokenGenerator _tokenGenerator;
 
     private const int DelayBetweenMessages = 250;
     private const string DiscordMessageAuthor = "Discord Only";
 
-    public ChatSocket(string websocketUrl)
+    public ChatSocket(TokenGenerator tokenGenerator, string webSocketUrl)
     {
-        _socket = new SocketIOClient.SocketIO(websocketUrl);
+        _tokenGenerator = tokenGenerator;
+        _socket = new SocketIOClient.SocketIO(webSocketUrl,
+            new SocketIOOptions
+            {
+                // Need to initialize the ExtraHeaders dictionary, as the library doesn't do so
+                ExtraHeaders = new Dictionary<string, string>()
+            });
     }
 
     public async Task StartAsync(IMessageChannel channel)
     {
+        var token = await _tokenGenerator.GetTokenAsync();
+
+        _socket.Options.ExtraHeaders.Add("Authorization", "Bearer " + token);
+
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<SocketResponse>();
