@@ -1,6 +1,9 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Net.Http.Json;
+using System.Text;
 using Discord;
 using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
 using ogybot.DataAccess.Enum;
 using ogybot.DataAccess.Services;
@@ -12,18 +15,30 @@ namespace ogybot.DataAccess.Sockets;
 /// </summary>
 public class ChatSocket
 {
+    private readonly HttpClient _client;
+    private readonly string _validationKey;
     private readonly SocketIOClient.SocketIO _socket;
 
     private const int DelayBetweenMessages = 250;
     private const string DiscordMessageAuthor = "Discord Only";
 
-    public ChatSocket(string websocketUrl)
+    public ChatSocket(IConfiguration configuration)
     {
-        _socket = new SocketIOClient.SocketIO(websocketUrl);
+        _client = new HttpClient
+        {
+            BaseAddress = new Uri(configuration["Api:Uri"]!)
+        };
+
+        _validationKey = configuration["Api:ValidationKey"]!;
+        _socket = new SocketIOClient.SocketIO(configuration["Websocket:WebsocketServerUrl"], new SocketIOClient.SocketIOOptions{ExtraHeaders= new Dictionary<string, string>{}});
     }
 
     public async Task StartAsync(IMessageChannel channel)
     {
+        var token = await GetTokenAsync();
+        
+        _socket.Options.ExtraHeaders.Add("Authorization", "bearer " + token);
+
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<SocketResponse>();
@@ -104,5 +119,26 @@ public class ChatSocket
         // Small delay to prevent going over discord's rate limit
         await Task.Delay(DelayBetweenMessages);
         await channel.SendMessageAsync(embed: embed);
+    }
+    private async Task<string?> GetTokenAsync()
+    {
+        // Serialize validation key to JSON
+        var json = JsonConvert.SerializeObject(new
+        {
+            validationKey = _validationKey
+        });
+
+        var content = new StringContent(
+            json,
+            Encoding.UTF8,
+            "application/json");
+
+        // Get token response from API
+        var response = await _client.PostAsync("auth/gettoken", content);
+
+        if (!response.IsSuccessStatusCode) return null;
+
+        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
+        return apiResponse!.Token;
     }
 }
