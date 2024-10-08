@@ -7,5 +7,5 @@ public abstract class GuildChannels
     public const ulong RaidsChannel = 1272044811771449365;
     public const ulong WarQuestionsChannel = 1255011451056423013;
     public const ulong WarChannel = 863553410813001759;
-    public const ulong WebsocketLogChannel = 863553410813001759;
+    public const ulong WebsocketLogChannel = 1290068270963232868;
 }
