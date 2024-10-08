@@ -58,22 +58,17 @@ public class ChatSocket
     public async Task EmitMessageAsync(SocketUserMessage message)
     {
         var author = message.Author.Username;
-        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+        var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
 
         // Checks if message is reply, if it is, concat the author of the reply in the header content
         if (message.ReferencedMessage is not null)
         {
-            var referencedMessageAuthor = message.ReferencedMessage.Author;
-
-            author += $" (Replying to {referencedMessageAuthor})";
+            var replyAuthor = message.ReferencedMessage.Author;
+            author += $" (Replying to {replyAuthor})";
         }
 
         await _socket.EmitAsync("discordMessage",
-            new
-            {
-                Author = author,
-                Content = cleanedString
-            });
+            new DiscordMessage(author, cleanedContent));
     }
 
     private static async Task FormatAndSendMessageAsync(IMessageChannel channel, SocketResponse response)
