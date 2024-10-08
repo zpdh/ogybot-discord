@@ -90,11 +90,12 @@ public static class DiscordAppBuilder
         ulong channelId,
         ChatSocket socket)
     {
-        if (message.Author.IsBot) return;
+        if (message.Author.IsBot ||
+            message is not SocketUserMessage userMessage) return;
 
         if (message.Channel.Id == channelId)
         {
-            await socket.EmitMessageAsync(message);
+            await socket.EmitMessageAsync(userMessage);
         }
     }
 

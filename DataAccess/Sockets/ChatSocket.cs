@@ -55,23 +55,23 @@ public class ChatSocket
         await _socket.ConnectAsync();
     }
 
-    public async Task EmitMessageAsync(SocketMessage message)
+    public async Task EmitMessageAsync(SocketUserMessage message)
     {
-        if (message is not SocketUserMessage userMessage) return;
+        var author = message.Author.Username;
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
 
-        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(userMessage.CleanContent).Trim();
-
-        // Checks if message is reply, if it is, concat the author of the reply in the message
-        if (userMessage.ReferencedMessage is not null)
+        // Checks if message is reply, if it is, concat the author of the reply in the header content
+        if (message.ReferencedMessage is not null)
         {
-            var referencedMessageAuthor = userMessage.ReferencedMessage.Author;
-            cleanedString += $"(replying to {referencedMessageAuthor})";
+            var referencedMessageAuthor = message.ReferencedMessage.Author;
+
+            author += $" (Replying to {referencedMessageAuthor})";
         }
 
         await _socket.EmitAsync("discordMessage",
             new
             {
-                Author = userMessage.Author.Username,
+                Author = author,
                 Content = cleanedString
             });
     }
