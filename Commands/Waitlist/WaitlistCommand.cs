@@ -31,9 +31,13 @@ public class WaitlistCommand : BaseCommand
 
         var queueSize = "Players in queue: " + list.Count;
 
-        for (var i = 1; i <= list.Count; i++)
+        var counter = 1;
+
+        foreach (var userWaitlist in list)
         {
-            description += i + ". " + list[i - 1].Username + "\n";
+            description += $"{counter}. {userWaitlist.Username}\n";
+
+            counter++;
         }
 
         var embedBuilder = new EmbedBuilder()

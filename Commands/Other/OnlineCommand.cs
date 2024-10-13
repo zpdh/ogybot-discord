@@ -28,7 +28,7 @@ public class OnlineCommand : BaseCommand
         var counter = 1;
         foreach (var user in list)
         {
-            description += counter + ". " + user + "\n";
+            description += $"{counter}. {user.Username}\n";
 
             counter++;
         }
