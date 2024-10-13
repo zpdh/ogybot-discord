@@ -69,6 +69,7 @@ public static class ServiceExtensions
         services.AddSingleton<TomeClient>();
         services.AddSingleton<WaitlistClient>();
         services.AddSingleton<AspectClient>();
+        services.AddSingleton<OnlinePlayersClient>();
     }
 
     private static void AddControllers(this ServiceCollection services)
@@ -76,6 +77,7 @@ public static class ServiceExtensions
         services.AddSingleton<TomelistController>();
         services.AddSingleton<WaitlistController>();
         services.AddSingleton<AspectsController>();
+        services.AddSingleton<OnlinePlayersController>();
     }
 
     private static void AddSockets(this ServiceCollection services)
