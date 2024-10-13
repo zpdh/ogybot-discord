@@ -16,7 +16,7 @@ public class OnlineCommand : BaseCommand
     }
 
     [CommandContextType(InteractionContextType.Guild)]
-    [SlashCommand("online", "displays online players utilizing the mod")]
+    [SlashCommand("online", "displays online players using the mod")]
     public async Task ExecuteCommandAsync()
     {
         if (await ValidateChannelAsync(GuildChannels.WebsocketLogChannel)) return;
