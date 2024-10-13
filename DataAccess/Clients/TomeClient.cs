@@ -3,7 +3,9 @@ using System.Net.Http.Json;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ogybot.DataAccess.Entities;
+using ogybot.DataAccess.Security;
 using ogybot.Util;
 
 namespace ogybot.DataAccess.Clients;
@@ -16,16 +18,12 @@ public class TomeClient
     private const string Endpoint = "tomes";
 
     private readonly HttpClient _client;
-    private readonly string _validationKey;
+    private readonly TokenGenerator _tokenGenerator;
 
-    public TomeClient(IConfiguration configuration)
+    public TomeClient(HttpClient client, TokenGenerator tokenGenerator)
     {
-        _client = new HttpClient
-        {
-            BaseAddress = new Uri(configuration["Api:Uri"]!)
-        };
-
-        _validationKey = configuration["Api:ValidationKey"]!;
+        _client = client;
+        _tokenGenerator = tokenGenerator;
     }
 
     /// <summary>
@@ -65,7 +63,7 @@ public class TomeClient
             "application/json");
 
         // Get token and add to headers
-        var token = await GetTokenAsync();
+        var token = await _tokenGenerator.GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -77,9 +75,24 @@ public class TomeClient
         // Send request to API
         var response = await _client.PostAsync(Endpoint, content);
 
+        // Check for errors
+        var errorMessage = ErrorMessages.AddUserToListError;
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+
+            var errorResponse = JsonConvert.DeserializeObject<ApiErrorResponse>(responseContent);
+
+            if (errorResponse != null)
+            {
+                errorMessage = errorResponse.Error;
+            }
+        }
+
         return response.IsSuccessStatusCode
             ? new Response(user.Username!, true)
-            : new Response(user.Username!, false, ErrorMessages.AddUserToListError);
+            : new Response(user.Username!, false, errorMessage);
     }
 
     /// <summary>
@@ -90,7 +103,7 @@ public class TomeClient
     public async Task<Response> RemoveUserAsync(UserTomelist user)
     {
         // Get token, validate if it's null and add to headers
-        var token = await GetTokenAsync();
+        var token = await _tokenGenerator.GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -106,33 +119,5 @@ public class TomeClient
         return response.IsSuccessStatusCode
             ? new Response(user.Username!, true)
             : new Response("", false, ErrorMessages.RemoveUserFromListError);
-    }
-
-    /// <summary>
-    /// Requests and gets a validation token from API
-    /// </summary>
-    /// <returns>
-    /// Token or null if request is invalid
-    /// </returns>
-    private async Task<string?> GetTokenAsync()
-    {
-        // Serialize validation key to JSON
-        var json = JsonConvert.SerializeObject(new
-        {
-            validationKey = _validationKey
-        });
-
-        var content = new StringContent(
-            json,
-            Encoding.UTF8,
-            "application/json");
-
-        // Get token response from API
-        var response = await _client.PostAsync("auth/gettoken", content);
-
-        if (!response.IsSuccessStatusCode) return null;
-
-        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-        return apiResponse!.Token;
     }
 }

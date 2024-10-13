@@ -3,7 +3,9 @@ using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using ogybot.DataAccess.Sockets;
 using ogybot.Services;
+using ogybot.Util;
 
 namespace ogybot.Builders;
 
@@ -16,7 +18,8 @@ public static class DiscordAppBuilder
     {
         var discordConfig = new DiscordSocketConfig
         {
-            UseInteractionSnowflakeDate = false
+            UseInteractionSnowflakeDate = false,
+            GatewayIntents = GatewayIntents.AllUnprivileged | GatewayIntents.MessageContent
         };
 
         var discordClient = new DiscordSocketClient(discordConfig);
@@ -28,7 +31,7 @@ public static class DiscordAppBuilder
         return discordClient;
     }
 
-    public static void SetupInteractionAsync(
+    public static void SetupInteraction(
         this DiscordSocketClient client,
         IConfiguration configuration,
         IServiceProvider services,
@@ -36,8 +39,7 @@ public static class DiscordAppBuilder
     {
         // Create interaction service and register it
 
-        client.InteractionCreated += async (interaction) =>
-        {
+        client.InteractionCreated += async (interaction) => {
             await interaction.DeferAsync();
 
             var context = new SocketInteractionContext(client, interaction);
@@ -57,12 +59,44 @@ public static class DiscordAppBuilder
         var branch = configuration["Branch"];
         var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
 
-        client.Ready += async () =>
-        {
+        client.Ready += async () => {
             await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
 
             await interactionService.RegisterCommandsToGuildAsync(id);
         };
+    }
+
+    public static async Task SetupListenersAsync(
+        this DiscordSocketClient client,
+        ChatSocket socket)
+    {
+        const ulong channelId = GuildChannels.WebsocketLogChannel;
+
+        if (await client.GetChannelAsync(channelId) is IMessageChannel channel)
+        {
+            await socket.StartAsync(channel);
+
+            client.MessageReceived += message => SetupMessageReceiverAsync(message, channelId, socket);
+
+            return;
+        }
+
+
+        Console.WriteLine("Could not find logging channel.");
+    }
+
+    private static async Task SetupMessageReceiverAsync(
+        SocketMessage message,
+        ulong channelId,
+        ChatSocket socket)
+    {
+        if (message.Author.IsBot ||
+            message is not SocketUserMessage userMessage) return;
+
+        if (message.Channel.Id == channelId)
+        {
+            await socket.EmitMessageAsync(userMessage);
+        }
     }
 
     private static async Task ConnectAsync(this DiscordSocketClient client, IConfiguration configuration)

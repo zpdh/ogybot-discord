@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
+using ogybot.DataAccess.Security;
 using ogybot.Util;
 
 namespace ogybot.DataAccess.Clients;
@@ -18,16 +19,12 @@ public class AspectClient
     private const string Endpoint = "aspects";
 
     private readonly HttpClient _client;
-    private readonly string _validationKey;
+    private readonly TokenGenerator _tokenGenerator;
 
-    public AspectClient(IConfiguration configuration)
+    public AspectClient(HttpClient client, TokenGenerator tokenGenerator)
     {
-        _client = new HttpClient
-        {
-            BaseAddress = new Uri(configuration["Api:Uri"]!)
-        };
-
-        _validationKey = configuration["Api:ValidationKey"]!;
+        _client = client;
+        _tokenGenerator = tokenGenerator;
     }
 
     public async Task<List<UserAspectlist>?> GetAspectsOwedListAsync()
@@ -61,7 +58,7 @@ public class AspectClient
         );
 
         // Get token, validate if it's null and add to headers
-        var token = await GetTokenAsync();
+        var token = await _tokenGenerator.GetTokenAsync();
 
         if (string.IsNullOrWhiteSpace(token))
         {
@@ -77,30 +74,5 @@ public class AspectClient
         return response.IsSuccessStatusCode
             ? new Response("", true)
             : new Response("", false, ErrorMessages.DecrementUserAspectsError);
-    }
-
-    private async Task<string?> GetTokenAsync()
-    {
-        // Convert to object since the endpoint
-        // demands a key:value pair
-        var json = JsonConvert.SerializeObject(new
-        {
-            validationKey = _validationKey
-        });
-
-        // Convert to string content in order
-        // to post
-        var content = new StringContent(
-            json,
-            Encoding.UTF8,
-            "application/json"
-        );
-
-        var response = await _client.PostAsync("auth/gettoken", content);
-
-        if (!response.IsSuccessStatusCode) return null;
-
-        var apiResponse = await response.Content.ReadFromJsonAsync<TokenApiResponse>();
-        return apiResponse!.Token;
     }
 }

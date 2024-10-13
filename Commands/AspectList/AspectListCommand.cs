@@ -33,10 +33,13 @@ public class AspectListCommand : BaseCommand
 
         var queueSize = "Players in queue: " + list.Count;
 
-        for (var i = 1; i <= list.Count; i++)
+        var counter = 1;
+
+        foreach (var player in list)
         {
-            var player = list[i - 1];
-            description += $"{i}. {player.Username} - {player.Aspects.ToString(CultureInfo.InvariantCulture)}\n";
+            description += $"{counter}. {player.Username} - {player.Aspects}\n";
+
+            counter++;
         }
 
         var embedBuilder = new EmbedBuilder()
