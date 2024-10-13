@@ -30,7 +30,9 @@ public class ChatSocket
             new SocketIOOptions
             {
                 // Need to initialize the ExtraHeaders dictionary, as the library doesn't do so
-                ExtraHeaders = new Dictionary<string, string>()
+                ExtraHeaders = new Dictionary<string, string>(),
+                // Increase the connection timeout as render can sometimes take a while to connect
+                ConnectionTimeout = TimeSpan.FromSeconds(60),
             });
     }
 
