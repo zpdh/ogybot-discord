@@ -4,6 +4,9 @@ using ogybot.DataAccess.Security;
 
 namespace ogybot.DataAccess.Clients;
 
+/// <summary>
+/// Class responsible for handling requests and responses from external API
+/// </summary>
 public class OnlinePlayersClient
 {
     private const string Endpoint = "discord/online";

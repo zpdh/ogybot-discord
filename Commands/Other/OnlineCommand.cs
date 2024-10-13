@@ -6,6 +6,9 @@ using ogybot.Util;
 
 namespace ogybot.Commands.Other;
 
+/// <summary>
+/// Shows list of users currently online with the Guild API mod.
+/// </summary>
 public class OnlineCommand : BaseCommand
 {
     private readonly OnlinePlayersController _controller;
@@ -26,6 +29,7 @@ public class OnlineCommand : BaseCommand
         var description = "";
 
         var counter = 1;
+
         foreach (var user in list)
         {
             description += $"{counter}. {user.Username}\n";

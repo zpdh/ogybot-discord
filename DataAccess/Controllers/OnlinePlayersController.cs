@@ -3,6 +3,9 @@ using ogybot.DataAccess.Entities;
 
 namespace ogybot.DataAccess.Controllers;
 
+/// <summary>
+/// Class responsible for handling the online command request
+/// </summary>
 public class OnlinePlayersController
 {
     private readonly OnlinePlayersClient _client;
