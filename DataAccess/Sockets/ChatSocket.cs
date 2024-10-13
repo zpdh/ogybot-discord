@@ -1,9 +1,5 @@
-﻿using System.Net.Http.Json;
-using System.Text;
-using Discord;
+﻿using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
 using ogybot.DataAccess.Entities;
 using ogybot.DataAccess.Enum;
 using ogybot.DataAccess.Security;
