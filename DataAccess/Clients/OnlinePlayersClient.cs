@@ -9,7 +9,7 @@ namespace ogybot.DataAccess.Clients;
 /// </summary>
 public class OnlinePlayersClient
 {
-    private const string Endpoint = "discord/online";
+    private const string Endpoint = "wynn/online";
 
     private readonly HttpClient _client;
 
