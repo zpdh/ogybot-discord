@@ -16,6 +16,6 @@ public class PingChiefsCommand : BaseCommand
     {
         if (await ValidateChannelAsync(GuildChannels.WarChannel)) return;
 
-        await FollowupAsync("<@&1097935496442810419> Wake up", allowedMentions: AllowedMentions.All);
+        await FollowupAsync($"<@&{GuildPings.ChiefRole}> Wake up", allowedMentions: AllowedMentions.All);
     }
 }

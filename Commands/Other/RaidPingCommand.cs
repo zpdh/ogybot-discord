@@ -26,18 +26,18 @@ public class RaidPingCommand : BaseCommand
 
         var guildMessage = guildAttacking is not null
             ? $"\n**Guild:** {guildAttacking}"
-            : "";
+            : string.Empty;
 
         //Heavy raid
         if (raidType.ToString() == "0")
         {
-            await FollowupAsync($"<@&1044407292340211793>{guildMessage}",
+            await FollowupAsync($"<@&{GuildPings.HeavyRaidRole}>{guildMessage}",
                 allowedMentions: AllowedMentions.All);
         }
         //Light raid
         else
         {
-            await FollowupAsync($"<@&1044407413345886238>{guildMessage}",
+            await FollowupAsync($"<@&{GuildPings.LightRaidRole}>{guildMessage}",
                 allowedMentions: AllowedMentions.All);
         }
     }
