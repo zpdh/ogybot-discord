@@ -28,7 +28,7 @@ public class ChatSocket
                 // Need to initialize the ExtraHeaders dictionary, as the library doesn't do so
                 ExtraHeaders = new Dictionary<string, string>(),
                 // Increase the connection timeout as render can sometimes take a while to connect
-                ConnectionTimeout = TimeSpan.FromSeconds(60),
+                ConnectionTimeout = TimeSpan.FromSeconds(120),
             });
     }
 
@@ -48,7 +48,18 @@ public class ChatSocket
                 }
             });
 
-        _socket.OnConnected += (_, _) => Console.WriteLine("Successfully connected to Websocket Server");
+        _socket.OnConnected += (_, _) => {
+            Console.WriteLine("Successfully connected to Websocket Server");
+            channel.SendMessageAsync("Successfully connected to Websocket Server.");
+        };
+
+        _socket.OnDisconnected += (_, reason) => {
+            channel.SendMessageAsync("Disconnected with reason ${reason}.");
+        };
+
+        _socket.OnReconnectFailed += (_, _) => {
+            channel.SendMessageAsync("Could not reconnect to to Websocket Server.");
+        };
 
         await _socket.ConnectAsync();
     }
