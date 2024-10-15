@@ -45,11 +45,11 @@ public static class DiscordAppBuilder
             var context = new SocketInteractionContext(client, interaction);
             var result = await interactionService.ExecuteCommandAsync(context, services); // Change once DI gets added
 
+            // If the command doesn't work, send an error message and log it in console
             if (!result.IsSuccess)
             {
-                // Pings me and logs error in console for debugging
                 await context.Channel.SendMessageAsync(
-                    "An error occurred executing this command, <@264097995325177856> HELP!!!",
+                    "An error occurred executing this command. Check logs for errors.",
                     allowedMentions: AllowedMentions.All);
                 Console.WriteLine(result.Error);
             }
