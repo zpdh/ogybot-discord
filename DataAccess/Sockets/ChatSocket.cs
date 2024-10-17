@@ -38,6 +38,8 @@ public class ChatSocket
 
         _socket.Options.ExtraHeaders.Add("Authorization", "Bearer " + token);
 
+        #region Websocket Events
+
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<SocketResponse>();
@@ -49,14 +51,32 @@ public class ChatSocket
                 }
             });
 
-        _socket.OnConnected += (_, _) =>
-            Console.WriteLine("Successfully connected to Websocket Server");
+        #endregion
 
-        _socket.OnDisconnected += (_, reason) =>
-            Console.WriteLine($"Disconnected from Websocket Server. Reason: {reason}");
+        #region Websocket Connectivity Events
 
-        _socket.OnReconnectFailed += (_, _) =>
-            Console.WriteLine("Could not reconnect to Websocket Server.");
+        _socket.OnConnected += async (_, _) => {
+            const string message = "Successfully connected to Websocket Server";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
+        };
+
+        _socket.OnDisconnected += async (_, reason) => {
+            var message = $"Disconnected from Websocket Server. Reason: {reason}";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
+        };
+
+        _socket.OnReconnectFailed += async (_, _) => {
+            const string message = "Could not reconnect to Websocket Server.";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
+        };
+
+        #endregion
 
         await _socket.ConnectAsync();
     }
@@ -128,5 +148,16 @@ public class ChatSocket
         // Small delay to prevent going over discord's rate limit
         await Task.Delay(DelayBetweenMessages);
         await channel.SendMessageAsync(embed: embed);
+    }
+
+    private static async Task SendLoggingMessageAsync(IMessageChannel channel, string message)
+    {
+        var messageAsEmbed = new EmbedBuilder()
+            .WithColor(Color.Teal)
+            .WithTitle("Websocket Log")
+            .WithDescription(message)
+            .Build();
+
+        await channel.SendMessageAsync(embed: messageAsEmbed);
     }
 }
