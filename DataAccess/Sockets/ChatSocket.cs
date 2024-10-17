@@ -28,7 +28,7 @@ public class ChatSocket
                 // Need to initialize the ExtraHeaders dictionary, as the library doesn't do so
                 ExtraHeaders = new Dictionary<string, string>(),
                 // Increase the connection timeout as render can sometimes take a while to connect
-                ConnectionTimeout = TimeSpan.FromSeconds(60),
+                ConnectionTimeout = TimeSpan.FromSeconds(120),
             });
     }
 
@@ -44,11 +44,19 @@ public class ChatSocket
 
                 if (!string.IsNullOrWhiteSpace(socketResponse.TextContent))
                 {
-                    await FormatAndSendMessageAsync(channel, socketResponse);
+                    var messageEmbed = FormatMessage(socketResponse);
+                    await SendEmbedAsync(channel, messageEmbed);
                 }
             });
 
-        _socket.OnConnected += (_, _) => Console.WriteLine("Successfully connected to Websocket Server");
+        _socket.OnConnected += (_, _) =>
+            Console.WriteLine("Successfully connected to Websocket Server");
+
+        _socket.OnDisconnected += (_, reason) =>
+            Console.WriteLine($"Disconnected from Websocket Server. Reason: {reason}");
+
+        _socket.OnReconnectFailed += (_, _) =>
+            Console.WriteLine("Could not reconnect to Websocket Server.");
 
         await _socket.ConnectAsync();
     }
@@ -69,7 +77,7 @@ public class ChatSocket
             new DiscordMessage(author, cleanedContent));
     }
 
-    private static async Task FormatAndSendMessageAsync(IMessageChannel channel, SocketResponse response)
+    private static Embed FormatMessage(SocketResponse response)
     {
         var formattedMessage = response.TextContent;
         var embedBuilder = new EmbedBuilder();
@@ -101,7 +109,9 @@ public class ChatSocket
 
                 break;
 
-            default: return;
+            // Need to change default case later.
+            default:
+                break;
         }
 
         var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
@@ -110,6 +120,11 @@ public class ChatSocket
 
         var embed = embedBuilder.Build();
 
+        return embed;
+    }
+
+    private static async Task SendEmbedAsync(IMessageChannel channel, Embed embed)
+    {
         // Small delay to prevent going over discord's rate limit
         await Task.Delay(DelayBetweenMessages);
         await channel.SendMessageAsync(embed: embed);
