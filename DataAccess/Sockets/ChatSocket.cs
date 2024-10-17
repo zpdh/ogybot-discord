@@ -38,28 +38,45 @@ public class ChatSocket
 
         _socket.Options.ExtraHeaders.Add("Authorization", "Bearer " + token);
 
+        #region Websocket Events
+
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<SocketResponse>();
 
                 if (!string.IsNullOrWhiteSpace(socketResponse.TextContent))
                 {
-                    await FormatAndSendMessageAsync(channel, socketResponse);
+                    var messageEmbed = FormatMessage(socketResponse);
+                    await SendEmbedAsync(channel, messageEmbed);
                 }
             });
 
-        _socket.OnConnected += (_, _) => {
-            Console.WriteLine("Successfully connected to Websocket Server");
-            channel.SendMessageAsync("Successfully connected to Websocket Server.");
+        #endregion
+
+        #region Websocket Connectivity Events
+
+        _socket.OnConnected += async (_, _) => {
+            const string message = "Successfully connected to Websocket Server";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
         };
 
-        _socket.OnDisconnected += (_, reason) => {
-            channel.SendMessageAsync("Disconnected with reason ${reason}.");
+        _socket.OnDisconnected += async (_, reason) => {
+            var message = $"Disconnected from Websocket Server. Reason: {reason}";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
         };
 
-        _socket.OnReconnectFailed += (_, _) => {
-            channel.SendMessageAsync("Could not reconnect to to Websocket Server.");
+        _socket.OnReconnectFailed += async (_, _) => {
+            const string message = "Could not reconnect to Websocket Server.";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
         };
+
+        #endregion
 
         await _socket.ConnectAsync();
     }
@@ -80,7 +97,7 @@ public class ChatSocket
             new DiscordMessage(author, cleanedContent));
     }
 
-    private static async Task FormatAndSendMessageAsync(IMessageChannel channel, SocketResponse response)
+    private static Embed FormatMessage(SocketResponse response)
     {
         var formattedMessage = response.TextContent;
         var embedBuilder = new EmbedBuilder();
@@ -112,7 +129,9 @@ public class ChatSocket
 
                 break;
 
-            default: return;
+            // Need to change default case later.
+            default:
+                break;
         }
 
         var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
@@ -121,8 +140,24 @@ public class ChatSocket
 
         var embed = embedBuilder.Build();
 
+        return embed;
+    }
+
+    private static async Task SendEmbedAsync(IMessageChannel channel, Embed embed)
+    {
         // Small delay to prevent going over discord's rate limit
         await Task.Delay(DelayBetweenMessages);
         await channel.SendMessageAsync(embed: embed);
+    }
+
+    private static async Task SendLoggingMessageAsync(IMessageChannel channel, string message)
+    {
+        var messageAsEmbed = new EmbedBuilder()
+            .WithColor(Color.Teal)
+            .WithTitle("Websocket Log")
+            .WithDescription(message)
+            .Build();
+
+        await channel.SendMessageAsync(embed: messageAsEmbed);
     }
 }

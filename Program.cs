@@ -14,13 +14,28 @@ public static class Program
         var services = ServiceBuilder.Build();
         var config = services.GetRequiredService<IConfiguration>();
         var webSocketServer = services.GetRequiredService<ChatSocket>();
-        var discordClient = services.GetRequiredService<DiscordSocketClient>();
         var interactionService = services.GetRequiredService<InteractionService>();
 
-        discordClient.SetupInteraction(config, services, interactionService);
-        await discordClient.SetupListenersAsync(webSocketServer);
+        while (true)
+        {
+            try
+            {
+                var discordClient = services.GetRequiredService<DiscordSocketClient>();
 
-        // Delay the task until program is closed
-        await Task.Delay(-1);
+                discordClient.SetupInteraction(config, services, interactionService);
+
+                await discordClient.SetupListenersAsync(webSocketServer);
+
+                // Delay the task until program is closed
+                await Task.Delay(-1);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"{e.GetType()}: {e.Message}");
+
+                // Slight delay to avoid overflowing
+                await Task.Delay(5000);
+            }
+        }
     }
 }
