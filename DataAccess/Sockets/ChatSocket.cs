@@ -67,6 +67,8 @@ public class ChatSocket
 
             Console.WriteLine(message);
             await SendLoggingMessageAsync(channel, message);
+
+            await _socket.ConnectAsync();
         };
 
         _socket.OnReconnectFailed += async (_, _) => {
@@ -103,36 +105,8 @@ public class ChatSocket
         var embedBuilder = new EmbedBuilder();
 
         // Add extra embed options based on the selected message type
-        switch (response.MessageType)
-        {
-            case SocketMessageType.ChatMessage:
-                embedBuilder
-                    .WithColor(Color.Blue);
-
-                formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
-
-                break;
-
-            case SocketMessageType.DiscordMessage:
-                embedBuilder
-                    .WithAuthor(DiscordMessageAuthor)
-                    .WithColor(Color.Purple);
-
-                formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
-
-                break;
-
-            case SocketMessageType.GuildMessage:
-                embedBuilder
-                    .WithAuthor(response.HeaderContent)
-                    .WithColor(Color.Teal);
-
-                break;
-
-            // Need to change default case later.
-            default:
-                break;
-        }
+        var newFormattedMessage = FormatAccordingToMessageType(response, embedBuilder);
+        formattedMessage = newFormattedMessage ?? formattedMessage;
 
         var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
 
@@ -141,6 +115,40 @@ public class ChatSocket
         var embed = embedBuilder.Build();
 
         return embed;
+    }
+
+    private static string? FormatAccordingToMessageType(SocketResponse response, EmbedBuilder embedBuilder)
+    {
+        string? message = null;
+
+        switch (response.MessageType)
+        {
+            case SocketMessageType.ChatMessage:
+                embedBuilder
+                    .WithColor(Color.Blue);
+
+                message = $"**{response.HeaderContent}:** {response.TextContent}";
+                break;
+
+            case SocketMessageType.DiscordMessage:
+                embedBuilder
+                    .WithAuthor(DiscordMessageAuthor)
+                    .WithColor(Color.Purple);
+
+                message = $"**{response.HeaderContent}:** {response.TextContent}";
+                break;
+
+            case SocketMessageType.GuildMessage:
+                embedBuilder
+                    .WithAuthor(response.HeaderContent)
+                    .WithColor(Color.Teal);
+                break;
+
+            default:
+                break;
+        }
+
+        return message;
     }
 
     private static async Task SendEmbedAsync(IMessageChannel channel, Embed embed)
