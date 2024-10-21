@@ -32,11 +32,26 @@ public class ChatSocket
             });
     }
 
-    public async Task StartAsync(IMessageChannel channel)
+    public async Task StartAsync()
+    {
+        await _socket.ConnectAsync();
+    }
+
+    public async Task SetupClientAsync(IMessageChannel channel)
+    {
+        await AddTokenToHeadersAsync();
+        SetupEventListeners(channel);
+    }
+
+    private async Task AddTokenToHeadersAsync()
     {
         var token = await _tokenGenerator.GetTokenAsync();
 
         _socket.Options.ExtraHeaders.Add("Authorization", "Bearer " + token);
+    }
+
+    private void SetupEventListeners(IMessageChannel channel)
+    {
 
         #region Websocket Events
 
@@ -46,7 +61,7 @@ public class ChatSocket
 
                 if (!string.IsNullOrWhiteSpace(socketResponse.TextContent))
                 {
-                    var messageEmbed = FormatMessage(socketResponse);
+                    var messageEmbed = FormatMessageIntoEmbed(socketResponse);
                     await SendEmbedAsync(channel, messageEmbed);
                 }
             });
@@ -80,7 +95,6 @@ public class ChatSocket
 
         #endregion
 
-        await _socket.ConnectAsync();
     }
 
     public async Task EmitMessageAsync(SocketUserMessage message)
@@ -99,16 +113,10 @@ public class ChatSocket
             new DiscordMessage(author, cleanedContent));
     }
 
-    private static Embed FormatMessage(SocketResponse response)
+    private static Embed FormatMessageIntoEmbed(SocketResponse response)
     {
-        var formattedMessage = response.TextContent;
         var embedBuilder = new EmbedBuilder();
-
-        // Add extra embed options based on the selected message type
-        var newFormattedMessage = FormatAccordingToMessageType(response, embedBuilder);
-        formattedMessage = newFormattedMessage ?? formattedMessage;
-
-        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
+        var cleanedString = CleanUpResponseString(response, embedBuilder);
 
         embedBuilder.WithDescription(cleanedString);
 
@@ -117,7 +125,21 @@ public class ChatSocket
         return embed;
     }
 
-    private static string? FormatAccordingToMessageType(SocketResponse response, EmbedBuilder embedBuilder)
+    private static string CleanUpResponseString(SocketResponse response, EmbedBuilder embedBuilder)
+    {
+
+        var formattedMessage = response.TextContent;
+
+        // Add extra embed options based on the selected message type
+        var newFormattedMessage = FormatEmbedAccordingToMessageType(response, embedBuilder);
+        formattedMessage = newFormattedMessage ?? formattedMessage;
+
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
+
+        return cleanedString;
+    }
+
+    private static string? FormatEmbedAccordingToMessageType(SocketResponse response, EmbedBuilder embedBuilder)
     {
         string? message = null;
 
