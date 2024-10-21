@@ -23,7 +23,7 @@ public class WaitlistAddCommand : BaseCommand
     [SlashCommand("waitlist-add", "adds user to waitlist")]
     public async Task ExecuteCommandAsync([Summary("user", "user you're adding")] string username)
     {
-        if (await ValidateChannelAsync(GuildChannels.LayoffsChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel)) return;
 
         if(username.Any(character => !_allowedCharacters.Contains(character)))
         {

@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using ogybot.DataAccess.Controllers;
 using ogybot.Util;
 
@@ -21,7 +22,7 @@ public class WaitlistCommand : BaseCommand
     [SlashCommand("waitlist", "displays the wait list")]
     public async Task ExecuteCommandAsync()
     {
-        if (await ValidateChannelAsync(GuildChannels.LayoffsChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel)) return;
 
         var user = Context.User;
 
@@ -40,6 +41,13 @@ public class WaitlistCommand : BaseCommand
             counter++;
         }
 
+        var embed = CreateEmbed(user, description, queueSize);
+
+        await FollowupAsync(embed: embed);
+    }
+
+    private static Embed CreateEmbed(SocketUser user, string description, string queueSize)
+    {
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
             .WithTitle("Wait list")
@@ -48,6 +56,6 @@ public class WaitlistCommand : BaseCommand
             .WithCurrentTimestamp()
             .WithFooter(queueSize);
 
-        await FollowupAsync(embed: embedBuilder.Build());
+        return embedBuilder.Build();
     }
 }

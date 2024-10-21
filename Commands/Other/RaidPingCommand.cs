@@ -22,7 +22,7 @@ public class RaidPingCommand : BaseCommand
         [Summary("guild", "the guild attacking us")]
         string? guildAttacking = null)
     {
-        if (await ValidateChannelAsync(GuildChannels.WarChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.WarChannel)) return;
 
         var guildMessage = guildAttacking is not null
             ? $"\n**Guild:** {guildAttacking}"

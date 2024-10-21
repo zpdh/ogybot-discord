@@ -22,7 +22,7 @@ public class OnlineCommand : BaseCommand
     [SlashCommand("online", "displays online players using the mod")]
     public async Task ExecuteCommandAsync()
     {
-        if (await ValidateChannelAsync(GuildChannels.WebsocketLogChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.WebsocketLogChannel)) return;
 
         var list = await _controller.GetOnlinePlayersAsync();
 

@@ -25,7 +25,7 @@ public class TomeListCommand : BaseCommand
         var user = Context.User;
 
         // Checks if user is in correct channel and has perms to execute the command
-        if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.TomeChannel)) return;
 
         var list = await _controller.GetTomelistAsync();
 

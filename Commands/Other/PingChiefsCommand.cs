@@ -14,7 +14,7 @@ public class PingChiefsCommand : BaseCommand
     [SlashCommand("chiefs", "pings active chiefs")]
     public async Task ExecuteCommandAsync()
     {
-        if (await ValidateChannelAsync(GuildChannels.WarChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.WarChannel)) return;
 
         await FollowupAsync($"<@&{GuildPings.ChiefRole}> Wake up", allowedMentions: AllowedMentions.All);
     }
