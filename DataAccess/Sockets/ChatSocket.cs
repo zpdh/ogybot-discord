@@ -76,6 +76,13 @@ public class ChatSocket
             await SendLoggingMessageAsync(channel, message);
         };
 
+        _socket.OnError += async (_, e) => {
+            var message = $"Failed to connect to Websocket Server. Reason: {e}";
+
+            Console.WriteLine(message);
+            await SendLoggingMessageAsync(channel, message);
+        };
+
         #endregion
 
         await _socket.ConnectAsync();

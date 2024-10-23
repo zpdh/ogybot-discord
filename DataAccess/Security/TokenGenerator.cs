@@ -37,7 +37,7 @@ public class TokenGenerator
             "application/json");
 
         // Get token response from API
-        var response = await _client.PostAsync("auth/gettoken", content);
+        var response = await _client.PostAsync("auth/get-token", content);
 
         if (!response.IsSuccessStatusCode) return null;
 
