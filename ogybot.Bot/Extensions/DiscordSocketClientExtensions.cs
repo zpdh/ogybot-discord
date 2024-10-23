@@ -1,5 +1,7 @@
-﻿using Discord.Interactions;
+﻿using System.Reflection;
+using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
@@ -13,6 +15,8 @@ public static class DiscordSocketClientExtensions
     {
         client.AddLogger();
         client.AddInteraction(services);
+        
+        client.ReadyUp(services);
     }
 
     private static void AddLogger(this DiscordSocketClient client)
@@ -58,8 +62,35 @@ public static class DiscordSocketClientExtensions
 
     private static async Task HandleCommandFailureAsync(SocketInteractionContext context, IResult result)
     {
-
         await context.Channel.SendMessageAsync(ErrorMessages.UnknownError);
         throw new UnknownException(result.ErrorReason);
+    }
+
+    private static void ReadyUp(this DiscordSocketClient client, IServiceProvider services)
+    {
+        client.Ready += async () => {
+            var interactionService = services.GetRequiredService<InteractionService>();
+
+            await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
+
+            await RegisterCommandsAsync(interactionService, services);
+        };
+    }
+
+    private static async Task RegisterCommandsAsync(InteractionService interactionService, IServiceProvider services)
+    {
+        var configuration = services.GetRequiredService<IConfiguration>();
+
+        var id = GetGuildId(configuration);
+
+        await interactionService.RegisterCommandsToGuildAsync(id);
+    }
+
+    private static ulong GetGuildId(IConfiguration configuration)
+    {
+        var branch = configuration.GetValue<string>("Branch");
+        var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
+
+        return id;
     }
 }
