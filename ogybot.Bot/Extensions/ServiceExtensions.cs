@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord.Interactions;
+using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Bot.Builders;
 using ogybot.Bot.Handlers;
@@ -13,6 +14,7 @@ public static class ServiceExtensions
         services.AddConfiguration();
         services.AddHandlers();
         services.AddDiscordClient();
+        services.AddInteractionService();
 
         // Dependencies from other projects, such as Infrastructure
         services.AddDependencies();
@@ -25,7 +27,7 @@ public static class ServiceExtensions
 
     private static void AddHandlers(this ServiceCollection services)
     {
-        services.AddScoped<IDiscordAppHandler, DiscordAppHandler>();
+        services.AddSingleton<IDiscordAppHandler, DiscordAppHandler>();
     }
 
     private static void AddDiscordClient(this ServiceCollection services)
@@ -34,6 +36,15 @@ public static class ServiceExtensions
             var handler = provider.GetRequiredService<IDiscordAppHandler>();
 
             return handler.SetupAndStartClientAsync().GetAwaiter().GetResult();
+        });
+    }
+
+    private static void AddInteractionService(this ServiceCollection services)
+    {
+        services.AddSingleton<InteractionService>(provider => {
+            var client = provider.GetRequiredService<DiscordSocketClient>();
+
+            return new InteractionService(client.Rest);
         });
     }
 }

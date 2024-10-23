@@ -1,6 +1,8 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
+using ogybot.Bot.Extensions;
 using ogybot.Entities.Exceptions;
 using ogybot.Utility.Extensions;
 
@@ -13,6 +15,7 @@ public interface IDiscordAppHandler
 
 public class DiscordAppHandler(IConfiguration configuration) : IDiscordAppHandler
 {
+
     public async Task<DiscordSocketClient> SetupAndStartClientAsync()
     {
         var client = SetupDiscordClient();
