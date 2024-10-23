@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>ogybot.Communication</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Requests\" />
+      <Folder Include="Responses\" />
+      <Folder Include="Exceptions\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ogybot.CrossCutting\ogybot.CrossCutting.csproj" />
+      <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj" />
+    </ItemGroup>
+
+</Project>
