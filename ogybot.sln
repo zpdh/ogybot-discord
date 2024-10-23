@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ogybot.CrossCutting", "ogyb
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ogybot.Utility", "ogybot.Utility\ogybot.Utility.csproj", "{E5FCA218-F60E-421C-A473-2C0380EF20E7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ogybot.Domain", "ogybot.Domain\ogybot.Domain.csproj", "{97C058E2-F76A-4459-8340-5CAC1724E81C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{E5FCA218-F60E-421C-A473-2C0380EF20E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E5FCA218-F60E-421C-A473-2C0380EF20E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E5FCA218-F60E-421C-A473-2C0380EF20E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C058E2-F76A-4459-8340-5CAC1724E81C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C058E2-F76A-4459-8340-5CAC1724E81C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C058E2-F76A-4459-8340-5CAC1724E81C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C058E2-F76A-4459-8340-5CAC1724E81C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
