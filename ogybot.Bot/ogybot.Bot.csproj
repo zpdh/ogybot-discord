@@ -1,9 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <OutputType>Exe</OutputType>
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <InvariantGlobalization>false</InvariantGlobalization>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>.</DockerfileContext>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,12 +19,18 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Include="Entities\BotConfiguration.cs" />
+      <ProjectReference Include="..\ogybot.Communication\ogybot.Communication.csproj" />
+      <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ogybot.Communication\ogybot.Communication.csproj" />
-      <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj" />
+      <Folder Include="Entities\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="appsettings.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

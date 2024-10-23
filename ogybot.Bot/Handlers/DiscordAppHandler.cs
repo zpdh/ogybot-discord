@@ -6,9 +6,22 @@ using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Handlers;
 
-public class DiscordAppHandler
+public interface IDiscordAppHandler
 {
-    public static DiscordSocketClient SetupDiscordClient()
+    Task<DiscordSocketClient> SetupAndStartClientAsync();
+}
+
+public class DiscordAppHandler(IConfiguration configuration) : IDiscordAppHandler
+{
+    public async Task<DiscordSocketClient> SetupAndStartClientAsync()
+    {
+        var client = SetupDiscordClient();
+        await StartupBotAsync(client);
+
+        return client;
+    }
+
+    private static DiscordSocketClient SetupDiscordClient()
     {
         var botConfig = new DiscordSocketConfig
         {
@@ -21,14 +34,15 @@ public class DiscordAppHandler
         return discordClient;
     }
 
-    public async Task StartupBotAsync(DiscordSocketClient client, IConfiguration configuration)
+    private async Task StartupBotAsync(DiscordSocketClient client)
     {
-        var token = GetBotToken(configuration);
+        var token = GetBotToken();
 
         await client.LoginAsync(TokenType.Bot, token);
+        await client.StartAsync();
     }
 
-    private static string GetBotToken(IConfiguration configuration)
+    private string GetBotToken()
     {
         var branch = configuration.GetValue<string>("Branch");
         var token = configuration.GetValue<string>($"Tokens:{branch}");
