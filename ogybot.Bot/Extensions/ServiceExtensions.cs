@@ -36,7 +36,7 @@ public static class ServiceExtensions
         services.AddSingleton<DiscordSocketClient>(provider => {
             var handler = provider.GetRequiredService<IDiscordAppHandler>();
 
-            return handler.SetupAndStartClientAsync().GetAwaiter().GetResult();
+            return handler.SetupDiscordClient();
         });
     }
 

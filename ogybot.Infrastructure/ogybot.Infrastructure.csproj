@@ -9,7 +9,6 @@
 
     <ItemGroup>
       <Folder Include="Clients\" />
-      <Folder Include="Security\" />
       <Folder Include="Sockets\" />
     </ItemGroup>
 

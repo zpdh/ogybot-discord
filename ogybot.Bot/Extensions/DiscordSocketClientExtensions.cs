@@ -1,21 +1,59 @@
 ﻿using System.Reflection;
+using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
+using ogybot.Entities.Exceptions;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Extensions;
 
 public static class DiscordSocketClientExtensions
 {
+    public static async Task RunAsync(this DiscordSocketClient client, IServiceProvider services)
+    {
+        var token = GetBotToken(services);
+
+        await client.LoginAsync(TokenType.Bot, token);
+        await client.StartAsync();
+
+        await Task.Delay(-1);
+    }
+
+    private static string GetBotToken(IServiceProvider services)
+    {
+        var configuration = GetConfigurationFromServices(services);
+        var token = GetTokenFromConfiguration(configuration);
+
+        if (token.IsNullOrWhitespace())
+        {
+            throw new InvalidBotTokenException();
+        }
+
+        return token;
+    }
+
+    private static string? GetTokenFromConfiguration(IConfiguration configuration)
+    {
+
+        var branch = configuration.GetValue<string>("Branch");
+        var token = configuration.GetValue<string>($"Tokens:{branch}");
+        return token;
+    }
+
+    private static IConfiguration GetConfigurationFromServices(IServiceProvider services)
+    {
+        return services.GetRequiredService<IConfiguration>();
+    }
+
     public static void AddEvents(this DiscordSocketClient client, IServiceProvider services)
     {
         client.AddLogger();
         client.AddInteraction(services);
-        
+
         client.ReadyUp(services);
     }
 
@@ -49,9 +87,7 @@ public static class DiscordSocketClientExtensions
         }
     }
 
-    private static async Task<IResult> TryExecuteCommandAsync(
-        SocketInteractionContext context,
-        IServiceProvider services)
+    private static async Task<IResult> TryExecuteCommandAsync(SocketInteractionContext context, IServiceProvider services)
     {
         var interactionService = services.GetRequiredService<InteractionService>();
 
