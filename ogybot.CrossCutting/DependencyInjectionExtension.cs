@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
 using ogybot.Domain.Security;
+using ogybot.Domain.Services;
 
 namespace ogybot.CrossCutting;
 
@@ -11,6 +13,7 @@ public static class DependencyInjectionExtension
     {
         services.AddHttpClient();
         services.AddTokenRequester();
+        services.AddCustomClients();
     }
 
     private static void AddHttpClient(this ServiceCollection services)
@@ -34,5 +37,10 @@ public static class DependencyInjectionExtension
 
             return new TokenRequester(httpClient, validationKey);
         });
+    }
+
+    private static void AddCustomClients(this ServiceCollection services)
+    {
+        services.AddScoped<ITomeListClient, TomeListClient>();
     }
 }

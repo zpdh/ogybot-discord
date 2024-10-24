@@ -1,5 +1,9 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Text.Json;
+using ogybot.Communication.Constants;
+using ogybot.Communication.Exceptions;
 
 namespace ogybot.Data.Clients;
 
@@ -7,12 +11,16 @@ public abstract class BaseClient
 {
     private readonly HttpClient _httpClient;
 
-    public BaseClient(HttpClient httpClient)
+    protected BaseClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
     }
 
-    protected async Task<HttpResponseMessage> MakeRequestAsync(string endpoint, HttpMethod method, object? content = null, string? token = null)
+    protected async Task<HttpResponseMessage> MakeAndSendRequestAsync(
+        HttpMethod method,
+        string endpoint,
+        object? content = null,
+        string? token = null)
     {
         var request = new HttpRequestMessage(method, endpoint);
 
@@ -52,5 +60,22 @@ public abstract class BaseClient
     private async Task<HttpResponseMessage> SendHttpRequest(HttpRequestMessage request)
     {
         return await _httpClient.SendAsync(request);
+    }
+
+    protected static async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)
+    {
+        var content = await response.Content.ReadFromJsonAsync<T>();
+
+        EnsureContentIsNotNull(content);
+
+        return content;
+    }
+
+    private static void EnsureContentIsNotNull<T>([NotNull] T? content)
+    {
+        if (content is null)
+        {
+            throw new CommunicationException(ExceptionMessages.NullContent);
+        }
     }
 }

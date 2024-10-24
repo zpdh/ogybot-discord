@@ -9,10 +9,10 @@ namespace ogybot.Data.Security.Tokens;
 
 public class TokenRequester : ITokenRequester
 {
+    private const string Endpoint = "auth/gettoken";
+
     private readonly HttpClient _httpClient;
     private readonly string _validationKey;
-
-    private const string Endpoint = "auth/gettoken";
 
     public TokenRequester(HttpClient httpClient, string validationKey)
     {
