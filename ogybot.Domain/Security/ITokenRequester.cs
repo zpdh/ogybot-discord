@@ -2,5 +2,5 @@
 
 public interface ITokenRequester
 {
-    
+    Task<string> GetTokenAsync();
 }
