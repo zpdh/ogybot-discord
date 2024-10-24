@@ -1,9 +1,9 @@
 ﻿using Discord;
 using Discord.Interactions;
 using ogybot.Bot.Commands.Base;
-using ogybot.Bot.Entities;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
+using ogybot.Domain.Entities;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Misc;

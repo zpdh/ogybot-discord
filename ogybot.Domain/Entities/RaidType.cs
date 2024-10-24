@@ -1,4 +1,4 @@
-﻿namespace ogybot.Bot.Entities;
+﻿namespace ogybot.Domain.Entities;
 
 public enum RaidType
 {

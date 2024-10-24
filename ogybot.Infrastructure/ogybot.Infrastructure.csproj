@@ -16,4 +16,9 @@
       <PackageReference Include="SocketIOClient" Version="3.1.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\ogybot.Communication\ogybot.Communication.csproj" />
+      <ProjectReference Include="..\ogybot.Domain\ogybot.Domain.csproj" />
+    </ItemGroup>
+
 </Project>

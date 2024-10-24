@@ -8,12 +8,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Requests\" />
       <Folder Include="Responses\" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\ogybot.CrossCutting\ogybot.CrossCutting.csproj" />
       <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj" />
     </ItemGroup>
 

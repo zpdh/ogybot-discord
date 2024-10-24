@@ -20,6 +20,8 @@
 
     <ItemGroup>
       <ProjectReference Include="..\ogybot.Communication\ogybot.Communication.csproj" />
+      <ProjectReference Include="..\ogybot.CrossCutting\ogybot.CrossCutting.csproj" />
+      <ProjectReference Include="..\ogybot.Domain\ogybot.Domain.csproj" />
       <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj" />
     </ItemGroup>
 
@@ -27,6 +29,10 @@
       <None Update="appsettings.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Entities\" />
     </ItemGroup>
 
 </Project>
