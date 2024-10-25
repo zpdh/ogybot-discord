@@ -28,6 +28,7 @@ public class ChatSocket
                 // Need to initialize the ExtraHeaders dictionary, as the library doesn't do so
                 ExtraHeaders = new Dictionary<string, string>(),
                 // Increase the connection timeout as render can sometimes take a while to connect
+                Reconnection = false,
                 ConnectionTimeout = TimeSpan.FromSeconds(120),
             });
     }
@@ -67,6 +68,11 @@ public class ChatSocket
 
             Console.WriteLine(message);
             await SendLoggingMessageAsync(channel, message);
+
+            var token = await _tokenGenerator.GetTokenAsync();
+            _socket.Options.ExtraHeaders["Authorization"] = "Bearer " + token;
+            
+            await _socket.ConnectAsync();
         };
 
         _socket.OnReconnectFailed += async (_, _) => {
