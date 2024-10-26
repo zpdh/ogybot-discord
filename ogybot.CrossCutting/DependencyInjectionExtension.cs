@@ -2,8 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
+using ogybot.Domain.Clients;
 using ogybot.Domain.Security;
-using ogybot.Domain.Services;
 
 namespace ogybot.CrossCutting;
 
