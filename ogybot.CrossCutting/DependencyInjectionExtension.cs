@@ -42,5 +42,7 @@ public static class DependencyInjectionExtension
     private static void AddCustomClients(this ServiceCollection services)
     {
         services.AddScoped<ITomeListClient, TomeListClient>();
+        services.AddScoped<IWaitListClient, WaitListClient>();
+        services.AddScoped<IAspectListClient, AspectListClient>();
     }
 }
