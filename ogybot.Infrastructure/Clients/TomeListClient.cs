@@ -15,18 +15,18 @@ public class TomeListClient : BaseClient, ITomeListClient
         _tokenRequester = tokenRequester;
     }
 
-    public async Task<IList<TomeListBaseUser>> GetListAsync()
+    public async Task<IList<TomeListUser>> GetListAsync()
     {
         var method = HttpMethod.Get;
 
         var response = await MakeAndSendRequestAsync(method, Endpoint);
 
-        var listOfUsers = await ParseResponseAsync<IList<TomeListBaseUser>>(response);
+        var listOfUsers = await ParseResponseAsync<IList<TomeListUser>>(response);
 
         return listOfUsers;
     }
 
-    public async Task AddUserAsync(TomeListBaseUser user)
+    public async Task AddUserAsync(TomeListUser user)
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
@@ -34,7 +34,7 @@ public class TomeListClient : BaseClient, ITomeListClient
         var response = await MakeAndSendRequestAsync(method, Endpoint, user, token);
     }
 
-    public async Task RemoveUserAsync(TomeListBaseUser user)
+    public async Task RemoveUserAsync(TomeListUser user)
     {
         var method = HttpMethod.Delete;
         var token = await _tokenRequester.GetTokenAsync();

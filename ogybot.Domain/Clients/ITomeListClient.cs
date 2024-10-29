@@ -4,7 +4,7 @@ namespace ogybot.Domain.Clients;
 
 public interface ITomeListClient
 {
-    Task<IList<TomeListBaseUser>> GetListAsync();
-    Task AddUserAsync(TomeListBaseUser user);
-    Task RemoveUserAsync(TomeListBaseUser user);
+    Task<IList<TomeListUser>> GetListAsync();
+    Task AddUserAsync(TomeListUser user);
+    Task RemoveUserAsync(TomeListUser user);
 }
