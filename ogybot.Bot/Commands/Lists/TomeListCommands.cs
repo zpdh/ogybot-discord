@@ -44,7 +44,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
-            .WithTitle("Tome list")
+            .WithTitle("Tome List")
             .WithDescription(description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
