@@ -128,6 +128,8 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     #region Remove User From List Command
 
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("tomelist-remove", "removes a user from the tome list based on their name or index")]
     public async Task ExecuteTomeListRemoveCommandAsync([Summary("user-or-index", "The user's name or index")] string usernameOrIndex)
     {
         if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel))

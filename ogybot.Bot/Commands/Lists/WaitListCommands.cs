@@ -128,6 +128,8 @@ public class WaitListCommands : BasePermissionRequiredCommand
 
     #region Remove User From List Command
 
+    [CommandContextType(InteractionContextType.Guild)]
+    [SlashCommand("waitlist-remove", "removes a user from the wait list based on their name or index")]
     public async Task ExecuteWaitlistRemoveCommandAsync([Summary("user-or-index", "The user's name or index")] string usernameOrIndex)
     {
         if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel))
