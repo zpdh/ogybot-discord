@@ -7,7 +7,7 @@ public class BaseRemoveCommand : BaseCommand
 {
     protected async Task<bool> ValidateChannelAndRolesAsync(ulong channelId)
     {
-        if (await ValidateChannelAsync(channelId)) return true;
+        if (await IsInvalidChannelAsync(channelId)) return true;
 
         var user = Context.User as IGuildUser;
 

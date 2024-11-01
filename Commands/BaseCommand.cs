@@ -6,7 +6,7 @@ namespace ogybot.Commands;
 
 public abstract class BaseCommand : InteractionModuleBase<SocketInteractionContext>
 {
-    protected async Task<bool> ValidateChannelAsync(ulong channelId)
+    protected async Task<bool> IsInvalidChannelAsync(ulong channelId)
     {
         if (Context.Channel.Id == channelId) return false;
 

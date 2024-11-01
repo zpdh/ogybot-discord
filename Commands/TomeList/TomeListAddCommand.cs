@@ -24,7 +24,7 @@ public class TomeListAddCommand : BaseCommand
     [SlashCommand("tomelist-add", "Adds user to tome list")]
     public async Task ExecuteCommandAsync([Summary("username", "the user's name you're adding")] string username)
     {
-        if (await ValidateChannelAsync(GuildChannels.TomeChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.TomeChannel)) return;
 
         if(username.Any(character => !_allowedCharacters.Contains(character)))
         {

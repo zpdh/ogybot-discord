@@ -33,11 +33,26 @@ public class ChatSocket
             });
     }
 
-    public async Task StartAsync(IMessageChannel channel)
+    public async Task StartAsync()
+    {
+        await _socket.ConnectAsync();
+    }
+
+    public async Task SetupClientAsync(IMessageChannel channel)
+    {
+        await AddTokenToHeadersAsync();
+        SetupEventListeners(channel);
+    }
+
+    private async Task AddTokenToHeadersAsync()
     {
         var token = await _tokenGenerator.GetTokenAsync();
 
         _socket.Options.ExtraHeaders.Add("Authorization", "Bearer " + token);
+    }
+
+    private void SetupEventListeners(IMessageChannel channel)
+    {
 
         #region Websocket Events
 
@@ -47,7 +62,7 @@ public class ChatSocket
 
                 if (!string.IsNullOrWhiteSpace(socketResponse.TextContent))
                 {
-                    var messageEmbed = FormatMessage(socketResponse);
+                    var messageEmbed = FormatMessageIntoEmbed(socketResponse);
                     await SendEmbedAsync(channel, messageEmbed);
                 }
             });
@@ -91,7 +106,6 @@ public class ChatSocket
 
         #endregion
 
-        await _socket.ConnectAsync();
     }
 
     public async Task EmitMessageAsync(SocketUserMessage message)
@@ -110,20 +124,43 @@ public class ChatSocket
             new DiscordMessage(author, cleanedContent));
     }
 
-    private static Embed FormatMessage(SocketResponse response)
+    private static Embed FormatMessageIntoEmbed(SocketResponse response)
     {
-        var formattedMessage = response.TextContent;
         var embedBuilder = new EmbedBuilder();
+        var cleanedString = CleanUpResponseString(response, embedBuilder);
+
+        embedBuilder.WithDescription(cleanedString);
+
+        var embed = embedBuilder.Build();
+
+        return embed;
+    }
+
+    private static string CleanUpResponseString(SocketResponse response, EmbedBuilder embedBuilder)
+    {
+
+        var formattedMessage = response.TextContent;
 
         // Add extra embed options based on the selected message type
+        var newFormattedMessage = FormatEmbedAccordingToMessageType(response, embedBuilder);
+        formattedMessage = newFormattedMessage ?? formattedMessage;
+
+        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
+
+        return cleanedString;
+    }
+
+    private static string? FormatEmbedAccordingToMessageType(SocketResponse response, EmbedBuilder embedBuilder)
+    {
+        string? message = null;
+
         switch (response.MessageType)
         {
             case SocketMessageType.ChatMessage:
                 embedBuilder
                     .WithColor(Color.Blue);
 
-                formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
-
+                message = $"**{response.HeaderContent}:** {response.TextContent}";
                 break;
 
             case SocketMessageType.DiscordMessage:
@@ -131,29 +168,20 @@ public class ChatSocket
                     .WithAuthor(DiscordMessageAuthor)
                     .WithColor(Color.Purple);
 
-                formattedMessage = $"**{response.HeaderContent}:** {response.TextContent}";
-
+                message = $"**{response.HeaderContent}:** {response.TextContent}";
                 break;
 
             case SocketMessageType.GuildMessage:
                 embedBuilder
                     .WithAuthor(response.HeaderContent)
                     .WithColor(Color.Teal);
-
                 break;
 
-            // Need to change default case later.
             default:
                 break;
         }
 
-        var cleanedString = WhitespaceRemovalService.RemoveExcessWhitespaces(formattedMessage);
-
-        embedBuilder.WithDescription(cleanedString);
-
-        var embed = embedBuilder.Build();
-
-        return embed;
+        return message;
     }
 
     private static async Task SendEmbedAsync(IMessageChannel channel, Embed embed)

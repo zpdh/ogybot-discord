@@ -19,7 +19,7 @@ public class WarQuestionCommand : BaseCommand
         [Summary("budget", "your total budget in LE")]
         string budget)
     {
-        if (await ValidateChannelAsync(GuildChannels.WarQuestionsChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.WarQuestionsChannel)) return;
 
         var user = Context.User;
 
