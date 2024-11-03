@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Security;
+using ogybot.Domain.Sockets;
 using ogybot.Utility.Extensions;
 using ogybot.Utility.Services;
 using SocketIOClient;
@@ -10,7 +11,7 @@ using SocketMessage = ogybot.Communication.Messages.SocketMessage;
 
 namespace ogybot.Data.Sockets;
 
-public class ChatSocket
+public class ChatSocket : IChatSocket
 {
     private const int DelayBetweenMessages = 250;
 
