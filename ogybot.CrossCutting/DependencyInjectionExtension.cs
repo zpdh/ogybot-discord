@@ -51,6 +51,12 @@ public static class DependencyInjectionExtension
 
     private static void AddWebSockets(this ServiceCollection services)
     {
-        services.AddScoped<IChatSocket, ChatSocket>();
+        services.AddSingleton<IChatSocket>(provider => {
+            var config = provider.GetRequiredService<IConfiguration>();
+            var tokenRequester = provider.GetRequiredService<ITokenRequester>();
+            var websocketUrl = config.GetValue<string>("Websocket:WebsocketServerUrl")!;
+
+            return new ChatSocket(tokenRequester, websocketUrl);
+        });
     }
 }
