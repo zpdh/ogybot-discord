@@ -1,6 +1,8 @@
 ﻿using Discord;
 using Discord.Interactions;
 using ogybot.Bot.Commands.Base;
+using ogybot.Communication.Constants;
+using ogybot.Communication.Exceptions;
 using ogybot.Domain.Sockets;
 
 namespace ogybot.Bot.Commands.Socket;
@@ -18,6 +20,11 @@ public class ChatSocketCommands : BasePermissionRequiredCommand
     [SlashCommand("startup-chat-socket", "Starts listening to socket messages in the channel this command is ran in.")]
     public async Task ExecuteStartupCommandAsync()
     {
+        if (await IsInvalidContextAsync(GuildChannels.WebsocketLogChannel))
+        {
+            return;
+        }
+
         await TryStartingSocketAsync();
     }
 
@@ -25,14 +32,20 @@ public class ChatSocketCommands : BasePermissionRequiredCommand
     {
         try
         {
-            await _chatSocket.StartAsync();
-            await _chatSocket.SetupClientAsync(Context.Channel);
+            await ConfigureAndStartupListenerAsync();
 
             await FollowupAsync("Successfully started listening!");
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            await FollowupAsync("Could not start listener up. Exception:" + e.Message);
+            throw new WebsocketStartupFailureException();
         }
+    }
+
+    private async Task ConfigureAndStartupListenerAsync()
+    {
+
+        await _chatSocket.SetupClientAsync(Context.Channel);
+        await _chatSocket.StartAsync();
     }
 }

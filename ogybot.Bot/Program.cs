@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Bot.Builders;
 using ogybot.Bot.Extensions;
+using ogybot.Domain.Sockets;
 
 namespace ogybot.Bot;
 

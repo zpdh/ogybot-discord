@@ -56,6 +56,8 @@ public static class DependencyInjectionExtension
             var tokenRequester = provider.GetRequiredService<ITokenRequester>();
             var websocketUrl = config.GetValue<string>("Websocket:WebsocketServerUrl")!;
 
+            var chatSocket = new ChatSocket(tokenRequester, websocketUrl);
+
             return new ChatSocket(tokenRequester, websocketUrl);
         });
     }
