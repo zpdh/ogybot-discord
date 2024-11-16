@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Diagnostics.CodeAnalysis;
+using Discord;
 using Discord.WebSocket;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
@@ -35,15 +36,34 @@ public class ChatSocket : IChatSocket
             });
     }
 
-    public async Task StartAsync()
+    public async Task SetupAndStartAsync(DiscordSocketClient client, ulong channelId)
+    {
+        await SetupClientAsync(client, channelId);
+        await StartAsync();
+    }
+
+    private async Task StartAsync()
     {
         await _socket.ConnectAsync();
     }
 
-    public async Task SetupClientAsync(IMessageChannel channel)
+    private async Task SetupClientAsync(DiscordSocketClient client, ulong channelId)
     {
+        var channel = await GetChannelByIdAsync(client, channelId);
+
         await RequestAndAddTokenToHeadersAsync();
         SetupEventListeners(channel);
+    }
+
+    private static async Task<IMessageChannel> GetChannelByIdAsync(DiscordSocketClient client, ulong channelId)
+    {
+
+        if (await client.GetChannelAsync(channelId) is not IMessageChannel channel)
+        {
+            throw new WebsocketStartupFailureException();
+        }
+
+        return channel;
     }
 
     private async Task RequestAndAddTokenToHeadersAsync()

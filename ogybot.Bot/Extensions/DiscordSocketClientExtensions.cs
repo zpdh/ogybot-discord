@@ -19,8 +19,6 @@ public static class DiscordSocketClientExtensions
 
         await client.LoginAsync(TokenType.Bot, token);
         await client.StartAsync();
-
-        await Task.Delay(-1);
     }
 
     private static string GetBotToken(IServiceProvider services)

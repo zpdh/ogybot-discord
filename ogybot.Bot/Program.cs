@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Bot.Builders;
 using ogybot.Bot.Extensions;
+using ogybot.Bot.Handlers;
+using ogybot.Communication.Constants;
 using ogybot.Domain.Sockets;
 
 namespace ogybot.Bot;
@@ -11,10 +13,10 @@ public static class Program
     public static async Task Main(string[] args)
     {
         var services = ServiceBuilder.Build();
-        var discordClient = services.GetRequiredService<DiscordSocketClient>();
+        var startupHandler = services.GetRequiredService<IStartupHandler>();
 
-        discordClient.AddEvents(services);
-
-        await discordClient.RunAsync(services);
+        await startupHandler.StartupComponentsAsync(services);
+        
+        await Task.Delay(Timeout.Infinite);
     }
 }

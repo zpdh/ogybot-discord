@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Discord.WebSocket;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ogybot.Communication.Constants;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
 using ogybot.Data.Sockets;
@@ -55,8 +57,6 @@ public static class DependencyInjectionExtension
             var config = provider.GetRequiredService<IConfiguration>();
             var tokenRequester = provider.GetRequiredService<ITokenRequester>();
             var websocketUrl = config.GetValue<string>("Websocket:WebsocketServerUrl")!;
-
-            var chatSocket = new ChatSocket(tokenRequester, websocketUrl);
 
             return new ChatSocket(tokenRequester, websocketUrl);
         });

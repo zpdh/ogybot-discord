@@ -29,6 +29,7 @@ public static class ServiceExtensions
     private static void AddHandlers(this ServiceCollection services)
     {
         services.AddSingleton<IDiscordAppHandler, DiscordAppHandler>();
+        services.AddSingleton<IStartupHandler, StartupHandler>();
     }
 
     private static void AddDiscordClient(this ServiceCollection services)
