@@ -4,5 +4,5 @@ namespace ogybot.Domain.Clients;
 
 public interface IOnlineClient
 {
-    Task<IList<OnlineUser>> GetOnlineMembersAsync();
+    Task<IList<OnlineUser>> GetListAsync();
 }

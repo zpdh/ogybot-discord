@@ -5,14 +5,14 @@ namespace ogybot.Data.Clients;
 
 public class OnlineClient : BaseClient, IOnlineClient
 {
-    private const string Endpoint = "listOnline";
+    private const string Endpoint = "wynn/online";
 
 
     public OnlineClient(HttpClient httpClient) : base(httpClient)
     {
     }
 
-    public async Task<IList<OnlineUser>> GetOnlineMembersAsync()
+    public async Task<IList<OnlineUser>> GetListAsync()
     {
         var method = HttpMethod.Get;
 

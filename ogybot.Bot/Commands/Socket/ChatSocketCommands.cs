@@ -50,7 +50,7 @@ public class ChatSocketCommands : BaseCommand
     {
         var user = Context.User;
 
-        var list = await _client.GetOnlineMembersAsync();
+        var list = await _client.GetListAsync();
 
         var queueSize = "Players in queue: " + list.Count;
 
