@@ -27,11 +27,13 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist", "Presents the tome list to get a guild tome.")]
     public async Task ExecuteTomeListCommandAsync()
     {
-        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel))
-        {
-            return;
-        }
+        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel)) return;
 
+        await TryExecutingCommandInstructionsAsync(TomeListCommandInstructionsAsync);
+    }
+
+    private async Task TomeListCommandInstructionsAsync()
+    {
         var embed = await CreateEmbedAsync();
 
         await FollowupAsync(embed: embed);
@@ -101,9 +103,9 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     private async Task AddUserToTomeListAsync(string username)
     {
-            var tomeListUser = new TomeListUser(username);
+        var tomeListUser = new TomeListUser(username);
 
-            await _tomeListClient.AddUserAsync(tomeListUser);
+        await _tomeListClient.AddUserAsync(tomeListUser);
     }
 
     private void ValidateUsername(string username)
@@ -163,4 +165,5 @@ public class TomeListCommands : BasePermissionRequiredCommand
     }
 
     #endregion
+
 }

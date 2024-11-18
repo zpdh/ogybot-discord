@@ -3,7 +3,7 @@ using ogybot.Communication.Constants;
 
 namespace ogybot.Bot.Commands.Base;
 
-public class BasePermissionRequiredCommand : BaseCommand
+public abstract class BasePermissionRequiredCommand : BaseCommand
 {
     /// <summary>
     /// Validates the user and channel the message has been sent to determine whether the context is valid or not.
