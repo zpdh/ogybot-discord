@@ -39,31 +39,28 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     private async Task<Embed> CreateEmbedAsync()
     {
-        // Create class to store this info later
-        var (user, queueSize, description) = await GetEmbedContentAsync();
+        var content = await GetEmbedContentAsync();
 
         var embedBuilder = new EmbedBuilder()
-            .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+            .WithAuthor(content.SocketUser.Username, content.SocketUser.GetAvatarUrl() ?? content.SocketUser.GetDefaultAvatarUrl())
             .WithTitle("Tome List")
-            .WithDescription(description)
+            .WithDescription(content.Description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
-            .WithFooter(queueSize);
+            .WithFooter(content.QueueSize);
 
         return embedBuilder.Build();
     }
 
-    private async Task<(SocketUser user, string queueSize, string description)> GetEmbedContentAsync()
+    private async Task<EmbedContent> GetEmbedContentAsync()
     {
-        var user = Context.User;
-
         var list = await _tomeListClient.GetListAsync();
 
+        var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
-
         var description = CreateEmbedDescription(list);
 
-        return (user, queueSize, description);
+        return new EmbedContent(user, queueSize, description);
     }
 
     private static string CreateEmbedDescription(IList<TomeListUser> list)
@@ -97,23 +94,16 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
         ValidateUsername(username);
 
-        await TryAddingUserToTomeListAsync(username);
+        await AddUserToTomeListAsync(username);
 
         await FollowupAsync($"Successfully added player {username} to the wait list.");
     }
 
-    private async Task TryAddingUserToTomeListAsync(string username)
+    private async Task AddUserToTomeListAsync(string username)
     {
-        try
-        {
             var tomeListUser = new TomeListUser(username);
 
             await _tomeListClient.AddUserAsync(tomeListUser);
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
     }
 
     private void ValidateUsername(string username)
