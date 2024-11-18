@@ -40,30 +40,28 @@ public class WaitListCommands : BasePermissionRequiredCommand
     private async Task<Embed> CreateEmbedAsync()
     {
         // Create class to store this info later
-        var (user, queueSize, description) = await GetEmbedContentAsync();
+        var content = await GetEmbedContentAsync();
 
         var embedBuilder = new EmbedBuilder()
-            .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+            .WithAuthor(content.SocketUser.Username, content.SocketUser.GetAvatarUrl() ?? content.SocketUser.GetDefaultAvatarUrl())
             .WithTitle("Wait list")
-            .WithDescription(description)
+            .WithDescription(content.Description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
-            .WithFooter(queueSize);
+            .WithFooter(content.QueueSize);
 
         return embedBuilder.Build();
     }
 
-    private async Task<(SocketUser user, string queueSize, string description)> GetEmbedContentAsync()
+    private async Task<EmbedContent> GetEmbedContentAsync()
     {
-        var user = Context.User;
-
         var list = await _waitListClient.GetListAsync();
 
+        var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
-
         var description = CreateEmbedDescription(list);
 
-        return (user, queueSize, description);
+        return new EmbedContent(user, queueSize, description);
     }
 
     private static string CreateEmbedDescription(IList<WaitListUser> list)
@@ -97,23 +95,16 @@ public class WaitListCommands : BasePermissionRequiredCommand
 
         ValidateUsername(username);
 
-        await TryAddingUserToWaitlistAsync(username);
+        await AddUserToWaitlistAsync(username);
 
         await FollowupAsync($"Successfully added player {username} to the wait list.");
     }
 
-    private async Task TryAddingUserToWaitlistAsync(string username)
+    private async Task AddUserToWaitlistAsync(string username)
     {
-        try
-        {
-            var waitListUser = new WaitListUser(username);
+        var waitListUser = new WaitListUser(username);
 
-            await _waitListClient.AddUserAsync(waitListUser);
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
+        await _waitListClient.AddUserAsync(waitListUser);
     }
 
     private void ValidateUsername(string username)
