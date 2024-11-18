@@ -38,30 +38,28 @@ public class AspectListCommands : BasePermissionRequiredCommand
     private async Task<Embed> CreateEmbedAsync()
     {
         // Create class to store this info later
-        var (user, queueSize, description) = await GetEmbedContentAsync();
+        var content = await GetEmbedContentAsync();
 
         var embedBuilder = new EmbedBuilder()
-            .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+            .WithAuthor(content.SocketUser.Username, content.SocketUser.GetAvatarUrl() ?? content.SocketUser.GetDefaultAvatarUrl())
             .WithTitle("Aspect List")
-            .WithDescription(description)
+            .WithDescription(content.Description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
-            .WithFooter(queueSize);
+            .WithFooter(content.QueueSize);
 
         return embedBuilder.Build();
     }
 
-    private async Task<(SocketUser user, string queueSize, string description)> GetEmbedContentAsync()
+    private async Task<EmbedContent> GetEmbedContentAsync()
     {
-        var user = Context.User;
-
         var list = await _aspectListClient.GetListAsync();
 
+        var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
-
         var description = CreateEmbedDescription(list);
 
-        return (user, queueSize, description);
+        return new EmbedContent(user, queueSize, description);
     }
 
     private static string CreateEmbedDescription(IList<AspectListUser> list)
@@ -100,7 +98,6 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     private async Task DecrementAspectFromPlayerAsync(string usernameOrIndex)
     {
-
         if (short.TryParse(usernameOrIndex, out var index))
         {
             await DecrementByIndexAsync(index);
