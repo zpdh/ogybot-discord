@@ -4,6 +4,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
+using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Clients;
@@ -17,7 +18,10 @@ public class TomeListCommands : BasePermissionRequiredCommand
     private readonly ITomeListClient _tomeListClient;
     private readonly IListCommandValidator _commandValidator;
 
-    public TomeListCommands(ITomeListClient tomeListClient, IListCommandValidator commandValidator)
+    public TomeListCommands(
+        ITomeListClient tomeListClient,
+        IListCommandValidator commandValidator,
+        IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
     {
         _tomeListClient = tomeListClient;
         _commandValidator = commandValidator;

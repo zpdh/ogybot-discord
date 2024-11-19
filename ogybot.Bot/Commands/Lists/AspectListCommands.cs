@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
@@ -14,7 +15,7 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     private readonly IAspectListClient _aspectListClient;
 
-    public AspectListCommands(IAspectListClient aspectListClient)
+    public AspectListCommands(IAspectListClient aspectListClient, IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
     {
         _aspectListClient = aspectListClient;
     }

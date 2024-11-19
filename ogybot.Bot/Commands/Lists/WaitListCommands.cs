@@ -3,6 +3,8 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Lists.Validators;
+using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Clients;
@@ -13,12 +15,15 @@ namespace ogybot.Bot.Commands.Lists;
 public class WaitListCommands : BasePermissionRequiredCommand
 {
     private readonly IWaitListClient _waitListClient;
-    private readonly string _validCharacters;
+    private readonly IListCommandValidator _commandValidator;
 
-    public WaitListCommands(IWaitListClient waitListClient, IConfiguration configuration)
+    public WaitListCommands(
+        IWaitListClient waitListClient,
+        IListCommandValidator commandValidator,
+        IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
     {
         _waitListClient = waitListClient;
-        _validCharacters = configuration.GetValue<string>("ValidCharacters")!;
+        _commandValidator = commandValidator;
     }
 
     #region List Command

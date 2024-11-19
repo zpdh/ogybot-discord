@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
@@ -12,7 +13,7 @@ public class ChatSocketCommands : BaseCommand
 {
     private readonly IOnlineClient _client;
 
-    public ChatSocketCommands(IOnlineClient client)
+    public ChatSocketCommands(IOnlineClient client, IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
     {
         _client = client;
     }

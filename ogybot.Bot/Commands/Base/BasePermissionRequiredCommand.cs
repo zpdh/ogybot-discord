@@ -1,10 +1,15 @@
 ﻿using Discord;
+using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 
 namespace ogybot.Bot.Commands.Base;
 
 public abstract class BasePermissionRequiredCommand : BaseCommand
 {
+    protected BasePermissionRequiredCommand(IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    {
+    }
+
     /// <summary>
     /// Validates the user and channel the message has been sent to determine whether the context is valid or not.
     /// </summary>
