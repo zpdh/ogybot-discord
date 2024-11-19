@@ -96,7 +96,7 @@ public static class DiscordSocketClientExtensions
 
     private static async Task HandleCommandFailureAsync(SocketInteractionContext context, IResult result)
     {
-        await context.Channel.SendMessageAsync(ErrorMessages.UnknownError);
+        await context.Interaction.FollowupAsync(ErrorMessages.UnknownError);
         throw new UnknownException(result.ErrorReason);
     }
 

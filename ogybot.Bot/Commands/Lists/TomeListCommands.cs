@@ -168,19 +168,35 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     private async Task RemoveByNameAsync(string username)
     {
+        await ValidateUserBeingRemovedByName(username);
+
         var tomeListUser = new TomeListUser(username);
 
         await _tomeListClient.RemoveUserAsync(tomeListUser);
+    }
+
+    private async Task ValidateUserBeingRemovedByName(string username)
+    {
+        var list = await _tomeListClient.GetListAsync();
+
+        _commandValidator.ValidateUserRemoval(list, username);
     }
 
     private async Task RemoveByIndexAsync(int index)
     {
         var list = await _tomeListClient.GetListAsync();
 
+        ValidateUserBeingRemovedByIndex(index, list);
+
         // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
         var tomeListUser = list[index - 1];
 
         await _tomeListClient.RemoveUserAsync(tomeListUser);
+    }
+
+    private void ValidateUserBeingRemovedByIndex(int index, IList<TomeListUser> list)
+    {
+        _commandValidator.ValidateUserRemoval(list, index);
     }
 
     #endregion

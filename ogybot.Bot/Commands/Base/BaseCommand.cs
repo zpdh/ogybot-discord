@@ -6,8 +6,12 @@ namespace ogybot.Bot.Commands.Base;
 
 public abstract class BaseCommand : InteractionModuleBase<SocketInteractionContext>
 {
-    // Add to dependency injection later
-    private readonly ExceptionHandler _exceptionHandler = new ExceptionHandler();
+    private readonly IBotExceptionHandler _botExceptionHandler;
+
+    protected BaseCommand(IBotExceptionHandler exceptionHandler)
+    {
+        _botExceptionHandler = exceptionHandler;
+    }
 
     protected async Task<bool> IsInvalidChannelAsync(ulong channelId)
     {
@@ -25,7 +29,7 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
         }
         catch (Exception e)
         {
-            await ExceptionHandler.HandleAsync(Context, e);
+            await _botExceptionHandler.HandleAsync(Context, e);
         }
     }
 }

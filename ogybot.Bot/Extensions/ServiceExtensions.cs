@@ -17,6 +17,8 @@ public static class ServiceExtensions
         services.AddHandlers();
         services.AddDiscordClient();
         services.AddInteractionService();
+        services.AddCommandValidators();
+        services.AddExceptionHandler();
 
         // Dependencies from other projects, such as Infrastructure
         services.AddDependencies();
@@ -51,7 +53,7 @@ public static class ServiceExtensions
         });
     }
 
-    private static void AddValidators(this ServiceCollection services)
+    private static void AddCommandValidators(this ServiceCollection services)
     {
         services.AddScoped<IListCommandValidator>(provider => {
             var configuration = provider.GetRequiredService<IConfiguration>();
@@ -59,5 +61,10 @@ public static class ServiceExtensions
 
             return new ListCommandValidator(validCharacters);
         });
+    }
+
+    private static void AddExceptionHandler(this ServiceCollection services)
+    {
+        services.AddSingleton<IBotExceptionHandler, BotExceptionHandler>();
     }
 }

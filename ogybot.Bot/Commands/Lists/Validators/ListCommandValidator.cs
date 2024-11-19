@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using ogybot.Communication.Constants;
+﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
 
@@ -10,8 +9,8 @@ namespace ogybot.Bot.Commands.Lists.Validators;
 public interface IListCommandValidator
 {
     void ValidateUsername(string username);
-    void ValidateUserRemoval(IList<BaseUser> userList, string username);
-    void ValidateUserRemoval(IList<BaseUser> userList, int index);
+    void ValidateUserRemoval(IEnumerable<BaseUser> userList, string username);
+    void ValidateUserRemoval(IEnumerable<BaseUser> userList, int index);
 }
 
 public class ListCommandValidator : IListCommandValidator
@@ -36,7 +35,7 @@ public class ListCommandValidator : IListCommandValidator
         }
     }
 
-    public void ValidateUserRemoval(IList<BaseUser> userList, string username)
+    public void ValidateUserRemoval(IEnumerable<BaseUser> userList, string username)
     {
         if (!userList.Any(user => user.Username == username))
         {
@@ -44,10 +43,10 @@ public class ListCommandValidator : IListCommandValidator
         }
     }
 
-    public void ValidateUserRemoval(IList<BaseUser> userList, int index)
+    public void ValidateUserRemoval(IEnumerable<BaseUser> userList, int index)
     {
         // The user index starts at 1 whilst the list index starts at 0, not to cause confusion.
-        if (index <= 0 || index > userList.Count)
+        if (index <= 0 || index > userList.Count())
         {
             throw new InvalidCommandArgumentException(ErrorMessages.InvalidIndexError);
         }

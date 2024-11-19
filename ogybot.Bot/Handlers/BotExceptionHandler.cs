@@ -1,12 +1,18 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
+using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 
 namespace ogybot.Bot.Handlers;
 
-public class ExceptionHandler
+public interface IBotExceptionHandler
 {
-    public static async Task HandleAsync(SocketInteractionContext context, Exception exception)
+    Task HandleAsync(SocketInteractionContext context, Exception exception);
+}
+
+public class BotExceptionHandler : IBotExceptionHandler
+{
+    public async Task HandleAsync(SocketInteractionContext context, Exception exception)
     {
         if (exception is OgybotException)
         {
@@ -20,14 +26,12 @@ public class ExceptionHandler
 
     private static async Task HandleOgybotExceptionAsync(SocketInteractionContext context, Exception exception)
     {
-
         await context.Interaction.FollowupAsync(exception.Message);
     }
 
     private static async Task HandleUnknownExceptionAsync(SocketInteractionContext context, Exception exception)
     {
-
-        await context.Interaction.FollowupAsync("An unhandled exception occurred. Contact a developer.");
+        await context.Interaction.FollowupAsync(ErrorMessages.UnknownError);
         Log(exception);
     }
 

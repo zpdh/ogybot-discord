@@ -2,7 +2,7 @@
 
 public static class ErrorMessages
 {
-    public const string UnknownError = "An unknown error occurred while executing this command.";
+    public const string UnknownError = "An unknown error occurred while executing this command. Contact a developer.";
     public const string InvalidChannelError = "This command cannot be used in this channel.";
     public const string NoPermissionError = "You don't have permissions to use this command.";
 
