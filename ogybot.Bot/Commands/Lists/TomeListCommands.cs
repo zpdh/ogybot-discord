@@ -3,22 +3,24 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
+using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Lists;
 
 public class TomeListCommands : BasePermissionRequiredCommand
 {
     private readonly ITomeListClient _tomeListClient;
-    private readonly string _validCharacters;
+    private readonly IListCommandValidator _commandValidator;
 
-    public TomeListCommands(ITomeListClient tomeListClient, IConfiguration configuration)
+    public TomeListCommands(ITomeListClient tomeListClient, IListCommandValidator commandValidator)
     {
         _tomeListClient = tomeListClient;
-        _validCharacters = configuration.GetValue<string>("ValidCharacters")!;
+        _commandValidator = commandValidator;
     }
 
     #region List Command
@@ -94,6 +96,11 @@ public class TomeListCommands : BasePermissionRequiredCommand
             return;
         }
 
+        await TryExecutingCommandInstructionsAsync(async () => await TomeListAddCommandInstructionsAsync(username));
+    }
+
+    private async Task TomeListAddCommandInstructionsAsync(string username)
+    {
         ValidateUsername(username);
 
         await AddUserToTomeListAsync(username);
@@ -110,10 +117,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     private void ValidateUsername(string username)
     {
-        if (username.Any(character => !_validCharacters.Contains(character)))
-        {
-            throw new InvalidCommandArgumentException();
-        }
+        _commandValidator.ValidateUsername(username);
     }
 
     #endregion
@@ -122,21 +126,36 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("tomelist-remove", "removes a user from the tome list based on their name or index")]
-    public async Task ExecuteTomeListRemoveCommandAsync([Summary("user-or-index", "The user's name or index")] string usernameOrIndex)
+    public async Task ExecuteTomeListRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel))
+        if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel)) return;
+
+
+        await TryExecutingCommandInstructionsAsync(async () => await TomeListRemoveInstructionsAsync(usernamesOrIndexes));
+    }
+
+    private async Task TomeListRemoveInstructionsAsync(string usernamesOrIndexes)
+    {
+        await RemovePlayersFromListAsync(usernamesOrIndexes);
+
+        await FollowupAsync("Successfully removed provided player(s) from the wait list.");
+    }
+
+    private async Task RemovePlayersFromListAsync(string usernamesOrIndexes)
+    {
+        var players = usernamesOrIndexes
+            .Split(',')
+            .Select(player => player.Trim())
+            .Where(player => !player.IsNullOrWhitespace());
+
+        foreach (var player in players)
         {
-            return;
+            await RemovePlayerFromListAsync(player);
         }
-
-        await RemovePlayerFromListAsync(usernameOrIndex);
-
-        await FollowupAsync($"Successfully removed provided player from the wait list.");
     }
 
     private async Task RemovePlayerFromListAsync(string usernameOrIndex)
     {
-
         if (short.TryParse(usernameOrIndex, out var index))
         {
             await RemoveByIndexAsync(index);

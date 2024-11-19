@@ -3,6 +3,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Bot.Builders;
+using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.CrossCutting;
 
@@ -47,6 +48,16 @@ public static class ServiceExtensions
             var client = provider.GetRequiredService<DiscordSocketClient>();
 
             return new InteractionService(client.Rest);
+        });
+    }
+
+    private static void AddValidators(this ServiceCollection services)
+    {
+        services.AddScoped<IListCommandValidator>(provider => {
+            var configuration = provider.GetRequiredService<IConfiguration>();
+            var validCharacters = configuration.GetValue<string>("ValidCharacters")!;
+
+            return new ListCommandValidator(validCharacters);
         });
     }
 }

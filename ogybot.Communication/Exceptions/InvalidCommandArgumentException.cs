@@ -2,4 +2,4 @@
 
 namespace ogybot.Communication.Exceptions;
 
-public class InvalidCommandArgumentException() : OgybotException(ExceptionMessages.InvalidCommandArgument);
+public class InvalidCommandArgumentException(string message) : OgybotException(message);
