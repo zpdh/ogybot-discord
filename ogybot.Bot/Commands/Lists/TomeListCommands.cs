@@ -1,12 +1,9 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.Communication.Exceptions;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
 using ogybot.Utility.Extensions;
@@ -33,7 +30,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist", "Presents the tome list to get a guild tome.")]
     public async Task ExecuteTomeListCommandAsync()
     {
-        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel)) return;
+        if (await IsInvalidChannelAsync(GuildChannels.TomeChannel)) return;
 
         await TryExecutingCommandInstructionsAsync(TomeListCommandInstructionsAsync);
     }
@@ -95,7 +92,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist-add", "Adds a user to the tome list.")]
     public async Task ExecuteTomeListAddCommandAsync([Summary("user", "User to insert into the tome list")] string username)
     {
-        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel))
+        if (await IsInvalidChannelAsync(GuildChannels.TomeChannel))
         {
             return;
         }
@@ -105,7 +102,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     private async Task TomeListAddCommandInstructionsAsync(string username)
     {
-        ValidateUsername(username);
+        await ValidateUsernameAsync(username);
 
         await AddUserToTomeListAsync(username);
 
@@ -119,9 +116,10 @@ public class TomeListCommands : BasePermissionRequiredCommand
         await _tomeListClient.AddUserAsync(tomeListUser);
     }
 
-    private void ValidateUsername(string username)
+    private async Task ValidateUsernameAsync(string username)
     {
-        _commandValidator.ValidateUsername(username);
+        var userList = await _tomeListClient.GetListAsync();
+        _commandValidator.ValidateUsername(userList, username);
     }
 
     #endregion
@@ -132,7 +130,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist-remove", "removes a user from the tome list based on their name or index")]
     public async Task ExecuteTomeListRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel)) return;
+        if (await IsInvalidContextAsync(GuildChannels.TomeChannel)) return;
 
 
         await TryExecutingCommandInstructionsAsync(async () => await TomeListRemoveInstructionsAsync(usernamesOrIndexes));
@@ -140,17 +138,25 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
     private async Task TomeListRemoveInstructionsAsync(string usernamesOrIndexes)
     {
-        await RemovePlayersFromListAsync(usernamesOrIndexes);
+        if (usernamesOrIndexes.Contains(','))
+        {
+            await RemoveMultiplePlayersFromListAsync(usernamesOrIndexes);
+        }
+        else
+        {
+            await RemovePlayerFromListAsync(usernamesOrIndexes);
+        }
 
         await FollowupAsync("Successfully removed provided player(s) from the wait list.");
     }
 
-    private async Task RemovePlayersFromListAsync(string usernamesOrIndexes)
+    private async Task RemoveMultiplePlayersFromListAsync(string usernamesOrIndexes)
     {
         var players = usernamesOrIndexes
             .Split(',')
             .Select(player => player.Trim())
-            .Where(player => !player.IsNullOrWhitespace());
+            .Where(player => !player.IsNullOrWhitespace())
+            .OrderDescending();
 
         foreach (var player in players)
         {
@@ -170,6 +176,18 @@ public class TomeListCommands : BasePermissionRequiredCommand
         }
     }
 
+    private async Task RemoveByIndexAsync(int index)
+    {
+        var list = await _tomeListClient.GetListAsync();
+
+        ValidateUserBeingRemovedByIndex(index, list);
+
+        // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
+        var tomeListUser = list[index - 1];
+
+        await _tomeListClient.RemoveUserAsync(tomeListUser);
+    }
+
     private async Task RemoveByNameAsync(string username)
     {
         await ValidateUserBeingRemovedByName(username);
@@ -184,18 +202,6 @@ public class TomeListCommands : BasePermissionRequiredCommand
         var list = await _tomeListClient.GetListAsync();
 
         _commandValidator.ValidateUserRemoval(list, username);
-    }
-
-    private async Task RemoveByIndexAsync(int index)
-    {
-        var list = await _tomeListClient.GetListAsync();
-
-        ValidateUserBeingRemovedByIndex(index, list);
-
-        // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
-        var tomeListUser = list[index - 1];
-
-        await _tomeListClient.RemoveUserAsync(tomeListUser);
     }
 
     private void ValidateUserBeingRemovedByIndex(int index, IList<TomeListUser> list)

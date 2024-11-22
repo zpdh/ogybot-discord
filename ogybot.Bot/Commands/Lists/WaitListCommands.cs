@@ -1,12 +1,9 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.Communication.Exceptions;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
 
@@ -98,7 +95,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
             return;
         }
 
-        ValidateUsername(username);
+        await ValidateUsernameAsync(username);
 
         await AddUserToWaitlistAsync(username);
 
@@ -112,12 +109,10 @@ public class WaitListCommands : BasePermissionRequiredCommand
         await _waitListClient.AddUserAsync(waitListUser);
     }
 
-    private void ValidateUsername(string username)
+    private async Task ValidateUsernameAsync(string username)
     {
-        if (username.Any(character => !_validCharacters.Contains(character)))
-        {
-            throw new InvalidCommandArgumentException();
-        }
+        var userList = await _waitListClient.GetListAsync();
+        _commandValidator.ValidateUsername(userList, username);
     }
 
     #endregion

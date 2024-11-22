@@ -8,7 +8,7 @@ namespace ogybot.Bot.Commands.Lists.Validators;
 
 public interface IListCommandValidator
 {
-    void ValidateUsername(string username);
+    void ValidateUsername(IEnumerable<BaseUser> userList, string username);
     void ValidateUserRemoval(IEnumerable<BaseUser> userList, string username);
     void ValidateUserRemoval(IEnumerable<BaseUser> userList, int index);
 }
@@ -22,16 +22,27 @@ public class ListCommandValidator : IListCommandValidator
         _validCharacters = validCharacters;
     }
 
-    public void ValidateUsername(string username)
+    public void ValidateUsername(IEnumerable<BaseUser> userList, string username)
     {
+        var usernames = userList.Select(user => user.Username);
+
+        if (usernames.Contains(username))
+        {
+            throw new InvalidCommandArgumentException(ErrorMessages.UserAlreadyOnListError);
+        }
+
         if (username.Any(character => !_validCharacters.Contains(character)))
         {
             throw new InvalidCommandArgumentException(ErrorMessages.InvalidCharactersError);
         }
 
-        if (username.Length > 32)
+        switch (username.Length)
         {
-            throw new InvalidCommandArgumentException(ErrorMessages.UsernameTooLongError);
+            case < 3:
+                throw new InvalidCommandArgumentException(ErrorMessages.UsernameTooShortError);
+
+            case > 32:
+                throw new InvalidCommandArgumentException(ErrorMessages.UsernameTooLongError);
         }
     }
 

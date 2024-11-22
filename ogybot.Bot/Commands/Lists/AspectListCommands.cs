@@ -1,8 +1,7 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
 using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Clients;
@@ -14,10 +13,15 @@ public class AspectListCommands : BasePermissionRequiredCommand
 {
 
     private readonly IAspectListClient _aspectListClient;
+    private readonly IListCommandValidator _commandValidator;
 
-    public AspectListCommands(IAspectListClient aspectListClient, IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    public AspectListCommands(
+        IAspectListClient aspectListClient,
+        IListCommandValidator commandValidator,
+        IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
     {
         _aspectListClient = aspectListClient;
+        _commandValidator = commandValidator;
     }
 
     #region List Command

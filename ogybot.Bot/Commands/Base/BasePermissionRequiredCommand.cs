@@ -25,11 +25,11 @@ public abstract class BasePermissionRequiredCommand : BaseCommand
 
         if (await IsInvalidChannelAsync(channelId)) return true;
 
-        return await ValidateUserRolesAsync();
+        return await UserHasNoRolesAsync();
 
     }
 
-    private async Task<bool> ValidateUserRolesAsync()
+    private async Task<bool> UserHasNoRolesAsync()
     {
 
         var user = Context.User as IGuildUser;
