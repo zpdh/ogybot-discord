@@ -6,6 +6,7 @@ using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
+using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Lists;
 
@@ -34,6 +35,11 @@ public class WaitListCommands : BasePermissionRequiredCommand
             return;
         }
 
+        await TryExecutingCommandInstructionsAsync(ExecuteWaitlistCommandAsync);
+    }
+
+    private async Task WaitListCommandInstructionsAsync()
+    {
         var embed = await CreateEmbedAsync();
 
         await FollowupAsync(embed: embed);
@@ -95,6 +101,11 @@ public class WaitListCommands : BasePermissionRequiredCommand
             return;
         }
 
+        await TryExecutingCommandInstructionsAsync(async () => await WaitListAddInstructionsAsync(username));
+    }
+
+    private async Task WaitListAddInstructionsAsync(string username)
+    {
         await ValidateUsernameAsync(username);
 
         await AddUserToWaitlistAsync(username);
@@ -121,16 +132,42 @@ public class WaitListCommands : BasePermissionRequiredCommand
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("waitlist-remove", "removes a user from the wait list based on their name or index")]
-    public async Task ExecuteWaitlistRemoveCommandAsync([Summary("user-or-index", "The user's name or index")] string usernameOrIndex)
+    public async Task ExecuteWaitlistRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
         if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel))
         {
             return;
         }
 
-        await RemovePlayerFromListAsync(usernameOrIndex);
+        await TryExecutingCommandInstructionsAsync(async () => await WaitListRemoveInstructionsAsync(usernamesOrIndexes));
+    }
+
+    private async Task WaitListRemoveInstructionsAsync(string usernamesOrIndexes)
+    {
+        if (usernamesOrIndexes.Contains(','))
+        {
+            await RemoveMultiplePlayersFromListAsync(usernamesOrIndexes);
+        }
+        else
+        {
+            await RemovePlayerFromListAsync(usernamesOrIndexes);
+        }
 
         await FollowupAsync($"Successfully removed provided player from the wait list.");
+    }
+
+    private async Task RemoveMultiplePlayersFromListAsync(string usernamesOrIndexes)
+    {
+        var players = usernamesOrIndexes
+            .Split(',')
+            .Select(player => player.Trim())
+            .Where(player => !player.IsNullOrWhitespace())
+            .OrderDescending();
+
+        foreach (var player in players)
+        {
+            await RemovePlayerFromListAsync(player);
+        }
     }
 
     private async Task RemovePlayerFromListAsync(string usernameOrIndex)
