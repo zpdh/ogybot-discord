@@ -6,6 +6,7 @@ using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
+using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Lists;
 
@@ -13,15 +14,12 @@ public class AspectListCommands : BasePermissionRequiredCommand
 {
 
     private readonly IAspectListClient _aspectListClient;
-    private readonly IListCommandValidator _commandValidator;
 
     public AspectListCommands(
         IAspectListClient aspectListClient,
-        IListCommandValidator commandValidator,
         IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
     {
         _aspectListClient = aspectListClient;
-        _commandValidator = commandValidator;
     }
 
     #region List Command
@@ -34,6 +32,12 @@ public class AspectListCommands : BasePermissionRequiredCommand
         {
             return;
         }
+
+        await TryExecutingCommandInstructionsAsync(AspectListCommandInstructionsAsync);
+    }
+
+    private async Task AspectListCommandInstructionsAsync()
+    {
 
         var embed = await CreateEmbedAsync();
 
@@ -89,16 +93,42 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("aspectlist-decrement", "Decrements an aspect from the provided user.")]
-    public async Task ExecuteAspectListDecrementCommandAsync([Summary("user-or-index", "The user's name or index")] string usernameOrIndex)
+    public async Task ExecuteAspectListDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
         if (await IsInvalidContextAsync(GuildChannels.RaidsChannel))
         {
             return;
         }
 
-        await DecrementAspectFromPlayerAsync(usernameOrIndex);
+        await TryExecutingCommandInstructionsAsync(async () => await AspectListDecrementCommandInstructionsAsync(usernamesOrIndexes));
+    }
+
+    private async Task AspectListDecrementCommandInstructionsAsync(string usernamesOrIndexes)
+    {
+        if (usernamesOrIndexes.Contains(','))
+        {
+            await DecrementAspectFromMultiplePlayersAsync(usernamesOrIndexes);
+        }
+        else
+        {
+            await DecrementAspectFromPlayerAsync(usernamesOrIndexes);
+        }
 
         await FollowupAsync($"Successfully decremented 1 aspect from the provided player.");
+    }
+
+    private async Task DecrementAspectFromMultiplePlayersAsync(string usernamesOrIndexes)
+    {
+        var players = usernamesOrIndexes
+            .Split(',')
+            .Select(player => player.Trim())
+            .Where(player => !player.IsNullOrWhitespace())
+            .OrderDescending();
+
+        foreach (var player in players)
+        {
+            await DecrementAspectFromPlayerAsync(player);
+        }
     }
 
     private async Task DecrementAspectFromPlayerAsync(string usernameOrIndex)
