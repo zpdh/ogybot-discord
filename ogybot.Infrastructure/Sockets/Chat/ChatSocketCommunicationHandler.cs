@@ -10,12 +10,17 @@ namespace ogybot.Data.Sockets.Chat;
 public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 {
     private readonly IChatSocketMessageHandler _messageHandler;
+    private readonly IChatSocketSetupHandler _setupHandler;
     private readonly SocketIOClient.SocketIO _socket;
 
-    public ChatSocketCommunicationHandler(IChatSocketMessageHandler messageHandler, SocketIOClient.SocketIO socket)
+    public ChatSocketCommunicationHandler(
+        IChatSocketMessageHandler messageHandler,
+        SocketIOClient.SocketIO socket,
+        IChatSocketSetupHandler setupHandler)
     {
         _messageHandler = messageHandler;
         _socket = socket;
+        _setupHandler = setupHandler;
     }
 
     public void SetupEventListeners(IMessageChannel channel)
@@ -49,6 +54,9 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
             Console.WriteLine(message);
             await _messageHandler.SendLoggingMessageAsync(channel, message);
+
+            // Change later to refresh token instead
+            await _setupHandler.RequestAndAddTokenToHeadersAsync();
 
             await _socket.ConnectAsync();
         };
