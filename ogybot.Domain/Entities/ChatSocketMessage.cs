@@ -1,8 +1,6 @@
-﻿using ogybot.Domain.Entities;
+﻿namespace ogybot.Domain.Entities;
 
-namespace ogybot.Communication.Messages;
-
-public class SocketMessage
+public class ChatSocketMessage
 {
     public SocketMessageType MessageType { get; set; }
     public string HeaderContent { get; set; } = string.Empty;

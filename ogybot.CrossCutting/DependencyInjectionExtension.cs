@@ -5,9 +5,12 @@ using ogybot.Communication.Constants;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
 using ogybot.Data.Sockets;
+using ogybot.Data.Sockets.Chat;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Security;
 using ogybot.Domain.Sockets;
+using ogybot.Domain.Sockets.ChatSocket;
+using SocketIOClient;
 
 namespace ogybot.CrossCutting;
 
@@ -54,12 +57,22 @@ public static class DependencyInjectionExtension
 
     private static void AddWebSockets(this ServiceCollection services)
     {
-        services.AddSingleton<IChatSocket>(provider => {
+        services.AddSingleton<SocketIOClient.SocketIO>(provider => {
             var config = provider.GetRequiredService<IConfiguration>();
-            var tokenRequester = provider.GetRequiredService<ITokenRequester>();
             var websocketUrl = config.GetValue<string>("Websocket:WebsocketServerUrl")!;
 
-            return new ChatSocket(tokenRequester, websocketUrl);
+            return new SocketIOClient.SocketIO(websocketUrl,
+                new SocketIOOptions
+                {
+                    ExtraHeaders = new Dictionary<string, string>(),
+                    ConnectionTimeout = TimeSpan.FromSeconds(120),
+                    Reconnection = false
+                });
         });
+
+        services.AddSingleton<IChatSocketMessageHandler, ChatSocketMessageHandler>();
+        services.AddSingleton<IChatSocketSetupHandler, ChatSocketSetupHandler>();
+        services.AddSingleton<IChatSocketCommunicationHandler, ChatSocketCommunicationHandler>();
+        services.AddSingleton<IChatSocket, ChatSocket>();
     }
 }
