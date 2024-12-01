@@ -1,5 +1,4 @@
-﻿using ogybot.Communication.Exceptions;
-using ogybot.Domain.Clients;
+﻿using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Security;
 

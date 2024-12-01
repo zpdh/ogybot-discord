@@ -12,8 +12,8 @@ namespace ogybot.Bot.Commands.Lists;
 
 public class WaitListCommands : BasePermissionRequiredCommand
 {
-    private readonly IWaitListClient _waitListClient;
     private readonly IListCommandValidator _commandValidator;
+    private readonly IWaitListClient _waitListClient;
 
     public WaitListCommands(
         IWaitListClient waitListClient,
@@ -153,7 +153,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
             await RemovePlayerFromListAsync(usernamesOrIndexes);
         }
 
-        await FollowupAsync($"Successfully removed provided player from the wait list.");
+        await FollowupAsync("Successfully removed provided player from the wait list.");
     }
 
     private async Task RemoveMultiplePlayersFromListAsync(string usernamesOrIndexes)

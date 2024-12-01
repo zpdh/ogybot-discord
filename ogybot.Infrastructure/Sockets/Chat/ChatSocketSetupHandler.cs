@@ -3,7 +3,6 @@ using Discord.WebSocket;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Security;
 using ogybot.Domain.Sockets.ChatSocket;
-using SocketIOClient;
 
 namespace ogybot.Data.Sockets.Chat;
 

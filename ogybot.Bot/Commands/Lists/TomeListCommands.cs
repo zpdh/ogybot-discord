@@ -12,8 +12,8 @@ namespace ogybot.Bot.Commands.Lists;
 
 public class TomeListCommands : BasePermissionRequiredCommand
 {
-    private readonly ITomeListClient _tomeListClient;
     private readonly IListCommandValidator _commandValidator;
+    private readonly ITomeListClient _tomeListClient;
 
     public TomeListCommands(
         ITomeListClient tomeListClient,
