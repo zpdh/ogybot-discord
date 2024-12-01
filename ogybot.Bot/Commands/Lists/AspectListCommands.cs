@@ -16,6 +16,8 @@ public class AspectListCommands : BasePermissionRequiredCommand
     private readonly IAspectListClient _aspectListClient;
     private readonly IListCommandValidator _commandValidator;
 
+    private const ulong ChannelId = GuildChannels.RaidsChannel;
+
     public AspectListCommands(
         IAspectListClient aspectListClient,
         IBotExceptionHandler exceptionHandler,
@@ -31,7 +33,7 @@ public class AspectListCommands : BasePermissionRequiredCommand
     [SlashCommand("aspectlist", "Presents the aspect list to get a guild aspect.")]
     public async Task ExecuteAspectListCommandAsync()
     {
-        if (await IsInvalidChannelAsync(GuildChannels.RaidsChannel))
+        if (await IsInvalidChannelAsync(ChannelId))
         {
             return;
         }
@@ -98,7 +100,7 @@ public class AspectListCommands : BasePermissionRequiredCommand
     [SlashCommand("aspectlist-decrement", "Decrements an aspect from the provided user.")]
     public async Task ExecuteAspectListDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(GuildChannels.RaidsChannel))
+        if (await IsInvalidContextAsync(ChannelId))
         {
             return;
         }

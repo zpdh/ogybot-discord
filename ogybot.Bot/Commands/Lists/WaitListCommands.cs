@@ -15,6 +15,8 @@ public class WaitListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly IWaitListClient _waitListClient;
 
+    private const ulong ChannelId = GuildChannels.LayoffsChannel;
+
     public WaitListCommands(
         IWaitListClient waitListClient,
         IListCommandValidator commandValidator,
@@ -30,7 +32,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
     [SlashCommand("waitlist", "Presents the wait list to rejoin the guild.")]
     public async Task ExecuteWaitlistCommandAsync()
     {
-        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel))
+        if (await IsInvalidChannelAsync(ChannelId))
         {
             return;
         }
@@ -96,7 +98,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
     [SlashCommand("waitlist-add", "Adds a user to the wait list.")]
     public async Task ExecuteWaitlistAddCommandAsync([Summary("user", "User to insert into the wait list")] string username)
     {
-        if (await IsInvalidChannelAsync(GuildChannels.LayoffsChannel))
+        if (await IsInvalidChannelAsync(ChannelId))
         {
             return;
         }
@@ -134,7 +136,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
     [SlashCommand("waitlist-remove", "removes a user from the wait list based on their name or index")]
     public async Task ExecuteWaitlistRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(GuildChannels.LayoffsChannel))
+        if (await IsInvalidContextAsync(ChannelId))
         {
             return;
         }
