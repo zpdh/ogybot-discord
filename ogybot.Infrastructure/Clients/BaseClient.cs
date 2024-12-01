@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
+using ogybot.Domain.Entities;
 
 namespace ogybot.Data.Clients;
 
@@ -26,7 +27,11 @@ public abstract class BaseClient
 
         AddOptionalFieldsToRequest(request, content, token);
 
-        return await SendHttpRequest(request);
+        var response = await SendHttpRequest(request);
+
+        await EnsureSuccessStatusCode(response);
+
+        return response;
     }
 
     protected async Task<HttpResponseMessage> MakeAndSendRouteRequestAsync(
@@ -73,6 +78,17 @@ public abstract class BaseClient
     private async Task<HttpResponseMessage> SendHttpRequest(HttpRequestMessage request)
     {
         return await _httpClient.SendAsync(request);
+    }
+
+    private static async Task EnsureSuccessStatusCode(HttpResponseMessage response)
+    {
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var error = await ParseResponseAsync<ApiError>(response);
+
+            throw new ApiException(error.Error);
+        }
     }
 
     protected static async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)

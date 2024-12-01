@@ -12,8 +12,4 @@
       <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Messages\" />
-    </ItemGroup>
-
 </Project>
