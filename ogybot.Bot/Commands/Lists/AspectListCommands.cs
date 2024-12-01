@@ -82,7 +82,7 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
         foreach (var aspectListUser in list)
         {
-            description += $"{counter}. {aspectListUser.Username}\n";
+            description += $"{counter}. {aspectListUser.Username}: {aspectListUser.Aspects}\n";
 
             counter++;
         }
