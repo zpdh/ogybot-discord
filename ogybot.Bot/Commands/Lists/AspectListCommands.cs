@@ -14,12 +14,15 @@ public class AspectListCommands : BasePermissionRequiredCommand
 {
 
     private readonly IAspectListClient _aspectListClient;
+    private readonly IListCommandValidator _commandValidator;
 
     public AspectListCommands(
         IAspectListClient aspectListClient,
-        IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+        IBotExceptionHandler exceptionHandler,
+        IListCommandValidator commandValidator) : base(exceptionHandler)
     {
         _aspectListClient = aspectListClient;
+        _commandValidator = commandValidator;
     }
 
     #region List Command
@@ -114,7 +117,7 @@ public class AspectListCommands : BasePermissionRequiredCommand
             await DecrementAspectFromPlayerAsync(usernamesOrIndexes);
         }
 
-        await FollowupAsync($"Successfully decremented 1 aspect from the provided player.");
+        await FollowupAsync("Successfully decremented 1 aspect from the provided player(s).");
     }
 
     private async Task DecrementAspectFromMultiplePlayersAsync(string usernamesOrIndexes)
@@ -145,6 +148,10 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     private async Task DecrementByNameAsync(string username)
     {
+        var list = await _aspectListClient.GetListAsync();
+
+        _commandValidator.ValidateUserRemoval(list, username);
+
         var aspectListUser = new AspectListUser(username);
 
         await _aspectListClient.DecrementAspectAsync(aspectListUser);
@@ -153,6 +160,8 @@ public class AspectListCommands : BasePermissionRequiredCommand
     private async Task DecrementByIndexAsync(int index)
     {
         var list = await _aspectListClient.GetListAsync();
+
+        _commandValidator.ValidateUserRemoval(list, index);
 
         // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
         var aspectListUser = list[index - 1];
