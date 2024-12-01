@@ -106,7 +106,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
 
         await AddUserToTomeListAsync(username);
 
-        await FollowupAsync($"Successfully added player {username} to the wait list.");
+        await FollowupAsync($"Successfully added player {username} to the tome list.");
     }
 
     private async Task AddUserToTomeListAsync(string username)
