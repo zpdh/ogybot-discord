@@ -35,7 +35,12 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
     public async Task RequestAndAddTokenToHeadersAsync()
     {
         var token = await _tokenRequester.GetTokenAsync();
-
         _socket.Options.ExtraHeaders.Add("Authorization", "Bearer " + token);
+    }
+
+    public async Task RequestAndRefreshTokenInHeadersAsync()
+    {
+        _socket.Options.ExtraHeaders.Remove("Authorization");
+        await RequestAndAddTokenToHeadersAsync();
     }
 }

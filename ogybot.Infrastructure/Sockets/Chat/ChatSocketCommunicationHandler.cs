@@ -55,8 +55,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
             Console.WriteLine(message);
             await _messageHandler.SendLoggingMessageAsync(channel, message);
 
-            // Change later to refresh token instead
-            await _setupHandler.RequestAndAddTokenToHeadersAsync();
+            await _setupHandler.RequestAndRefreshTokenInHeadersAsync();
 
             await _socket.ConnectAsync();
         };
