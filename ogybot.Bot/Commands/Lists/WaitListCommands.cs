@@ -37,7 +37,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
             return;
         }
 
-        await TryExecutingCommandInstructionsAsync(ExecuteWaitlistCommandAsync);
+        await TryExecutingCommandInstructionsAsync(WaitListCommandInstructionsAsync);
     }
 
     private async Task WaitListCommandInstructionsAsync()
