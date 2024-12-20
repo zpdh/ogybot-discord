@@ -14,4 +14,6 @@ public class AspectListUser : BaseUser
     }
 
     public double Aspects { get; set; }
+    public int EmeraldsOwed { get; set; }
+    public int Raids { get; set; }
 }

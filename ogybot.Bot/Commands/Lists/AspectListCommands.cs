@@ -31,28 +31,27 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("aspectlist", "Presents the aspect list to get a guild aspect.")]
-    public async Task ExecuteAspectListCommandAsync()
+    public async Task ExecuteAspectListCommandAsync(AspectListOrderType orderType = AspectListOrderType.Raids)
     {
         if (await IsInvalidChannelAsync(ChannelId))
         {
             return;
         }
 
-        await TryExecutingCommandInstructionsAsync(AspectListCommandInstructionsAsync);
+        await TryExecutingCommandInstructionsAsync(async () => await AspectListCommandInstructionsAsync(orderType));
     }
 
-    private async Task AspectListCommandInstructionsAsync()
+    private async Task AspectListCommandInstructionsAsync(AspectListOrderType orderType)
     {
-
-        var embed = await CreateEmbedAsync();
+        var embed = await CreateEmbedAsync(orderType);
 
         await FollowupAsync(embed: embed);
     }
 
-    private async Task<Embed> CreateEmbedAsync()
+    private async Task<Embed> CreateEmbedAsync(AspectListOrderType orderType)
     {
         // Create class to store this info later
-        var content = await GetEmbedContentAsync();
+        var content = await GetEmbedContentAsync(orderType);
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(content.SocketUser.Username, content.SocketUser.GetAvatarUrl() ?? content.SocketUser.GetDefaultAvatarUrl())
@@ -65,15 +64,26 @@ public class AspectListCommands : BasePermissionRequiredCommand
         return embedBuilder.Build();
     }
 
-    private async Task<EmbedContent> GetEmbedContentAsync()
+    private async Task<EmbedContent> GetEmbedContentAsync(AspectListOrderType orderType)
     {
         var list = await _aspectListClient.GetListAsync();
+        var orderedList = CreateOrderedList(list, orderType);
 
         var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
-        var description = CreateEmbedDescription(list);
+        var description = CreateEmbedDescription(orderedList);
 
         return new EmbedContent(user, queueSize, description);
+    }
+
+    private static List<AspectListUser> CreateOrderedList(IList<AspectListUser> list, AspectListOrderType orderType)
+    {
+        return orderType switch
+        {
+            AspectListOrderType.Aspects => list.OrderByDescending(user => user.Aspects).ToList(),
+            AspectListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.EmeraldsOwed).ToList(),
+            _ => list.OrderByDescending(user => user.Raids).ToList()
+        };
     }
 
     private static string CreateEmbedDescription(IList<AspectListUser> list)
@@ -84,7 +94,8 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
         foreach (var aspectListUser in list)
         {
-            description += $"{counter}. {aspectListUser.Username}: {aspectListUser.Aspects}\n";
+            description +=
+                $"{counter}. {aspectListUser.Username}: {aspectListUser.Raids} Raids | {aspectListUser.Aspects} Aspects Owed | {aspectListUser.EmeraldsOwed} Emeralds Owed\n\n";
 
             counter++;
         }
