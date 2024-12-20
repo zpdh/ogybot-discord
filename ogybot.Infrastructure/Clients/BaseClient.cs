@@ -68,7 +68,6 @@ public abstract class BaseClient
 
     private static async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
     {
-
         if (!response.IsSuccessStatusCode)
         {
             var error = await ParseResponseAsync<ApiError>(response);

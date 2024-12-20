@@ -6,6 +6,7 @@ using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Enums;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Lists;
@@ -31,7 +32,7 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("aspectlist", "Presents the aspect list to get a guild aspect.")]
-    public async Task ExecuteAspectListCommandAsync(AspectListOrderType orderType = AspectListOrderType.Raids)
+    public async Task ExecuteAspectListCommandAsync([Summary("order-by")] AspectListOrderType orderType = AspectListOrderType.Raids)
     {
         if (await IsInvalidChannelAsync(ChannelId))
         {

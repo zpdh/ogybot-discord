@@ -5,6 +5,7 @@ using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Enums;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Misc;

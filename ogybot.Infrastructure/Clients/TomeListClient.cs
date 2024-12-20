@@ -1,5 +1,6 @@
 ﻿using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Security;
 
 namespace ogybot.Data.Clients;

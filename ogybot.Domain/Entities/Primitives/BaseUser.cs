@@ -1,4 +1,4 @@
-﻿namespace ogybot.Domain.Entities;
+﻿namespace ogybot.Domain.Entities.Primitives;
 
 public abstract class BaseUser
 {

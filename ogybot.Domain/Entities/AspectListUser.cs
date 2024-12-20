@@ -1,4 +1,6 @@
-﻿namespace ogybot.Domain.Entities;
+﻿using ogybot.Domain.Entities.Primitives;
+
+namespace ogybot.Domain.Entities;
 
 public class AspectListUser : BaseUser
 {

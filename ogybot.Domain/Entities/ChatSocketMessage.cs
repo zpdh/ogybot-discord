@@ -1,4 +1,6 @@
-﻿namespace ogybot.Domain.Entities;
+﻿using ogybot.Domain.Enums;
+
+namespace ogybot.Domain.Entities;
 
 public class ChatSocketMessage
 {

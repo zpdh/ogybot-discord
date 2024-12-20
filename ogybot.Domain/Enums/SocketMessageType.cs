@@ -1,4 +1,4 @@
-﻿namespace ogybot.Domain.Entities;
+﻿namespace ogybot.Domain.Enums;
 
 public enum SocketMessageType
 {
