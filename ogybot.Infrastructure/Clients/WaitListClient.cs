@@ -40,6 +40,6 @@ public class WaitListClient : BaseClient, IWaitListClient
         var method = HttpMethod.Delete;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRouteRequestAsync(method, Endpoint, user.Username!, token);
+        await MakeAndSendRouteRequestAsync(method, Endpoint, user.Username, token);
     }
 }

@@ -76,11 +76,11 @@ public abstract class BaseClient
         }
     }
 
-    protected async Task<HttpResponseMessage> MakeAndSendRouteRequestAsync(
+    protected async Task<HttpResponseMessage> MakeAndSendRouteRequestAsync<T>(
         HttpMethod method,
         string endpoint,
-        string route,
-        string? token = null)
+        T route,
+        string? token = null) where T : IConvertible
     {
         var request = new HttpRequestMessage(method, $"{endpoint}/{route}");
 
