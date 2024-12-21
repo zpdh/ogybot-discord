@@ -1,4 +1,4 @@
-﻿namespace ogybot.Domain.Entities;
+﻿namespace ogybot.Domain.Infrastructure.Errors;
 
 public class ApiError
 {

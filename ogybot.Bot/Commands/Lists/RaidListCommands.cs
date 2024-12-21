@@ -4,9 +4,9 @@ using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Enums;
+using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Lists;

@@ -3,7 +3,7 @@ using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Communication.Requests;
 using ogybot.Communication.Responses;
-using ogybot.Domain.Security;
+using ogybot.Domain.Infrastructure.Security;
 
 namespace ogybot.Data.Security.Tokens;
 

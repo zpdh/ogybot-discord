@@ -1,7 +1,6 @@
-﻿using ogybot.Domain.Entities;
-using ogybot.Domain.Entities.UserTypes;
+﻿using ogybot.Domain.Entities.UserTypes;
 
-namespace ogybot.Domain.Clients;
+namespace ogybot.Domain.Infrastructure.Clients;
 
 public interface ITomeListClient
 {

@@ -2,7 +2,7 @@
 using Discord.WebSocket;
 using ogybot.Domain.Entities;
 
-namespace ogybot.Domain.Sockets.ChatSocket;
+namespace ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 public interface IChatSocketMessageHandler
 {

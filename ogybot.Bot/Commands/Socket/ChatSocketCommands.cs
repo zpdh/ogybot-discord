@@ -4,9 +4,9 @@ using Discord.WebSocket;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.Domain.Clients;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
+using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Socket;
 

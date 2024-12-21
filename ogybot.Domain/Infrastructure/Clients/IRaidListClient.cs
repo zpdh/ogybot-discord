@@ -1,6 +1,6 @@
 ﻿using ogybot.Domain.Entities;
 
-namespace ogybot.Domain.Clients;
+namespace ogybot.Domain.Infrastructure.Clients;
 
 public interface IRaidListClient
 {

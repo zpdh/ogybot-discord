@@ -1,4 +1,4 @@
-﻿namespace ogybot.Domain.Security;
+﻿namespace ogybot.Domain.Infrastructure.Security;
 
 public interface ITokenRequester
 {

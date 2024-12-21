@@ -1,6 +1,6 @@
 ﻿using Discord.WebSocket;
 
-namespace ogybot.Domain.Sockets.ChatSocket;
+namespace ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 public interface IChatSocket
 {

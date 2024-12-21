@@ -3,9 +3,9 @@ using Microsoft.Extensions.DependencyInjection;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
 using ogybot.Data.Sockets.Chat;
-using ogybot.Domain.Clients;
-using ogybot.Domain.Security;
-using ogybot.Domain.Sockets.ChatSocket;
+using ogybot.Domain.Infrastructure.Clients;
+using ogybot.Domain.Infrastructure.Security;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 using SocketIOClient;
 
 namespace ogybot.CrossCutting;
