@@ -49,7 +49,7 @@ public class ListCommandValidator : IListCommandValidator
 
     public void ValidateUserRemoval(IEnumerable<User> userList, string username)
     {
-        if (!userList.Any(user => user.Username == username))
+        if (!userList.Any(user => user.Username.Equals(username, StringComparison.CurrentCultureIgnoreCase)))
         {
             throw new InvalidCommandArgumentException(ErrorMessages.UsernameNotOnListError);
         }
