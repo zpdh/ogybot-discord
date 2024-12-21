@@ -11,52 +11,52 @@ using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Lists;
 
-public class AspectListCommands : BasePermissionRequiredCommand
+public class RaidListCommands : BasePermissionRequiredCommand
 {
 
-    private readonly IAspectListClient _aspectListClient;
+    private readonly IRaidListClient _raidListClient;
     private readonly IListCommandValidator _commandValidator;
 
     private const ulong ChannelId = GuildChannels.RaidsChannel;
 
-    public AspectListCommands(
-        IAspectListClient aspectListClient,
+    public RaidListCommands(
+        IRaidListClient raidListClient,
         IBotExceptionHandler exceptionHandler,
         IListCommandValidator commandValidator) : base(exceptionHandler)
     {
-        _aspectListClient = aspectListClient;
+        _raidListClient = raidListClient;
         _commandValidator = commandValidator;
     }
 
     #region List Command
 
     [CommandContextType(InteractionContextType.Guild)]
-    [SlashCommand("aspectlist", "Presents the aspect list to get a guild aspect.")]
-    public async Task ExecuteAspectListCommandAsync([Summary("order-by")] AspectListOrderType orderType = AspectListOrderType.Raids)
+    [SlashCommand("raidlist", "Presents the raid list to each player's display raids done, aspects owed and emeralds owed while in the guild.")]
+    public async Task ExecuteRaidListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
         if (await IsInvalidChannelAsync(ChannelId))
         {
             return;
         }
 
-        await TryExecutingCommandInstructionsAsync(async () => await AspectListCommandInstructionsAsync(orderType));
+        await TryExecutingCommandInstructionsAsync(async () => await RaidListCommandInstructionsAsync(orderType));
     }
 
-    private async Task AspectListCommandInstructionsAsync(AspectListOrderType orderType)
+    private async Task RaidListCommandInstructionsAsync(RaidListOrderType orderType)
     {
         var embed = await CreateEmbedAsync(orderType);
 
         await FollowupAsync(embed: embed);
     }
 
-    private async Task<Embed> CreateEmbedAsync(AspectListOrderType orderType)
+    private async Task<Embed> CreateEmbedAsync(RaidListOrderType orderType)
     {
         // Create class to store this info later
         var content = await GetEmbedContentAsync(orderType);
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(content.SocketUser.Username, content.SocketUser.GetAvatarUrl() ?? content.SocketUser.GetDefaultAvatarUrl())
-            .WithTitle("Aspect List")
+            .WithTitle("Raid List")
             .WithDescription(content.Description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
@@ -65,9 +65,9 @@ public class AspectListCommands : BasePermissionRequiredCommand
         return embedBuilder.Build();
     }
 
-    private async Task<EmbedContent> GetEmbedContentAsync(AspectListOrderType orderType)
+    private async Task<EmbedContent> GetEmbedContentAsync(RaidListOrderType orderType)
     {
-        var list = await _aspectListClient.GetListAsync();
+        var list = await _raidListClient.GetListAsync();
         var orderedList = CreateOrderedList(list, orderType);
 
         var user = Context.User;
@@ -77,26 +77,26 @@ public class AspectListCommands : BasePermissionRequiredCommand
         return new EmbedContent(user, queueSize, description);
     }
 
-    private static List<AspectListUser> CreateOrderedList(IList<AspectListUser> list, AspectListOrderType orderType)
+    private static List<RaidListUser> CreateOrderedList(IList<RaidListUser> list, RaidListOrderType orderType)
     {
         return orderType switch
         {
-            AspectListOrderType.Aspects => list.OrderByDescending(user => user.Aspects).ToList(),
-            AspectListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.EmeraldsOwed).ToList(),
+            RaidListOrderType.Aspects => list.OrderByDescending(user => user.Aspects).ToList(),
+            RaidListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.EmeraldsOwed).ToList(),
             _ => list.OrderByDescending(user => user.Raids).ToList()
         };
     }
 
-    private static string CreateEmbedDescription(IList<AspectListUser> list)
+    private static string CreateEmbedDescription(IList<RaidListUser> list)
     {
         var description = "";
 
         var counter = 1;
 
-        foreach (var aspectListUser in list)
+        foreach (var raidListUser in list)
         {
             description +=
-                $"{counter}. {aspectListUser.Username}: {aspectListUser.Raids} Raids | {aspectListUser.Aspects} Aspects Owed | {aspectListUser.EmeraldsOwed} Emeralds Owed\n\n";
+                $"{counter}. {raidListUser.Username}: {raidListUser.Raids} Raids | {raidListUser.Aspects} Aspects Owed | {raidListUser.EmeraldsOwed} Emeralds Owed\n\n";
 
             counter++;
         }
@@ -106,21 +106,23 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     #endregion
 
-    #region Decrement Aspect Command
+    #region Decrement Command
+
+    // TODO: refactor to include emeralds owed aswell
 
     [CommandContextType(InteractionContextType.Guild)]
-    [SlashCommand("aspectlist-decrement", "Decrements an aspect from the provided user.")]
-    public async Task ExecuteAspectListDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
+    [SlashCommand("raidlist-decrement", "Decrements an aspect from the provided user.")]
+    public async Task ExecuteRaidListDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
         if (await IsInvalidContextAsync(ChannelId))
         {
             return;
         }
 
-        await TryExecutingCommandInstructionsAsync(async () => await AspectListDecrementCommandInstructionsAsync(usernamesOrIndexes));
+        await TryExecutingCommandInstructionsAsync(async () => await RaidListDecrementCommandInstructionsAsync(usernamesOrIndexes));
     }
 
-    private async Task AspectListDecrementCommandInstructionsAsync(string usernamesOrIndexes)
+    private async Task RaidListDecrementCommandInstructionsAsync(string usernamesOrIndexes)
     {
         if (usernamesOrIndexes.Contains(','))
         {
@@ -162,25 +164,25 @@ public class AspectListCommands : BasePermissionRequiredCommand
 
     private async Task DecrementByNameAsync(string username)
     {
-        var list = await _aspectListClient.GetListAsync();
+        var list = await _raidListClient.GetListAsync();
 
         _commandValidator.ValidateUserRemoval(list, username);
 
-        var aspectListUser = new AspectListUser(username);
+        var aspectListUser = new RaidListUser(username);
 
-        await _aspectListClient.DecrementAspectAsync(aspectListUser);
+        await _raidListClient.DecrementAspectAsync(aspectListUser);
     }
 
     private async Task DecrementByIndexAsync(int index)
     {
-        var list = await _aspectListClient.GetListAsync();
+        var list = await _raidListClient.GetListAsync();
 
         _commandValidator.ValidateUserRemoval(list, index);
 
         // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
         var aspectListUser = list[index - 1];
 
-        await _aspectListClient.DecrementAspectAsync(aspectListUser);
+        await _raidListClient.DecrementAspectAsync(aspectListUser);
     }
 
     #endregion

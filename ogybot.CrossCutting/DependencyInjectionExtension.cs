@@ -47,7 +47,7 @@ public static class DependencyInjectionExtension
     {
         services.AddScoped<ITomeListClient, TomeListClient>();
         services.AddScoped<IWaitListClient, WaitListClient>();
-        services.AddScoped<IAspectListClient, AspectListClient>();
+        services.AddScoped<IRaidListClient, RaidListClient>();
         services.AddScoped<IOnlineClient, OnlineClient>();
     }
 

@@ -4,29 +4,29 @@ using ogybot.Domain.Security;
 
 namespace ogybot.Data.Clients;
 
-public class AspectListClient : BaseClient, IAspectListClient
+public class RaidListClient : BaseClient, IRaidListClient
 {
     private const string Endpoint = "aspects";
 
     private readonly ITokenRequester _tokenRequester;
 
-    public AspectListClient(HttpClient httpClient, ITokenRequester tokenRequester) : base(httpClient)
+    public RaidListClient(HttpClient httpClient, ITokenRequester tokenRequester) : base(httpClient)
     {
         _tokenRequester = tokenRequester;
     }
 
-    public async Task<IList<AspectListUser>> GetListAsync()
+    public async Task<IList<RaidListUser>> GetListAsync()
     {
         var method = HttpMethod.Get;
 
         var response = await MakeAndSendRequestAsync(method, Endpoint);
 
-        var listOfUsers = await ParseResponseAsync<IList<AspectListUser>>(response);
+        var listOfUsers = await ParseResponseAsync<IList<RaidListUser>>(response);
 
         return listOfUsers;
     }
 
-    public async Task DecrementAspectAsync(AspectListUser user)
+    public async Task DecrementAspectAsync(RaidListUser user)
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();

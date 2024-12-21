@@ -1,6 +1,6 @@
 ﻿namespace ogybot.Domain.Enums;
 
-public enum AspectListOrderType
+public enum RaidListOrderType
 {
     Raids = 0,
     Aspects = 1,

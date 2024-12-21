@@ -2,18 +2,18 @@
 
 namespace ogybot.Domain.Entities;
 
-public class AspectListUser : User
+public class RaidListUser : User
 {
     public double Aspects { get; set; }
     public int EmeraldsOwed { get; set; }
     public int Raids { get; set; }
 
-    public AspectListUser(string username) : base(username)
+    public RaidListUser(string username) : base(username)
     {
 
     }
 
-    private AspectListUser()
+    private RaidListUser()
     {
 
     }
