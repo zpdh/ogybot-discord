@@ -2,14 +2,14 @@
 
 namespace ogybot.Domain.Entities.UserTypes;
 
-public class TomeListUser : BaseUser
+public class TomeListUser : User
 {
-    public TomeListUser()
+    public TomeListUser(string username) : base(username)
     {
 
     }
 
-    public TomeListUser(string username) : base(username)
+    private TomeListUser()
     {
 
     }

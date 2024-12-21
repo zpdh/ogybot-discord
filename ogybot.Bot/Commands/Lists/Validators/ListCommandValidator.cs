@@ -9,9 +9,9 @@ namespace ogybot.Bot.Commands.Lists.Validators;
 
 public interface IListCommandValidator
 {
-    void ValidateUsername(IEnumerable<BaseUser> userList, string username);
-    void ValidateUserRemoval(IEnumerable<BaseUser> userList, string username);
-    void ValidateUserRemoval(IEnumerable<BaseUser> userList, int index);
+    void ValidateUsername(IEnumerable<User> userList, string username);
+    void ValidateUserRemoval(IEnumerable<User> userList, string username);
+    void ValidateUserRemoval(IEnumerable<User> userList, int index);
 }
 
 public class ListCommandValidator : IListCommandValidator
@@ -23,7 +23,7 @@ public class ListCommandValidator : IListCommandValidator
         _validCharacters = validCharacters;
     }
 
-    public void ValidateUsername(IEnumerable<BaseUser> userList, string username)
+    public void ValidateUsername(IEnumerable<User> userList, string username)
     {
         var usernames = userList.Select(user => user.Username);
 
@@ -47,7 +47,7 @@ public class ListCommandValidator : IListCommandValidator
         }
     }
 
-    public void ValidateUserRemoval(IEnumerable<BaseUser> userList, string username)
+    public void ValidateUserRemoval(IEnumerable<User> userList, string username)
     {
         if (!userList.Any(user => user.Username == username))
         {
@@ -55,7 +55,7 @@ public class ListCommandValidator : IListCommandValidator
         }
     }
 
-    public void ValidateUserRemoval(IEnumerable<BaseUser> userList, int index)
+    public void ValidateUserRemoval(IEnumerable<User> userList, int index)
     {
         // The user index starts at 1 whilst the list index starts at 0, not to cause confusion.
         if (index <= 0 || index > userList.Count())

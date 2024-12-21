@@ -13,6 +13,11 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
         _botExceptionHandler = exceptionHandler;
     }
 
+    private ulong GetGuildId()
+    {
+        return Context.Guild.Id;
+    }
+
     protected async Task<bool> IsInvalidChannelAsync(ulong channelId)
     {
         if (Context.Channel.Id == channelId) return false;

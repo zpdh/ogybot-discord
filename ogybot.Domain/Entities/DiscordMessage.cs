@@ -1,11 +1,9 @@
 ﻿namespace ogybot.Domain.Entities;
 
-public class DiscordMessage
+public sealed class DiscordMessage
 {
-
-    public DiscordMessage()
-    {
-    }
+    public string Author { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
 
     public DiscordMessage(string author, string content)
     {
@@ -13,6 +11,7 @@ public class DiscordMessage
         Content = content;
     }
 
-    public string Author { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
+    private DiscordMessage()
+    {
+    }
 }
