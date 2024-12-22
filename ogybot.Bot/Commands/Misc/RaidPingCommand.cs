@@ -6,23 +6,25 @@ using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Enums;
+using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Misc;
 
 public class RaidPingCommand : BaseCommand
 {
-    private const ulong ChannelId = GuildChannels.WarChannel;
+    private readonly ulong _validChannelId;
 
-    public RaidPingCommand(IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    public RaidPingCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
+        _validChannelId = ServerConfiguration.WarChannel;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("raid", "Pings the provided raid role (Heavy/Light Raid)")]
     public async Task ExecuteCommandAsync(RaidType raidType, [Summary("guild", "The guild attacking our claim")] string? guildAttacking = null)
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        if (await IsInvalidChannelAsync(_validChannelId))
         {
             return;
         }

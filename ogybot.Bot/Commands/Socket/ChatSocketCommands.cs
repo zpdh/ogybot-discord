@@ -14,20 +14,31 @@ public class ChatSocketCommands : BaseCommand
 {
     private readonly IOnlineClient _client;
 
-    public ChatSocketCommands(IOnlineClient client, IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    private readonly ulong _validChannelId;
+
+    public ChatSocketCommands(
+        IOnlineClient client,
+        IBotExceptionHandler exceptionHandler,
+        IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
         _client = client;
+        _validChannelId = ServerConfiguration.ListeningChannel;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("online", "Lists online players with the mod.")]
-    public async Task ExecuteOnlineCommandAsync()
+    public async Task ExecuteOnlineCommandInstructionsAsync()
     {
         if (await IsInvalidChannelAsync(GuildChannels.WebsocketLogChannel))
         {
             return;
         }
 
+        await TryExecutingCommandInstructionsAsync(OnlineCommandInstructionsAsync);
+    }
+
+    public async Task OnlineCommandInstructionsAsync()
+    {
         var embed = await CreateEmbedAsync();
 
         await FollowupAsync(embed: embed);

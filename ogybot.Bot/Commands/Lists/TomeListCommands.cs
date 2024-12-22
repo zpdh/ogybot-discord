@@ -16,15 +16,17 @@ public class TomeListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly ITomeListClient _tomeListClient;
 
-    private const ulong ChannelId = GuildChannels.TomeChannel;
+    private readonly ulong _validChannelId;
 
     public TomeListCommands(
         ITomeListClient tomeListClient,
         IListCommandValidator commandValidator,
-        IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+        IBotExceptionHandler exceptionHandler,
+        IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
         _tomeListClient = tomeListClient;
         _commandValidator = commandValidator;
+        _validChannelId = ServerConfiguration.TomeChannel;
     }
 
     #region List Command
@@ -33,7 +35,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist", "Presents the tome list to get a guild tome.")]
     public async Task ExecuteTomeListCommandAsync()
     {
-        if (await IsInvalidChannelAsync(ChannelId)) return;
+        if (await IsInvalidChannelAsync(_validChannelId)) return;
 
         await TryExecutingCommandInstructionsAsync(TomeListCommandInstructionsAsync);
     }
@@ -95,7 +97,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist-add", "Adds a user to the tome list.")]
     public async Task ExecuteTomeListAddCommandAsync([Summary("user", "User to insert into the tome list")] string username)
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        if (await IsInvalidChannelAsync(_validChannelId))
         {
             return;
         }
@@ -133,7 +135,7 @@ public class TomeListCommands : BasePermissionRequiredCommand
     [SlashCommand("tomelist-remove", "removes a user from the tome list based on their name or index")]
     public async Task ExecuteTomeListRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(ChannelId)) return;
+        if (await IsInvalidContextAsync(_validChannelId)) return;
 
         await TryExecutingCommandInstructionsAsync(async () => await TomeListRemoveInstructionsAsync(usernamesOrIndexes));
     }

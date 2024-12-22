@@ -49,6 +49,7 @@ public static class DependencyInjectionExtension
         services.AddScoped<IWaitListClient, WaitListClient>();
         services.AddScoped<IRaidListClient, RaidListClient>();
         services.AddScoped<IOnlineClient, OnlineClient>();
+        services.AddScoped<IGuildClient, GuildClient>();
     }
 
     private static void AddWebSockets(this ServiceCollection services)

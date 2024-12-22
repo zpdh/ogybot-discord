@@ -3,7 +3,6 @@ using Discord.Interactions;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
-using ogybot.Communication.Constants;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
@@ -16,15 +15,17 @@ public class WaitListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly IWaitListClient _waitListClient;
 
-    private const ulong ChannelId = GuildChannels.LayoffsChannel;
+    private readonly ulong _validChannelId;
 
     public WaitListCommands(
         IWaitListClient waitListClient,
         IListCommandValidator commandValidator,
-        IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+        IBotExceptionHandler exceptionHandler,
+        IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
         _waitListClient = waitListClient;
         _commandValidator = commandValidator;
+        _validChannelId = ServerConfiguration.LayoffsChannel;
     }
 
     #region List Command
@@ -33,7 +34,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
     [SlashCommand("waitlist", "Presents the wait list to rejoin the guild.")]
     public async Task ExecuteWaitlistCommandAsync()
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        if (await IsInvalidChannelAsync(_validChannelId))
         {
             return;
         }
@@ -99,7 +100,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
     [SlashCommand("waitlist-add", "Adds a user to the wait list.")]
     public async Task ExecuteWaitlistAddCommandAsync([Summary("user", "User to insert into the wait list")] string username)
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        if (await IsInvalidChannelAsync(_validChannelId))
         {
             return;
         }
@@ -137,7 +138,7 @@ public class WaitListCommands : BasePermissionRequiredCommand
     [SlashCommand("waitlist-remove", "removes a user from the wait list based on their name or index")]
     public async Task ExecuteWaitlistRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(ChannelId))
+        if (await IsInvalidContextAsync(_validChannelId))
         {
             return;
         }

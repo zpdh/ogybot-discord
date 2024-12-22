@@ -13,19 +13,20 @@ namespace ogybot.Bot.Commands.Lists;
 
 public class RaidListCommands : BasePermissionRequiredCommand
 {
-
     private readonly IRaidListClient _raidListClient;
     private readonly IListCommandValidator _commandValidator;
 
-    private const ulong ChannelId = GuildChannels.RaidsChannel;
+    private readonly ulong _validChannelId;
 
     public RaidListCommands(
         IRaidListClient raidListClient,
         IBotExceptionHandler exceptionHandler,
-        IListCommandValidator commandValidator) : base(exceptionHandler)
+        IListCommandValidator commandValidator,
+        IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
         _raidListClient = raidListClient;
         _commandValidator = commandValidator;
+        _validChannelId = ServerConfiguration.RaidsChannel;
     }
 
     #region List Command
@@ -34,7 +35,7 @@ public class RaidListCommands : BasePermissionRequiredCommand
     [SlashCommand("raidlist", "Presents the raid list to each player's display raids done, aspects owed and emeralds owed while in the guild.")]
     public async Task ExecuteRaidListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        if (await IsInvalidChannelAsync(_validChannelId))
         {
             return;
         }
@@ -114,7 +115,7 @@ public class RaidListCommands : BasePermissionRequiredCommand
     [SlashCommand("raidlist-decrement", "Decrements an aspect from the provided user.")]
     public async Task ExecuteRaidListDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(ChannelId))
+        if (await IsInvalidContextAsync(_validChannelId))
         {
             return;
         }

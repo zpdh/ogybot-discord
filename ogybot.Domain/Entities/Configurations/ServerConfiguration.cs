@@ -8,9 +8,9 @@ public class ServerConfiguration
     public ulong LayoffsChannel { get; set; }
     public ulong RaidsChannel { get; set; }
     public ulong WarChannel { get; set; }
+    public ulong ListeningChannel { get; set; }
+    public ulong BroadcastingChannel { get; set; }
     public ICollection<ulong> PrivilegedRoles { get; set; } = [];
-    public ICollection<ulong> ListeningChannels { get; set; } = [];
-    public ICollection<ulong> BroadcastingChannels { get; set; } = [];
 
     public ServerConfiguration(
         Guid wynnGuildId,
@@ -19,9 +19,9 @@ public class ServerConfiguration
         ulong layoffsChannel,
         ulong raidsChannel,
         ulong warChannel,
-        ICollection<ulong> privilegedRoles,
-        ICollection<ulong> listeningChannels,
-        ICollection<ulong> broadcastingChannels)
+        ulong listeningChannel,
+        ulong broadcastingChannel,
+        ICollection<ulong> privilegedRoles)
     {
         WynnGuildId = wynnGuildId;
         DiscordGuildId = discordGuildId;
@@ -30,8 +30,8 @@ public class ServerConfiguration
         RaidsChannel = raidsChannel;
         WarChannel = warChannel;
         PrivilegedRoles = privilegedRoles;
-        ListeningChannels = listeningChannels;
-        BroadcastingChannels = broadcastingChannels;
+        ListeningChannel = listeningChannel;
+        BroadcastingChannel = broadcastingChannel;
     }
 
     private ServerConfiguration()

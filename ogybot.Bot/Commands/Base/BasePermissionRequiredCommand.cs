@@ -1,13 +1,17 @@
 ﻿using Discord;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
+using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Base;
 
 public abstract class BasePermissionRequiredCommand : BaseCommand
 {
-    protected BasePermissionRequiredCommand(IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    private readonly ICollection<ulong> _validRoleIds;
+
+    protected BasePermissionRequiredCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
+        _validRoleIds = ServerConfiguration.PrivilegedRoles;
     }
 
     /// <summary>
@@ -31,16 +35,11 @@ public abstract class BasePermissionRequiredCommand : BaseCommand
 
     private async Task<bool> UserHasNoRolesAsync()
     {
-
         var user = Context.User as IGuildUser;
 
-        var roles = user!
-            .RoleIds
-            .Where(role => role is GuildRoleIds.AdminRole
-                or GuildRoleIds.ChiefRole
-                or GuildRoleIds.DeveloperRole);
+        var userHasValidRole = user!.RoleIds.Any(role => _validRoleIds.Contains(role));
 
-        if (roles.Any()) return false;
+        if (userHasValidRole) return false;
 
         await FollowupAsync(ErrorMessages.NoPermissionError);
 

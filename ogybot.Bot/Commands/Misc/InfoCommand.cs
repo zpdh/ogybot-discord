@@ -4,12 +4,13 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Handlers;
+using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Misc;
 
 public class InfoCommand : BaseCommand
 {
-    public InfoCommand(IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    public InfoCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
     }
 
@@ -37,9 +38,10 @@ public class InfoCommand : BaseCommand
     private static string BuildEmbedDescription()
     {
         var description = new StringBuilder()
-            .AppendLine("**Github Repos**")
-            .AppendLine("Bot: https://github.com/zpdh/ogybot-discord")
-            .AppendLine("API: https://github.com/ezlixp/ico_server")
+            .AppendLine("**Github Repositories**")
+            .AppendLine("[Bot](https://github.com/zpdh/ogybot-discord)")
+            .AppendLine("[API](https://github.com/ezlixp/ico_server)")
+            .AppendLine("[Minecraft Mod](https://github.com/ezlixp/guild-api)")
             .ToString();
 
         return description;
