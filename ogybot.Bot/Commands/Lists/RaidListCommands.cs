@@ -31,7 +31,7 @@ public class RaidListCommands : BasePermissionRequiredCommand
     #region List Command
 
     [CommandContextType(InteractionContextType.Guild)]
-    [SlashCommand("raidlist", "Presents the raid list to each player's display raids done, aspects owed and emeralds owed while in the guild.")]
+    [SlashCommand("raidlist", "Presents a list containing information about raid completion.")]
     public async Task ExecuteRaidListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
         var serverConfig = await GetServerConfigurationAsync();
