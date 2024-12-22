@@ -7,11 +7,9 @@ namespace ogybot.Bot.Commands.Base;
 
 public abstract class BasePermissionRequiredCommand : BaseCommand
 {
-    private readonly ICollection<ulong> _validRoleIds;
 
     protected BasePermissionRequiredCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
-        _validRoleIds = ServerConfiguration.PrivilegedRoles;
     }
 
     /// <summary>
@@ -35,9 +33,12 @@ public abstract class BasePermissionRequiredCommand : BaseCommand
 
     private async Task<bool> UserHasNoRolesAsync()
     {
+        var serverConfig = await GetServerConfigurationAsync();
+        var validRoles = serverConfig.PrivilegedRoles;
+
         var user = Context.User as IGuildUser;
 
-        var userHasValidRole = user!.RoleIds.Any(role => _validRoleIds.Contains(role));
+        var userHasValidRole = user!.RoleIds.Any(role => validRoles.Contains(role));
 
         if (userHasValidRole) return false;
 

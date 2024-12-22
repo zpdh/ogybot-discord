@@ -14,7 +14,7 @@ public class ChatSocketCommands : BaseCommand
 {
     private readonly IOnlineClient _client;
 
-    private readonly ulong _validChannelId;
+    private ulong ValidChannelId { get; set; }
 
     public ChatSocketCommands(
         IOnlineClient client,
@@ -22,13 +22,15 @@ public class ChatSocketCommands : BaseCommand
         IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
         _client = client;
-        _validChannelId = ServerConfiguration.ListeningChannel;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("online", "Lists online players with the mod.")]
     public async Task ExecuteOnlineCommandInstructionsAsync()
     {
+        var serverConfig = await GetServerConfigurationAsync();
+        ValidChannelId = serverConfig.RaidsChannel;
+
         if (await IsInvalidChannelAsync(GuildChannels.WebsocketLogChannel))
         {
             return;

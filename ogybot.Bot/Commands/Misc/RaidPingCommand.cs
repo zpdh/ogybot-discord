@@ -13,18 +13,20 @@ namespace ogybot.Bot.Commands.Misc;
 
 public class RaidPingCommand : BaseCommand
 {
-    private readonly ulong _validChannelId;
+    private ulong ValidChannelId { get; set; }
 
     public RaidPingCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
-        _validChannelId = ServerConfiguration.WarChannel;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("raid", "Pings the provided raid role (Heavy/Light Raid)")]
     public async Task ExecuteCommandAsync(RaidType raidType, [Summary("guild", "The guild attacking our claim")] string? guildAttacking = null)
     {
-        if (await IsInvalidChannelAsync(_validChannelId))
+        var serverConfig = await GetServerConfigurationAsync();
+        ValidChannelId = serverConfig.RaidsChannel;
+
+        if (await IsInvalidChannelAsync(ValidChannelId))
         {
             return;
         }

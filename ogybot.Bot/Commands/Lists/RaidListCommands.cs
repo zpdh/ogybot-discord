@@ -16,7 +16,7 @@ public class RaidListCommands : BasePermissionRequiredCommand
     private readonly IRaidListClient _raidListClient;
     private readonly IListCommandValidator _commandValidator;
 
-    private readonly ulong _validChannelId;
+    private ulong ValidChannelId { get; set; }
 
     public RaidListCommands(
         IRaidListClient raidListClient,
@@ -26,7 +26,6 @@ public class RaidListCommands : BasePermissionRequiredCommand
     {
         _raidListClient = raidListClient;
         _commandValidator = commandValidator;
-        _validChannelId = ServerConfiguration.RaidsChannel;
     }
 
     #region List Command
@@ -35,7 +34,10 @@ public class RaidListCommands : BasePermissionRequiredCommand
     [SlashCommand("raidlist", "Presents the raid list to each player's display raids done, aspects owed and emeralds owed while in the guild.")]
     public async Task ExecuteRaidListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
-        if (await IsInvalidChannelAsync(_validChannelId))
+        var serverConfig = await GetServerConfigurationAsync();
+        ValidChannelId = serverConfig.RaidsChannel;
+
+        if (await IsInvalidChannelAsync(ValidChannelId))
         {
             return;
         }
@@ -115,7 +117,10 @@ public class RaidListCommands : BasePermissionRequiredCommand
     [SlashCommand("raidlist-decrement", "Decrements an aspect from the provided user.")]
     public async Task ExecuteRaidListDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        if (await IsInvalidContextAsync(_validChannelId))
+        var serverConfig = await GetServerConfigurationAsync();
+        ValidChannelId = serverConfig.RaidsChannel;
+
+        if (await IsInvalidContextAsync(ValidChannelId))
         {
             return;
         }

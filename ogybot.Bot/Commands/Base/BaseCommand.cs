@@ -6,17 +6,15 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Base;
 
-// TODO: THIS WILL NOT WORK. Need to move server configuration initialization to the command execution scope. Figure out how to do things from there.
 public abstract class BaseCommand : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly IBotExceptionHandler _botExceptionHandler;
-
-    protected readonly ServerConfiguration ServerConfiguration;
+    private readonly IGuildClient _guildClient;
 
     protected BaseCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient)
     {
         _botExceptionHandler = exceptionHandler;
-        ServerConfiguration = GetServerConfigurationAsync(guildClient).GetAwaiter().GetResult();
+        _guildClient = guildClient;
     }
 
     protected async Task TryExecutingCommandInstructionsAsync(Func<Task> command)
@@ -31,10 +29,10 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
         }
     }
 
-    private async Task<ServerConfiguration> GetServerConfigurationAsync(IGuildClient guildClient)
+    public async Task<ServerConfiguration> GetServerConfigurationAsync()
     {
         var discordGuildId = GetGuildId();
-        return await guildClient.FetchConfigurationAsync(discordGuildId);
+        return await _guildClient.FetchConfigurationAsync(discordGuildId);
     }
 
     private ulong GetGuildId()
