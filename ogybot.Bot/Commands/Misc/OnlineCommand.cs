@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
@@ -13,6 +13,7 @@ public class OnlineCommand : BaseCommand
     private readonly IOnlineClient _client;
 
     private ulong ValidChannelId { get; set; }
+    private Guid WynnGuildId { get; set; }
 
     public OnlineCommand(
         IOnlineClient client,
@@ -25,22 +26,23 @@ public class OnlineCommand : BaseCommand
     protected override void ConfigureCommandSettings()
     {
         ValidChannelId = ServerConfiguration.ListeningChannel;
+        WynnGuildId = ServerConfiguration.WynnGuildId;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("online", "Lists online players with the mod.")]
     public async Task ExecuteCommandAsync()
     {
-        if (await IsInvalidChannelAsync(ValidChannelId))
-        {
-            return;
-        }
-
         await HandleCommandExecutionAsync(CommandInstructionsAsync);
     }
 
     private async Task CommandInstructionsAsync()
     {
+        if (await IsInvalidChannelAsync(ValidChannelId))
+        {
+            return;
+        }
+
         var embed = await CreateEmbedAsync();
 
         await FollowupAsync(embed: embed);
@@ -65,7 +67,7 @@ public class OnlineCommand : BaseCommand
     {
         var user = Context.User;
 
-        var list = await _client.GetListAsync();
+        var list = await _client.GetListAsync(WynnGuildId);
 
 
         var description = CreateEmbedDescription(list);

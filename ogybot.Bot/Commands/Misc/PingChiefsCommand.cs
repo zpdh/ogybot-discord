@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Infrastructure.Clients;
@@ -24,16 +24,16 @@ public class PingChiefsCommand : BaseCommand
     [SlashCommand("chiefs", "Pings the 'Active Chief' role")]
     public async Task ExecuteCommandAsync()
     {
-        if (await IsInvalidChannelAsync(ValidChannelId))
-        {
-            return;
-        }
-
         await HandleCommandExecutionAsync(CommandInstructionsAsync);
     }
 
     private async Task CommandInstructionsAsync()
     {
+        if (await IsInvalidChannelAsync(ValidChannelId))
+        {
+            return;
+        }
+
         await FollowupAsync($"<@&{GuildRoleIds.ActiveChiefRole}>", allowedMentions: AllowedMentions.All);
     }
 }

@@ -4,7 +4,7 @@ using ogybot.Domain.Entities.Primitives;
 
 // ReSharper disable SimplifyLinqExpressionUseAll
 
-namespace ogybot.Bot.Commands.Lists.Validators;
+namespace ogybot.Bot.Commands.Core.Validators;
 
 public interface IListCommandValidator
 {

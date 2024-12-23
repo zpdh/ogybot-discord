@@ -4,7 +4,7 @@ using ogybot.Communication.Constants;
 using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 
-namespace ogybot.Bot.Commands.Base;
+namespace ogybot.Bot.Commands.Core.Base;
 
 public abstract class BaseCommand : InteractionModuleBase<SocketInteractionContext>
 {

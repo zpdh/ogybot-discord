@@ -2,7 +2,7 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
-using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Infrastructure.Clients;
 

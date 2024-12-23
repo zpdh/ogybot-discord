@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Commands\Abstractions\"/>
+      <Folder Include="Commands\Core\" />
     </ItemGroup>
 
 </Project>

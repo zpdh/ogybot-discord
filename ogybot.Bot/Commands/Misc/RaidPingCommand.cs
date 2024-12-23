@@ -1,6 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
@@ -27,16 +27,16 @@ public class RaidPingCommand : BaseCommand
     [SlashCommand("raid", "Pings the provided raid role (Heavy/Light Raid)")]
     public async Task ExecuteCommandAsync(RaidType raidType, [Summary("guild", "The guild attacking our claim")] string? guildAttacking = null)
     {
-        if (await IsInvalidChannelAsync(ValidChannelId))
-        {
-            return;
-        }
-
         await HandleCommandExecutionAsync(() => CommandInstructionsAsync(raidType, guildAttacking));
     }
 
     private async Task CommandInstructionsAsync(RaidType raidType, string? guildAttacking)
     {
+        if (await IsInvalidChannelAsync(ValidChannelId))
+        {
+            return;
+        }
+
         var raidRoleId = DetermineRaidRole(raidType);
         var guildMessage = CreateGuildMessage(raidRoleId, guildAttacking);
 
