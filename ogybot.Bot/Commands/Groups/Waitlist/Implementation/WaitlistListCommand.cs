@@ -58,6 +58,6 @@ public sealed partial class WaitlistCommands
     {
         var counter = 1;
 
-        return list.Aggregate("", (current, waitlistUser) => current + $"{counter++}. {waitlistUser.Username}\n");
+        return list.Aggregate("", (current, waitlistUser) => current + $"**{counter++}.** {waitlistUser.Username}\n");
     }
 }
