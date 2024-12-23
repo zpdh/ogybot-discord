@@ -35,7 +35,7 @@ public sealed partial class RaidListCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Raid List")
             .WithDescription(content.Description)
-            .WithColor(Color.Red)
+            .WithColor(new Color(211,63,30))
             .WithThumbnailUrl("https://wynncraft.wiki.gg/images/8/89/CBRaidIcon.png")
             .WithImageUrl("https://wynncraft.wiki.gg/images/0/01/RaidSigil2.png")
             .WithCurrentTimestamp()

@@ -13,16 +13,11 @@ public sealed partial class TomeListCommands
     [SlashCommand("list", "Shows the current queue to get a guild tome.")]
     public async Task ExecuteListCommandAsync()
     {
-        await HandleCommandExecutionAsync(ListCommandInstructionsAsync);
+        await HandleCommandExecutionAsync(ListCommandInstructionsAsync, false);
     }
 
     private async Task ListCommandInstructionsAsync()
     {
-        if (await IsInvalidChannelAsync(ValidChannelId))
-        {
-            return;
-        }
-
         var embed = await CreateEmbedAsync();
 
         await FollowupAsync(embed: embed);
@@ -36,8 +31,8 @@ public sealed partial class TomeListCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Tome List")
             .WithDescription(content.Description)
-            .WithColor(Color.Blue)
-            .WithThumbnailUrl("https://cdn.wynncraft.com/nextgen/itemguide/3.3/tome.guild.webp")
+            .WithColor(new Color(0,187,189))
+            .WithThumbnailUrl("https://wynncraft.wiki.gg/images/8/8f/CBWorldEventIcon.png")
             .WithCurrentTimestamp()
             .WithFooter(content.QueueSize);
 
@@ -46,7 +41,7 @@ public sealed partial class TomeListCommands
 
     private async Task<EmbedContent> GetEmbedContentAsync()
     {
-        var list = await TomeListClient.GetListAsync(WynnGuildId);
+        var list = new List<TomeListUser>();
 
         var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
