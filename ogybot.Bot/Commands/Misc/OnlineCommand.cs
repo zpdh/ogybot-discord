@@ -1,21 +1,20 @@
 ﻿using Discord;
 using Discord.Interactions;
-using Discord.WebSocket;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Handlers;
-using ogybot.Communication.Constants;
+using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 
-namespace ogybot.Bot.Commands.Socket;
+namespace ogybot.Bot.Commands.Misc;
 
-public class ChatSocketCommands : BaseCommand
+public class OnlineCommand : BaseCommand
 {
     private readonly IOnlineClient _client;
 
     private ulong ValidChannelId { get; set; }
 
-    public ChatSocketCommands(
+    public OnlineCommand(
         IOnlineClient client,
         IBotExceptionHandler exceptionHandler,
         IGuildClient guildClient) : base(exceptionHandler, guildClient)
@@ -23,22 +22,24 @@ public class ChatSocketCommands : BaseCommand
         _client = client;
     }
 
+    protected override void ConfigureCommandSettings()
+    {
+        ValidChannelId = ServerConfiguration.ListeningChannel;
+    }
+
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("online", "Lists online players with the mod.")]
-    public async Task ExecuteOnlineCommandInstructionsAsync()
+    public async Task ExecuteCommandAsync()
     {
-        var serverConfig = await GetServerConfigurationAsync();
-        ValidChannelId = serverConfig.RaidsChannel;
-
-        if (await IsInvalidChannelAsync(GuildChannels.WebsocketLogChannel))
+        if (await IsInvalidChannelAsync(ValidChannelId))
         {
             return;
         }
 
-        await TryExecutingCommandInstructionsAsync(OnlineCommandInstructionsAsync);
+        await HandleCommandExecutionAsync(CommandInstructionsAsync);
     }
 
-    public async Task OnlineCommandInstructionsAsync()
+    private async Task CommandInstructionsAsync()
     {
         var embed = await CreateEmbedAsync();
 
@@ -48,29 +49,28 @@ public class ChatSocketCommands : BaseCommand
     private async Task<Embed> CreateEmbedAsync()
     {
         // Create class to store this info later
-        var (user, queueSize, description) = await GetEmbedContentAsync();
+        var embedContent = await GetEmbedContentAsync();
 
         var embedBuilder = new EmbedBuilder()
-            .WithAuthor(user.Username, user.GetAvatarUrl() ?? user.GetDefaultAvatarUrl())
+            .WithAuthor(embedContent.User.Username, embedContent.User.GetAvatarUrl() ?? embedContent.User.GetDefaultAvatarUrl())
             .WithTitle("Online List")
-            .WithDescription(description)
+            .WithDescription(embedContent.Description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp();
 
         return embedBuilder.Build();
     }
 
-    private async Task<(SocketUser user, string queueSize, string description)> GetEmbedContentAsync()
+    private async Task<EmbedContent> GetEmbedContentAsync()
     {
         var user = Context.User;
 
         var list = await _client.GetListAsync();
 
-        var queueSize = "Players in queue: " + list.Count;
 
         var description = CreateEmbedDescription(list);
 
-        return (user, queueSize, description);
+        return EmbedContent.Create(user, description: description);
     }
 
     private static string CreateEmbedDescription(IList<OnlineUser> list)

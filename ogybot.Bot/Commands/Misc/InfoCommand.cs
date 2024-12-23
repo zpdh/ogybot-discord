@@ -14,9 +14,18 @@ public class InfoCommand : BaseCommand
     {
     }
 
+    protected override void ConfigureCommandSettings()
+    {
+    }
+
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("info", "Displays info about the bot, such as the github repositories.")]
-    public async Task ExecuteInfoCommandAsync()
+    public async Task ExecuteCommandAsync()
+    {
+        await HandleCommandExecutionAsync(CommandInstructionsAsync, requiresConfiguration: false);
+    }
+
+    private async Task CommandInstructionsAsync()
     {
         const string embedTitle = "Info";
         const string embedFooter = "Made by oxzy";

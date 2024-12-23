@@ -36,6 +36,6 @@ public class StartupHandler : IStartupHandler
 
     private async Task StartupChatSocketAsync()
     {
-        await _chatSocket.SetupAndStartAsync(_client, GuildChannels.WebsocketLogChannel);
+        await _chatSocket.SetupAndStartAsync(_client);
     }
 }

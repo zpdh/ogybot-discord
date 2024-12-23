@@ -14,7 +14,7 @@ public class ChatSocket : IChatSocket
         _communicationHandler = communicationHandler;
     }
 
-    public async Task SetupAndStartAsync(DiscordSocketClient client, ulong channelId)
+    public async Task SetupAndStartAsync(DiscordSocketClient client)
     {
         await SetupClientAsync();
         _communicationHandler.SetupEmitter(client);

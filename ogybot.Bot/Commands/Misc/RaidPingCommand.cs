@@ -12,41 +12,35 @@ namespace ogybot.Bot.Commands.Misc;
 
 public class RaidPingCommand : BaseCommand
 {
-
     private ulong ValidChannelId { get; set; }
 
     public RaidPingCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
     }
 
+    protected override void ConfigureCommandSettings()
+    {
+        ValidChannelId = ServerConfiguration.WarChannel;
+    }
+
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("raid", "Pings the provided raid role (Heavy/Light Raid)")]
     public async Task ExecuteCommandAsync(RaidType raidType, [Summary("guild", "The guild attacking our claim")] string? guildAttacking = null)
     {
-        var serverConfig = await GetServerConfigurationAsync();
-        ValidChannelId = serverConfig.RaidsChannel;
-
         if (await IsInvalidChannelAsync(ValidChannelId))
         {
             return;
         }
 
+        await HandleCommandExecutionAsync(() => CommandInstructionsAsync(raidType, guildAttacking));
+    }
+
+    private async Task CommandInstructionsAsync(RaidType raidType, string? guildAttacking)
+    {
         var raidRoleId = DetermineRaidRole(raidType);
         var guildMessage = CreateGuildMessage(raidRoleId, guildAttacking);
 
         await FollowupAsync(guildMessage, allowedMentions: AllowedMentions.All);
-    }
-
-    private static string CreateGuildMessage(ulong raidRoleId, string? guildAttacking)
-    {
-        var guildMessage = $"<@&{raidRoleId}>";
-
-        if (!guildAttacking.IsNullOrWhitespace())
-        {
-            guildMessage += $"\n**Guild**: {guildAttacking}";
-        }
-
-        return guildMessage;
     }
 
     private static ulong DetermineRaidRole(RaidType raidType)
@@ -59,5 +53,17 @@ public class RaidPingCommand : BaseCommand
 
             _ => throw new InvalidCommandArgumentException(ErrorMessages.InvalidRaidTypeError)
         };
+    }
+
+    private static string CreateGuildMessage(ulong raidRoleId, string? guildAttacking)
+    {
+        var guildMessage = $"<@&{raidRoleId}>";
+
+        if (!guildAttacking.IsNullOrWhitespace())
+        {
+            guildMessage += $"\n**Guild**: {guildAttacking}";
+        }
+
+        return guildMessage;
     }
 }
