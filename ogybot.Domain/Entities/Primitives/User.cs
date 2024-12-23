@@ -2,7 +2,6 @@
 
 public abstract class User
 {
-
     public User(string username)
     {
         Username = username;
@@ -13,5 +12,5 @@ public abstract class User
 
     }
 
-    public string Username { get; set; }
+    public string Username { get; set; } = string.Empty;
 }
