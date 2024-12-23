@@ -36,7 +36,8 @@ public sealed partial class TomeListCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Tome List")
             .WithDescription(content.Description)
-            .WithColor(Color.Teal)
+            .WithColor(Color.Blue)
+            .WithThumbnailUrl("https://cdn.wynncraft.com/nextgen/itemguide/3.3/tome.guild.webp")
             .WithCurrentTimestamp()
             .WithFooter(content.QueueSize);
 

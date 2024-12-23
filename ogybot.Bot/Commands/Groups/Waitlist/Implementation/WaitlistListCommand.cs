@@ -35,7 +35,8 @@ public sealed partial class WaitlistCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Wait list")
             .WithDescription(content.Description)
-            .WithColor(Color.Teal)
+            .WithColor(Color.Gold)
+            .WithThumbnailUrl("https://wynncraft.wiki.gg/images/0/04/ShinyIcon.png")
             .WithCurrentTimestamp()
             .WithFooter(content.QueueSize);
 

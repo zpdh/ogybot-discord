@@ -9,7 +9,7 @@ public sealed partial class RaidListCommands
 {
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("list", "Presents a list containing information about raid completions per guild member.")]
-    public async Task ExecuteListCommandAsync([Discord.Interactions.Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
+    public async Task ExecuteListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
         await HandleCommandExecutionAsync(() => ListCommandInstructionsAsync(orderType));
     }
@@ -35,7 +35,9 @@ public sealed partial class RaidListCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Raid List")
             .WithDescription(content.Description)
-            .WithColor(Color.Teal)
+            .WithColor(Color.Red)
+            .WithThumbnailUrl("https://wynncraft.wiki.gg/images/8/89/CBRaidIcon.png")
+            .WithImageUrl("https://wynncraft.wiki.gg/images/0/01/RaidSigil2.png")
             .WithCurrentTimestamp()
             .WithFooter(content.QueueSize);
 
