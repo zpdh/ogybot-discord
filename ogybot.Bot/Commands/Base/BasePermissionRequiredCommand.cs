@@ -33,8 +33,8 @@ public abstract class BasePermissionRequiredCommand : BaseCommand
 
     private async Task<bool> UserHasNoRolesAsync()
     {
-        var serverConfig = await GetServerConfigurationAsync();
-        var validRoles = serverConfig.PrivilegedRoles;
+        // This method should always be called before a command, therefore this shouldn't present any issues.
+        var validRoles = ServerConfiguration.PrivilegedRoles;
 
         var user = Context.User as IGuildUser;
 

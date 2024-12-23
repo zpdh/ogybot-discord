@@ -11,16 +11,35 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
     private readonly IBotExceptionHandler _botExceptionHandler;
     private readonly IGuildClient _guildClient;
 
+    protected ServerConfiguration ServerConfiguration { get; private set; }
+
     protected BaseCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient)
     {
         _botExceptionHandler = exceptionHandler;
         _guildClient = guildClient;
     }
 
-    protected async Task TryExecutingCommandInstructionsAsync(Func<Task> command)
+    /// <summary>
+    /// Should be used as a second "constructor".
+    /// Configures internal fields in commands that can only be fetched during command execution, such as valid channels to use said command in and guild identifiers.
+    /// </summary>
+    protected abstract void ConfigureCommandSettings();
+
+    private async Task ConfigureCommandAsync()
+    {
+        ServerConfiguration = await FetchServerConfigurationAsync();
+        ConfigureCommandSettings();
+    }
+
+    protected async Task HandleCommandExecutionAsync(Func<Task> command, bool requiresConfiguration = true)
     {
         try
         {
+            if (requiresConfiguration)
+            {
+                await ConfigureCommandAsync();
+            }
+
             await command();
         }
         catch (Exception e)
@@ -29,7 +48,7 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
         }
     }
 
-    public async Task<ServerConfiguration> GetServerConfigurationAsync()
+    private async Task<ServerConfiguration> FetchServerConfigurationAsync()
     {
         var discordGuildId = GetGuildId();
         return await _guildClient.FetchConfigurationAsync(discordGuildId);
