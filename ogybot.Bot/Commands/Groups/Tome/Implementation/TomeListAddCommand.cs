@@ -1,33 +1,19 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Core.Validators;
-using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities.UserTypes;
-using ogybot.Domain.Infrastructure.Clients;
 
-namespace ogybot.Bot.Commands.Groups.Tome;
+namespace ogybot.Bot.Commands.Groups.Tome.Implementation;
 
-public sealed class TomeListAddCommand : BaseTomeCommand
+public sealed partial class TomeListCommands
 {
-    private readonly IListCommandValidator _commandValidator;
-
-    public TomeListAddCommand(
-        IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient,
-        ITomeListClient tomeListClient,
-        IListCommandValidator commandValidator) : base(exceptionHandler, guildClient, tomeListClient)
-    {
-        _commandValidator = commandValidator;
-    }
-
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("add", "Adds a user to the tome list.")]
-    public async Task ExecuteCommandAsync([Summary("user", "User to be added into the tome list")] string username)
+    public async Task ExecuteAddCommandAsync([Summary("user", "User to be added into the tome list")] string username)
     {
-        await HandleCommandExecutionAsync(() => CommandInstructionsAsync(username));
+        await HandleCommandExecutionAsync(() => RemoveCommandInstructionsAsync(username));
     }
 
-    private async Task CommandInstructionsAsync(string username)
+    private async Task AddCommandInstructionsAsync(string username)
     {
         if (await IsInvalidChannelAsync(ValidChannelId))
         {

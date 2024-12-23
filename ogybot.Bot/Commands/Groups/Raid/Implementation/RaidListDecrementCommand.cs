@@ -1,38 +1,22 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Core.Validators;
-using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities;
-using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
 
-namespace ogybot.Bot.Commands.Groups.Raid;
+namespace ogybot.Bot.Commands.Groups.Raid.Implementation;
 
-public sealed class RaidListDecrement : BaseRaidCommand
+public sealed partial class RaidListCommands
 {
-    private readonly IListCommandValidator _commandValidator;
-
-    public RaidListDecrement(
-        IRaidListClient raidListClient,
-        IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient,
-        IListCommandValidator commandValidator) : base(raidListClient,
-        exceptionHandler,
-        guildClient)
-    {
-        _commandValidator = commandValidator;
-    }
-
     //TODO: make parameters to define whether aspects or emeralds should be decreased and how many.
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("decrement", "Decrements an aspect from the provided user.")]
-    public async Task ExecuteCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
+    public async Task ExecuteDecrementCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
-        await HandleCommandExecutionAsync(() => CommandInstructionsAsync(usernamesOrIndexes));
+        await HandleCommandExecutionAsync(() => DecrementCommandInstructionsAsync(usernamesOrIndexes));
     }
 
-    private async Task CommandInstructionsAsync(string usernamesOrIndexes)
+    private async Task DecrementCommandInstructionsAsync(string usernamesOrIndexes)
     {
         if (await IsInvalidContextAsync(ValidChannelId))
         {

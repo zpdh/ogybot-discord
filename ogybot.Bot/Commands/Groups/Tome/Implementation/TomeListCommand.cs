@@ -5,26 +5,18 @@ using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 
-namespace ogybot.Bot.Commands.Groups.Waitlist;
+namespace ogybot.Bot.Commands.Groups.Tome.Implementation;
 
-public sealed class WaitlistListCommand : BaseWaitlistCommand
+public sealed partial class TomeListCommands
 {
-    public WaitlistListCommand(
-        IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient,
-        IWaitListClient waitListClient) : base(exceptionHandler, guildClient, waitListClient)
-    {
-    }
-
     [CommandContextType(InteractionContextType.Guild)]
-    [SlashCommand("list", "Shows the list to rejoin the guild.")]
-    public async Task ExecuteCommandAsync()
+    [SlashCommand("list", "Shows the current queue to get a guild tome.")]
+    public async Task ExecuteListCommandAsync()
     {
-
-        await HandleCommandExecutionAsync(CommandInstructionsAsync);
+        await HandleCommandExecutionAsync(ListCommandInstructionsAsync);
     }
 
-    private async Task CommandInstructionsAsync()
+    private async Task ListCommandInstructionsAsync()
     {
         if (await IsInvalidChannelAsync(ValidChannelId))
         {
@@ -38,12 +30,11 @@ public sealed class WaitlistListCommand : BaseWaitlistCommand
 
     private async Task<Embed> CreateEmbedAsync()
     {
-        // Create class to store this info later
         var content = await GetEmbedContentAsync();
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
-            .WithTitle("Wait list")
+            .WithTitle("Tome List")
             .WithDescription(content.Description)
             .WithColor(Color.Teal)
             .WithCurrentTimestamp()
@@ -54,7 +45,7 @@ public sealed class WaitlistListCommand : BaseWaitlistCommand
 
     private async Task<EmbedContent> GetEmbedContentAsync()
     {
-        var list = await WaitListClient.GetListAsync(WynnGuildId);
+        var list = await TomeListClient.GetListAsync(WynnGuildId);
 
         var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
@@ -63,15 +54,15 @@ public sealed class WaitlistListCommand : BaseWaitlistCommand
         return EmbedContent.Create(user, queueSize, description);
     }
 
-    private static string CreateEmbedDescription(IList<WaitListUser> list)
+    private static string CreateEmbedDescription(IList<TomeListUser> list)
     {
         var description = "";
 
         var counter = 1;
 
-        foreach (var userWaitlist in list)
+        foreach (var tomeListUser in list)
         {
-            description += $"{counter}. {userWaitlist.Username}\n";
+            description += $"{counter}. {tomeListUser.Username}\n";
 
             counter++;
         }

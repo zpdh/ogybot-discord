@@ -1,11 +1,12 @@
 ﻿using Discord.Interactions;
 using ogybot.Bot.Commands.Core.Base;
+using ogybot.Bot.Commands.Core.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Raid;
 
-[Group("raid-list", "Collection of commands regarding raids lists.")]
+[Group("raid-list", "Presents a collection of raid list related commands.")]
 public abstract class BaseRaidCommand : BasePermissionRequiredCommand
 {
     protected readonly IRaidListClient RaidListClient;

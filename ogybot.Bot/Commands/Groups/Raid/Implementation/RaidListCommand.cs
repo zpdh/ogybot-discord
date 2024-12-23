@@ -1,29 +1,20 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Enums;
-using ogybot.Domain.Infrastructure.Clients;
 
-namespace ogybot.Bot.Commands.Groups.Raid;
+namespace ogybot.Bot.Commands.Groups.Raid.Implementation;
 
-public sealed class RaidListCommand : BaseRaidCommand
+public sealed partial class RaidListCommands
 {
-    public RaidListCommand(
-        IRaidListClient raidListClient,
-        IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient) : base(raidListClient, exceptionHandler, guildClient)
-    {
-    }
-
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("list", "Presents a list containing information about raid completions per guild member.")]
-    public async Task ExecuteCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
+    public async Task ExecuteListCommandAsync([Discord.Interactions.Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
-        await HandleCommandExecutionAsync(() => CommandInstructionsAsync(orderType));
+        await HandleCommandExecutionAsync(() => ListCommandInstructionsAsync(orderType));
     }
 
-    private async Task CommandInstructionsAsync(RaidListOrderType orderType)
+    private async Task ListCommandInstructionsAsync(RaidListOrderType orderType)
     {
         if (await IsInvalidChannelAsync(ValidChannelId))
         {

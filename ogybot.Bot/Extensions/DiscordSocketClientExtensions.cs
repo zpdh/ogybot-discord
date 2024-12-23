@@ -58,7 +58,7 @@ public static class DiscordSocketClientExtensions
     private static void AddLogger(this DiscordSocketClient client)
     {
         client.Log += logMessage => {
-            Console.WriteLine($"{logMessage.Message}");
+            Console.WriteLine($"{logMessage.Message} - {logMessage.Exception}");
 
             return Task.CompletedTask;
         };
