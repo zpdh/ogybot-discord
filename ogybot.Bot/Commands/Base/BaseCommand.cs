@@ -44,7 +44,7 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
     {
         if (Context.Channel.Id == channelId) return false;
 
-        await FollowupAsync(ErrorMessages.InvalidChannelError);
+        await FollowupAsync(ErrorMessages.InvalidChannelError(channelId));
         return true;
     }
 }
