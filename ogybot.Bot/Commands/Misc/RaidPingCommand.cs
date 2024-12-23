@@ -10,7 +10,7 @@ using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public class RaidPingCommand : BaseCommand
+public sealed class RaidPingCommand : BaseCommand
 {
     private ulong ValidChannelId { get; set; }
 

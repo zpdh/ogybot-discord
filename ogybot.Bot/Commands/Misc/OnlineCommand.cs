@@ -8,7 +8,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public class OnlineCommand : BaseCommand
+public sealed class OnlineCommand : BaseCommand
 {
     private readonly IOnlineClient _client;
 

@@ -7,7 +7,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Raid;
 
-public class RaidListCommand : BaseRaidCommand
+public sealed class RaidListCommand : BaseRaidCommand
 {
     public RaidListCommand(
         IRaidListClient raidListClient,

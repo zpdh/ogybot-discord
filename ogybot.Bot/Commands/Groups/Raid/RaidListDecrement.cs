@@ -8,7 +8,7 @@ using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Groups.Raid;
 
-public class RaidListDecrement : BaseRaidCommand
+public sealed class RaidListDecrement : BaseRaidCommand
 {
     private readonly IListCommandValidator _commandValidator;
 

@@ -8,7 +8,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public class InfoCommand : BaseCommand
+public sealed class InfoCommand : BaseCommand
 {
     public InfoCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {

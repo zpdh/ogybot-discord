@@ -8,7 +8,7 @@ using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Groups.Tome;
 
-public class TomeListRemoveCommand : BaseTomeCommand
+public sealed class TomeListRemoveCommand : BaseTomeCommand
 {
     private readonly IListCommandValidator _commandValidator;
 

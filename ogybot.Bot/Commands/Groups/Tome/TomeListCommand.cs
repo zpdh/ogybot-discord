@@ -7,7 +7,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Tome;
 
-public class TomeListCommand : BaseTomeCommand
+public sealed class TomeListCommand : BaseTomeCommand
 {
     public TomeListCommand(
         IBotExceptionHandler exceptionHandler,
