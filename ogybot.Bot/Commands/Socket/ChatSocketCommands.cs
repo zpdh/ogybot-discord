@@ -4,7 +4,6 @@ using Discord.WebSocket;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 
@@ -14,8 +13,6 @@ public class ChatSocketCommands : BaseCommand
 {
     private readonly IOnlineClient _client;
 
-    private ulong ValidChannelId { get; set; }
-
     public ChatSocketCommands(
         IOnlineClient client,
         IBotExceptionHandler exceptionHandler,
@@ -23,6 +20,8 @@ public class ChatSocketCommands : BaseCommand
     {
         _client = client;
     }
+
+    private ulong ValidChannelId { get; set; }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("online", "Lists online players with the mod.")]

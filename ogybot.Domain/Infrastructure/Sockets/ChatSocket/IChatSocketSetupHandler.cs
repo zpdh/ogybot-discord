@@ -1,7 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
-
-namespace ogybot.Domain.Infrastructure.Sockets.ChatSocket;
+﻿namespace ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 public interface IChatSocketSetupHandler
 {

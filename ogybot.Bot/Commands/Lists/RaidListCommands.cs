@@ -3,7 +3,6 @@ using Discord.Interactions;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
-using ogybot.Communication.Constants;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Enums;
 using ogybot.Domain.Infrastructure.Clients;
@@ -13,10 +12,8 @@ namespace ogybot.Bot.Commands.Lists;
 
 public class RaidListCommands : BasePermissionRequiredCommand
 {
-    private readonly IRaidListClient _raidListClient;
     private readonly IListCommandValidator _commandValidator;
-
-    private ulong ValidChannelId { get; set; }
+    private readonly IRaidListClient _raidListClient;
 
     public RaidListCommands(
         IRaidListClient raidListClient,
@@ -27,6 +24,8 @@ public class RaidListCommands : BasePermissionRequiredCommand
         _raidListClient = raidListClient;
         _commandValidator = commandValidator;
     }
+
+    private ulong ValidChannelId { get; set; }
 
     #region List Command
 

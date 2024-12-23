@@ -1,6 +1,5 @@
 ﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.Primitives;
 
 // ReSharper disable SimplifyLinqExpressionUseAll

@@ -3,7 +3,6 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.Domain.Entities;
 using ogybot.Domain.Infrastructure.Errors;
 
 namespace ogybot.Data.Clients;

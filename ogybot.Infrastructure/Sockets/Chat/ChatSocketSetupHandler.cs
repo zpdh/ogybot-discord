@@ -1,7 +1,4 @@
-﻿using Discord;
-using Discord.WebSocket;
-using ogybot.Communication.Exceptions;
-using ogybot.Domain.Infrastructure.Security;
+﻿using ogybot.Domain.Infrastructure.Security;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 namespace ogybot.Data.Sockets.Chat;

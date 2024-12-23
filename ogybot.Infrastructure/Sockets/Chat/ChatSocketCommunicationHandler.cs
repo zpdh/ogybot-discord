@@ -1,7 +1,5 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
 using ogybot.Domain.Entities;
-using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 using ogybot.Domain.Services;
@@ -12,10 +10,10 @@ namespace ogybot.Data.Sockets.Chat;
 
 public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 {
-    private readonly IChatSocketMessageHandler _messageHandler;
-    private readonly IChatSocketSetupHandler _setupHandler;
     private readonly IDiscordChannelService _discordChannelService;
     private readonly IGuildClient _guildClient;
+    private readonly IChatSocketMessageHandler _messageHandler;
+    private readonly IChatSocketSetupHandler _setupHandler;
     private readonly SocketIOClient.SocketIO _socket;
 
     public ChatSocketCommunicationHandler(
@@ -108,7 +106,6 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     private async Task<ulong> GetBroadcastingChannelId(SocketMessage message)
     {
-
         var discordGuildId = ((SocketGuildChannel)message.Channel).Guild.Id;
 
         var serverConfig = await _guildClient.FetchConfigurationAsync(discordGuildId);

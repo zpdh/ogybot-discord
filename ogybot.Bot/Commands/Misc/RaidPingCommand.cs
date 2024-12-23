@@ -4,7 +4,6 @@ using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.Domain.Entities;
 using ogybot.Domain.Enums;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
@@ -13,11 +12,12 @@ namespace ogybot.Bot.Commands.Misc;
 
 public class RaidPingCommand : BaseCommand
 {
-    private ulong ValidChannelId { get; set; }
 
     public RaidPingCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
     }
+
+    private ulong ValidChannelId { get; set; }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("raid", "Pings the provided raid role (Heavy/Light Raid)")]

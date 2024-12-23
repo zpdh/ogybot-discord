@@ -3,7 +3,6 @@ using Discord.Interactions;
 using ogybot.Bot.Commands.Base;
 using ogybot.Bot.Commands.Lists.Validators;
 using ogybot.Bot.Handlers;
-using ogybot.Communication.Constants;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
@@ -16,8 +15,6 @@ public class TomeListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly ITomeListClient _tomeListClient;
 
-    private ulong ValidChannelId { get; set; }
-
     public TomeListCommands(
         ITomeListClient tomeListClient,
         IListCommandValidator commandValidator,
@@ -27,6 +24,8 @@ public class TomeListCommands : BasePermissionRequiredCommand
         _tomeListClient = tomeListClient;
         _commandValidator = commandValidator;
     }
+
+    private ulong ValidChannelId { get; set; }
 
     #region List Command
 

@@ -9,11 +9,12 @@ namespace ogybot.Bot.Commands.Misc;
 
 public class PingChiefsCommand : BaseCommand
 {
-    private ulong ValidChannelId { get; set; }
 
     public PingChiefsCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
     {
     }
+
+    private ulong ValidChannelId { get; set; }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("chiefs", "Pings the 'Active Chief' role")]

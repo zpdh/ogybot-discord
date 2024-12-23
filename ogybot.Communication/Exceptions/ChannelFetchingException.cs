@@ -4,5 +4,4 @@ namespace ogybot.Communication.Exceptions;
 
 public class ChannelFetchingException() : OgybotException(ExceptionMessages.ChannelFetching)
 {
-
 }

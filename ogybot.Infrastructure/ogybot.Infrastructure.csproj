@@ -16,6 +16,7 @@
     <ItemGroup>
         <ProjectReference Include="..\ogybot.Communication\ogybot.Communication.csproj"/>
         <ProjectReference Include="..\ogybot.Domain\ogybot.Domain.csproj"/>
+        <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj"/>
     </ItemGroup>
 
 </Project>
