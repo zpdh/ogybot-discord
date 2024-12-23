@@ -3,6 +3,16 @@
 public class ServerConfiguration
 {
 
+    public Guid WynnGuildId { get; set; }
+    public ulong DiscordGuildId { get; set; }
+    public ulong TomeChannel { get; set; }
+    public ulong LayoffsChannel { get; set; }
+    public ulong RaidsChannel { get; set; }
+    public ulong WarChannel { get; set; }
+    public ulong ListeningChannel { get; set; }
+    public ulong BroadcastingChannel { get; set; }
+    public ICollection<ulong> PrivilegedRoles { get; set; } = [];
+
     public ServerConfiguration(
         Guid wynnGuildId,
         ulong discordGuildId,
@@ -29,14 +39,4 @@ public class ServerConfiguration
     {
 
     }
-
-    public Guid WynnGuildId { get; set; }
-    public ulong DiscordGuildId { get; set; }
-    public ulong TomeChannel { get; set; }
-    public ulong LayoffsChannel { get; set; }
-    public ulong RaidsChannel { get; set; }
-    public ulong WarChannel { get; set; }
-    public ulong ListeningChannel { get; set; }
-    public ulong BroadcastingChannel { get; set; }
-    public ICollection<ulong> PrivilegedRoles { get; set; } = [];
 }

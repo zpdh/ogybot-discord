@@ -3,6 +3,9 @@
 public sealed class DiscordMessage
 {
 
+    public string Author { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
+
     public DiscordMessage(string author, string content)
     {
         Author = author;
@@ -12,7 +15,4 @@ public sealed class DiscordMessage
     private DiscordMessage()
     {
     }
-
-    public string Author { get; set; } = string.Empty;
-    public string Content { get; set; } = string.Empty;
 }

@@ -15,6 +15,8 @@ public class WaitListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly IWaitListClient _waitListClient;
 
+    private ulong ValidChannelId { get; set; }
+
     public WaitListCommands(
         IWaitListClient waitListClient,
         IListCommandValidator commandValidator,
@@ -24,8 +26,6 @@ public class WaitListCommands : BasePermissionRequiredCommand
         _waitListClient = waitListClient;
         _commandValidator = commandValidator;
     }
-
-    private ulong ValidChannelId { get; set; }
 
     #region List Command
 

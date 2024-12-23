@@ -15,6 +15,8 @@ public class TomeListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly ITomeListClient _tomeListClient;
 
+    private ulong ValidChannelId { get; set; }
+
     public TomeListCommands(
         ITomeListClient tomeListClient,
         IListCommandValidator commandValidator,
@@ -24,8 +26,6 @@ public class TomeListCommands : BasePermissionRequiredCommand
         _tomeListClient = tomeListClient;
         _commandValidator = commandValidator;
     }
-
-    private ulong ValidChannelId { get; set; }
 
     #region List Command
 

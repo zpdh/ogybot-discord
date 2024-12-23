@@ -5,6 +5,10 @@ namespace ogybot.Domain.Entities;
 public class EmbedContent
 {
 
+    public SocketUser SocketUser { get; set; } = default!;
+    public string? QueueSize { get; set; }
+    public string? Description { get; set; }
+
     public EmbedContent(SocketUser socketUser, string queueSize, string description)
     {
         SocketUser = socketUser;
@@ -15,8 +19,4 @@ public class EmbedContent
     private EmbedContent()
     {
     }
-
-    public SocketUser SocketUser { get; set; } = default!;
-    public string? QueueSize { get; set; }
-    public string? Description { get; set; }
 }

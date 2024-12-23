@@ -15,6 +15,8 @@ public class RaidListCommands : BasePermissionRequiredCommand
     private readonly IListCommandValidator _commandValidator;
     private readonly IRaidListClient _raidListClient;
 
+    private ulong ValidChannelId { get; set; }
+
     public RaidListCommands(
         IRaidListClient raidListClient,
         IBotExceptionHandler exceptionHandler,
@@ -24,8 +26,6 @@ public class RaidListCommands : BasePermissionRequiredCommand
         _raidListClient = raidListClient;
         _commandValidator = commandValidator;
     }
-
-    private ulong ValidChannelId { get; set; }
 
     #region List Command
 
