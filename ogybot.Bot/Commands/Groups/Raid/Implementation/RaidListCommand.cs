@@ -35,9 +35,8 @@ public sealed partial class RaidListCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Raid List")
             .WithDescription(content.Description)
-            .WithColor(new Color(211,63,30))
+            .WithColor(new Color(211, 63, 30))
             .WithThumbnailUrl("https://wynncraft.wiki.gg/images/8/89/CBRaidIcon.png")
-            .WithImageUrl("https://wynncraft.wiki.gg/images/0/01/RaidSigil2.png")
             .WithCurrentTimestamp()
             .WithFooter(content.QueueSize);
 
@@ -68,18 +67,13 @@ public sealed partial class RaidListCommands
 
     private static string CreateEmbedDescription(IList<RaidListUser> list)
     {
-        var description = "";
-
         var counter = 1;
 
-        foreach (var raidListUser in list)
-        {
-            description +=
-                $"{counter}. {raidListUser.Username}: {raidListUser.Raids} Raids | {raidListUser.Aspects} Aspects Owed | {raidListUser.EmeraldsOwed} Emeralds Owed\n\n";
-
-            counter++;
-        }
-
-        return description;
+        return list.Aggregate("",
+            (current, raidListUser) => current +
+                                       $"**{counter++}: {raidListUser.Username}**\n" +
+                                       $"- {raidListUser.Raids} Raids\n" +
+                                       $"- {raidListUser.Aspects} Aspects Owed\n" +
+                                       $"- {raidListUser.EmeraldsOwed} Emeralds Owed\n\n");
     }
 }

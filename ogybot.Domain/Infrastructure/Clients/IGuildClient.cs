@@ -4,5 +4,5 @@ namespace ogybot.Domain.Infrastructure.Clients;
 
 public interface IGuildClient
 {
-    Task<ServerConfiguration> FetchConfigurationAsync(ulong discordGuildId);
+    Task<ServerConfiguration?> FetchConfigurationAsync(ulong discordGuildId);
 }

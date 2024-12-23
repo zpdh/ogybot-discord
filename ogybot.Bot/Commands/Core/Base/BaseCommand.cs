@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
+using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 
@@ -51,7 +52,14 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
     private async Task<ServerConfiguration> FetchServerConfigurationAsync()
     {
         var discordGuildId = GetGuildId();
-        return await _guildClient.FetchConfigurationAsync(discordGuildId);
+        var serverConfiguration = await _guildClient.FetchConfigurationAsync(discordGuildId);
+
+        if (serverConfiguration is null)
+        {
+            throw new FetchingException(ExceptionMessages.GuildNotConfigured);
+        }
+
+        return serverConfiguration;
     }
 
     private ulong GetGuildId()

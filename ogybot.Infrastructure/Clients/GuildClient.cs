@@ -15,7 +15,7 @@ public sealed class GuildClient : BaseClient, IGuildClient
         _tokenRequester = tokenRequester;
     }
 
-    public async Task<ServerConfiguration> FetchConfigurationAsync(ulong discordGuildId)
+    public async Task<ServerConfiguration?> FetchConfigurationAsync(ulong discordGuildId)
     {
         var method = HttpMethod.Get;
         var token = await _tokenRequester.GetTokenAsync();

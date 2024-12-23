@@ -35,7 +35,7 @@ public sealed partial class WaitlistCommands
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
             .WithTitle("Wait list")
             .WithDescription(content.Description)
-            .WithColor(new Color(249,252,154))
+            .WithColor(new Color(249, 252, 154))
             .WithThumbnailUrl("https://wynncraft.wiki.gg/images/0/04/ShinyIcon.png")
             .WithCurrentTimestamp()
             .WithFooter(content.QueueSize);
@@ -56,17 +56,8 @@ public sealed partial class WaitlistCommands
 
     private static string CreateEmbedDescription(IList<WaitListUser> list)
     {
-        var description = "";
-
         var counter = 1;
 
-        foreach (var userWaitlist in list)
-        {
-            description += $"{counter}. {userWaitlist.Username}\n";
-
-            counter++;
-        }
-
-        return description;
+        return list.Aggregate("", (current, waitlistUser) => current + $"{counter++}. {waitlistUser.Username}\n");
     }
 }
