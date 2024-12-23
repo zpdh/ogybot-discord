@@ -22,16 +22,6 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
         await _socket.ConnectAsync();
     }
 
-    public async Task<IMessageChannel> GetChannelByIdAsync(DiscordSocketClient client, ulong channelId)
-    {
-        if (await client.GetChannelAsync(channelId) is not IMessageChannel channel)
-        {
-            throw new WebsocketStartupFailureException();
-        }
-
-        return channel;
-    }
-
     public async Task RequestAndAddTokenToHeadersAsync()
     {
         var token = await _tokenRequester.GetTokenAsync();

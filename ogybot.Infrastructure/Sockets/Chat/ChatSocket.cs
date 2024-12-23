@@ -17,21 +17,14 @@ public class ChatSocket : IChatSocket
 
     public async Task SetupAndStartAsync(DiscordSocketClient client, ulong channelId)
     {
-        var channel = await _setupHandler.GetChannelByIdAsync(client, channelId);
-
-        await SetupClientAsync(channel);
-        _communicationHandler.SetupEmitter(client, channel);
+        await SetupClientAsync();
+        _communicationHandler.SetupEmitter(client);
         await _setupHandler.StartAsync();
     }
 
-    public async Task EmitMessageAsync(SocketUserMessage message)
-    {
-        await _communicationHandler.EmitMessageAsync(message);
-    }
-
-    private async Task SetupClientAsync(IMessageChannel channel)
+    private async Task SetupClientAsync()
     {
         await _setupHandler.RequestAndAddTokenToHeadersAsync();
-        _communicationHandler.SetupEventListeners(channel);
+        _communicationHandler.SetupEventListeners();
     }
 }

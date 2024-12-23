@@ -1,7 +1,10 @@
 ﻿using Discord;
 using Discord.WebSocket;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Entities.Configurations;
+using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
+using ogybot.Domain.Services;
 using ogybot.Utility.Extensions;
 using ogybot.Utility.Services;
 
@@ -11,19 +14,25 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 {
     private readonly IChatSocketMessageHandler _messageHandler;
     private readonly IChatSocketSetupHandler _setupHandler;
+    private readonly IDiscordChannelService _discordChannelService;
+    private readonly IGuildClient _guildClient;
     private readonly SocketIOClient.SocketIO _socket;
 
     public ChatSocketCommunicationHandler(
         IChatSocketMessageHandler messageHandler,
         SocketIOClient.SocketIO socket,
-        IChatSocketSetupHandler setupHandler)
+        IChatSocketSetupHandler setupHandler,
+        IDiscordChannelService discordChannelService,
+        IGuildClient guildClient)
     {
         _messageHandler = messageHandler;
         _socket = socket;
         _setupHandler = setupHandler;
+        _discordChannelService = discordChannelService;
+        _guildClient = guildClient;
     }
 
-    public void SetupEventListeners(IMessageChannel channel)
+    public void SetupEventListeners()
     {
 
         #region Websocket Events
@@ -31,6 +40,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<ChatSocketMessage>();
+                var channel = await _discordChannelService.GetByIdAsync(socketResponse.ListeningChannel);
 
                 if (!socketResponse.TextContent.IsNullOrWhitespace())
                 {
@@ -42,29 +52,20 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
         #region Websocket Connectivity Events
 
-        _socket.OnConnected += async (_, _) => {
+        _socket.OnConnected += (_, _) => {
             const string message = "Successfully connected to Websocket Server";
 
             Console.WriteLine(message);
-            await _messageHandler.SendLoggingMessageAsync(channel, message);
         };
 
         _socket.OnDisconnected += async (_, reason) => {
             var message = $"Disconnected from Websocket Server. Reason: {reason}";
 
             Console.WriteLine(message);
-            await _messageHandler.SendLoggingMessageAsync(channel, message);
 
             await _setupHandler.RequestAndRefreshTokenInHeadersAsync();
 
             await _socket.ConnectAsync();
-        };
-
-        _socket.OnReconnectFailed += async (_, _) => {
-            const string message = "Could not reconnect to Websocket Server.";
-
-            Console.WriteLine(message);
-            await _messageHandler.SendLoggingMessageAsync(channel, message);
         };
 
         #endregion
@@ -85,9 +86,9 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
             new DiscordMessage(authorField, cleanedContent));
     }
 
-    public void SetupEmitter(DiscordSocketClient client, IMessageChannel channel)
+    public void SetupEmitter(DiscordSocketClient client)
     {
-        client.MessageReceived += message => SetupMessageReceiverAsync(message, channel);
+        client.MessageReceived += SetupMessageReceiverAsync;
     }
 
     private static bool MessageIsReply(SocketUserMessage message)
@@ -95,11 +96,22 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         return message.ReferencedMessage != null;
     }
 
-    private async Task SetupMessageReceiverAsync(SocketMessage message, IMessageChannel channel)
+    private async Task SetupMessageReceiverAsync(SocketMessage message)
     {
-        if (message.Channel.Id != channel.Id) return;
+        var broadcastingChannelId = await GetBroadcastingChannelId(message);
+
+        if (message.Channel.Id != broadcastingChannelId) return;
         if (message.Author.IsBot || message is not SocketUserMessage userMessage) return;
 
         await EmitMessageAsync(userMessage);
+    }
+
+    private async Task<ulong> GetBroadcastingChannelId(SocketMessage message)
+    {
+
+        var discordGuildId = ((SocketGuildChannel)message.Channel).Guild.Id;
+
+        var serverConfig = await _guildClient.FetchConfigurationAsync(discordGuildId);
+        return serverConfig.BroadcastingChannel;
     }
 }

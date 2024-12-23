@@ -5,7 +5,7 @@ namespace ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 public interface IChatSocketCommunicationHandler
 {
-    void SetupEventListeners(IMessageChannel channel);
+    void SetupEventListeners();
     Task EmitMessageAsync(SocketUserMessage message);
-    void SetupEmitter(DiscordSocketClient client, IMessageChannel channel);
+    void SetupEmitter(DiscordSocketClient client);
 }
