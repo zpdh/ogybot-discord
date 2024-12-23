@@ -4,7 +4,7 @@ namespace ogybot.Domain.Infrastructure.Clients;
 
 public interface IWaitListClient
 {
-    Task<IList<WaitListUser>> GetListAsync();
-    Task AddUserAsync(WaitListUser user);
-    Task RemoveUserAsync(WaitListUser user);
+    Task<IList<WaitListUser>> GetListAsync(Guid wynnGuildId);
+    Task AddUserAsync(Guid wynnGuildId, WaitListUser user);
+    Task RemoveUserAsync(Guid wynnGuildId, WaitListUser user);
 }

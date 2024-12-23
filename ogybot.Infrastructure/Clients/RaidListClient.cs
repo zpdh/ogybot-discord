@@ -6,7 +6,7 @@ namespace ogybot.Data.Clients;
 
 public class RaidListClient : BaseClient, IRaidListClient
 {
-    private const string Endpoint = "aspects";
+    private const string Endpoint = "guilds/raids";
 
     private readonly ITokenRequester _tokenRequester;
 
@@ -15,22 +15,22 @@ public class RaidListClient : BaseClient, IRaidListClient
         _tokenRequester = tokenRequester;
     }
 
-    public async Task<IList<RaidListUser>> GetListAsync()
+    public async Task<IList<RaidListUser>> GetListAsync(Guid wynnGuildId)
     {
         var method = HttpMethod.Get;
 
-        var response = await MakeAndSendRequestAsync(method, Endpoint);
+        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}");
 
         var listOfUsers = await ParseResponseAsync<IList<RaidListUser>>(response);
 
         return listOfUsers;
     }
 
-    public async Task DecrementAspectAsync(RaidListUser user)
+    public async Task DecrementAspectAsync(Guid wynnGuildId, RaidListUser user)
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, Endpoint, user, token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", token);
     }
 }

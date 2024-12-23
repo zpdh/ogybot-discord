@@ -76,19 +76,6 @@ public abstract class BaseClient
         }
     }
 
-    protected async Task<HttpResponseMessage> MakeAndSendRouteRequestAsync<T>(
-        HttpMethod method,
-        string endpoint,
-        T route,
-        string? token = null) where T : IConvertible
-    {
-        var request = new HttpRequestMessage(method, $"{endpoint}/{route}");
-
-        AddOptionalFieldsToRequest(request, token: token);
-
-        return await SendHttpRequestAsync(request);
-    }
-
     protected static async Task<T> ParseResponseAsync<T>(HttpResponseMessage response)
     {
         var content = await response.Content.ReadFromJsonAsync<T>();
