@@ -39,6 +39,6 @@ public class WaitListClient : BaseClient, IWaitListClient
         var method = HttpMethod.Delete;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", token: token);
     }
 }

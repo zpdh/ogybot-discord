@@ -1,4 +1,6 @@
-﻿using ogybot.Domain.Entities;
+﻿using ogybot.Communication.Requests;
+using ogybot.Domain.DataTransferObjects;
+using ogybot.Domain.Entities;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 
@@ -26,11 +28,12 @@ public class RaidListClient : BaseClient, IRaidListClient
         return listOfUsers;
     }
 
-    public async Task DecrementAspectAsync(Guid wynnGuildId, RaidListUser user)
+    public async Task DecrementRewardsAsync(Guid wynnGuildId, RaidListUserDto user)
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
+        var request = new DecrementEmeraldsRequest(user.AspectAmount, user.LiquidEmeraldAmount);
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", request, token);
     }
 }

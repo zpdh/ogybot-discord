@@ -20,7 +20,7 @@ public sealed class GuildClient : BaseClient, IGuildClient
         var method = HttpMethod.Get;
         var token = await _tokenRequester.GetTokenAsync();
 
-        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{discordGuildId}", token);
+        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{discordGuildId}", token: token);
 
         var serverConfiguration = await ParseResponseAsync<ServerConfiguration>(response);
 

@@ -74,6 +74,6 @@ public sealed partial class RaidListCommands
                                        $"**{counter++}: {raidListUser.Username}**\n" +
                                        $"- {raidListUser.Raids} Raids\n" +
                                        $"- {raidListUser.Aspects} Aspects Owed\n" +
-                                       $"- {raidListUser.EmeraldsOwed} Emeralds Owed\n\n");
+                                       $"- {raidListUser.EmeraldsOwed} LE Owed\n\n");
     }
 }
