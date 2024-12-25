@@ -32,7 +32,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\Core\" />
+        <Folder Include="Commands\Core\"/>
     </ItemGroup>
 
 </Project>

@@ -1,9 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Core.Validators;
-using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities.UserTypes;
-using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Waitlist.Implementation;
 
@@ -42,5 +39,4 @@ public sealed partial class WaitlistCommands
         var userList = await WaitListClient.GetListAsync(WynnGuildId);
         _commandValidator.ValidateUsername(userList, username);
     }
-
 }

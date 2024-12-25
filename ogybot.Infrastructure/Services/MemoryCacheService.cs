@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Services;
 
 namespace ogybot.Data.Services;

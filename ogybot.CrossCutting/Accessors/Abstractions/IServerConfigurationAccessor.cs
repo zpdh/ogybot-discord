@@ -1,6 +1,6 @@
 ﻿using ogybot.Domain.Entities.Configurations;
 
-namespace ogybot.Domain.Accessors;
+namespace ogybot.CrossCutting.Accessors.Abstractions;
 
 public interface IServerConfigurationAccessor
 {

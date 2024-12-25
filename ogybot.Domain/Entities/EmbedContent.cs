@@ -20,7 +20,8 @@ public class EmbedContent
     {
     }
 
-    public static EmbedContent Create(SocketUser socketUser, string? queueSize = null, string? description = null) =>
-        new(socketUser, queueSize, description);
-
+    public static EmbedContent Create(SocketUser socketUser, string? queueSize = null, string? description = null)
+    {
+        return new EmbedContent(socketUser, queueSize, description);
+    }
 }

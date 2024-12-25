@@ -1,16 +1,16 @@
 ﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.Domain.Accessors;
+using ogybot.CrossCutting.Accessors.Abstractions;
 using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Services;
 
-namespace ogybot.CrossCutting.Accessors;
+namespace ogybot.CrossCutting.Accessors.Implementations;
 
 public class ServerConfigurationAccessor : IServerConfigurationAccessor
 {
-    private readonly IGuildClient _guildClient;
     private readonly ICacheService _cacheService;
+    private readonly IGuildClient _guildClient;
 
     public ServerConfigurationAccessor(IGuildClient guildClient, ICacheService cacheService)
     {

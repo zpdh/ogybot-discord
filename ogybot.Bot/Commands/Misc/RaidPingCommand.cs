@@ -4,9 +4,8 @@ using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.Domain.Accessors;
+using ogybot.CrossCutting.Accessors.Abstractions;
 using ogybot.Domain.Enums;
-using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Misc;

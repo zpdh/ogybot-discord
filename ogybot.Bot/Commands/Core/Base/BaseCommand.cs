@@ -1,10 +1,8 @@
 ﻿using Discord.Interactions;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.Communication.Exceptions;
-using ogybot.Domain.Accessors;
+using ogybot.CrossCutting.Accessors.Abstractions;
 using ogybot.Domain.Entities.Configurations;
-using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Core.Base;
 
@@ -22,8 +20,9 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
     }
 
     /// <summary>
-    /// Should be used as a second "constructor".
-    /// Configures internal fields in commands that can only be fetched during command execution, such as guild identifiers and valid channels to use said command in.
+    ///     Should be used as a second "constructor".
+    ///     Configures internal fields in commands that can only be fetched during command execution, such as guild identifiers
+    ///     and valid channels to use said command in.
     /// </summary>
     protected abstract void ConfigureCommandSettings();
 

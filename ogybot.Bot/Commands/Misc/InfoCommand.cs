@@ -4,8 +4,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
-using ogybot.Domain.Accessors;
-using ogybot.Domain.Infrastructure.Clients;
+using ogybot.CrossCutting.Accessors.Abstractions;
 
 namespace ogybot.Bot.Commands.Misc;
 
@@ -25,7 +24,7 @@ public sealed class InfoCommand : BaseCommand
     [SlashCommand("info", "Displays info about the bot, such as the github repositories.")]
     public async Task ExecuteCommandAsync()
     {
-        await HandleCommandExecutionAsync(CommandInstructionsAsync, requiresConfiguration: false);
+        await HandleCommandExecutionAsync(CommandInstructionsAsync, false);
     }
 
     private async Task CommandInstructionsAsync()

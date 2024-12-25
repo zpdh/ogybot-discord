@@ -1,9 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Core.Validators;
-using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities.UserTypes;
-using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Groups.Waitlist.Implementation;

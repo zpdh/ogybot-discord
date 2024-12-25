@@ -1,7 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
 using ogybot.Domain.DataTransferObjects;
-using ogybot.Domain.Entities;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Groups.Raid.Implementation;

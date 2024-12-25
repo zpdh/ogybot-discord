@@ -1,6 +1,5 @@
 ﻿using Discord.WebSocket;
 using ogybot.Bot.Extensions;
-using ogybot.Communication.Constants;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 namespace ogybot.Bot.Handlers;

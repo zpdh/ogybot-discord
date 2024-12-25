@@ -1,9 +1,7 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Handlers;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
-using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Tome.Implementation;
 
