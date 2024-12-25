@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Waitlist;
@@ -15,8 +16,8 @@ public abstract class BaseWaitlistCommand : BasePermissionRequiredCommand
 
     protected BaseWaitlistCommand(
         IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient,
-        IWaitListClient waitListClient) : base(exceptionHandler, guildClient)
+        IServerConfigurationAccessor configurationAccessor,
+        IWaitListClient waitListClient) : base(exceptionHandler, configurationAccessor)
     {
         WaitListClient = waitListClient;
     }

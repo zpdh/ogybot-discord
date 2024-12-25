@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ogybot.CrossCutting.Accessors;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
 using ogybot.Data.Services;
 using ogybot.Data.Sockets.Chat;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
@@ -21,6 +23,8 @@ public static class DependencyInjectionExtension
         services.AddCustomClients();
         services.AddWebSockets();
         services.AddServices();
+        services.AddCustomCaching();
+        services.AddAccessors();
     }
 
     private static void AddHttpClient(this ServiceCollection services)
@@ -79,5 +83,16 @@ public static class DependencyInjectionExtension
     private static void AddServices(this ServiceCollection services)
     {
         services.AddScoped<IDiscordChannelService, DiscordChannelService>();
+    }
+
+    private static void AddCustomCaching(this ServiceCollection services)
+    {
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheService, MemoryCacheService>();
+    }
+
+    private static void AddAccessors(this ServiceCollection services)
+    {
+        services.AddScoped<IServerConfigurationAccessor, ServerConfigurationAccessor>();
     }
 }

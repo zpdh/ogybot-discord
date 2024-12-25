@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
@@ -18,7 +19,7 @@ public sealed class OnlineCommand : BaseCommand
     public OnlineCommand(
         IOnlineClient client,
         IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient) : base(exceptionHandler, guildClient)
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
         _client = client;
     }

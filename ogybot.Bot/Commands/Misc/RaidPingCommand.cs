@@ -4,6 +4,7 @@ using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Enums;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Utility.Extensions;
@@ -14,7 +15,9 @@ public sealed class RaidPingCommand : BaseCommand
 {
     private ulong ValidChannelId { get; set; }
 
-    public RaidPingCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
+    public RaidPingCommand(
+        IBotExceptionHandler exceptionHandler,
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
     }
 

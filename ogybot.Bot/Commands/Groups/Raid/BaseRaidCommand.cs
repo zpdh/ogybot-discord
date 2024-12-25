@@ -2,6 +2,7 @@
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Commands.Core.Validators;
 using ogybot.Bot.Handlers;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Raid;
@@ -17,7 +18,7 @@ public abstract class BaseRaidCommand : BasePermissionRequiredCommand
     protected BaseRaidCommand(
         IRaidListClient raidListClient,
         IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient) : base(exceptionHandler, guildClient)
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
         RaidListClient = raidListClient;
     }

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Core.Base;
@@ -8,7 +9,9 @@ namespace ogybot.Bot.Commands.Core.Base;
 public abstract class BasePermissionRequiredCommand : BaseCommand
 {
 
-    protected BasePermissionRequiredCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
+    protected BasePermissionRequiredCommand(
+        IBotExceptionHandler exceptionHandler,
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
     }
 

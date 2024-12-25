@@ -4,13 +4,16 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Misc;
 
 public sealed class InfoCommand : BaseCommand
 {
-    public InfoCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient) : base(exceptionHandler, guildClient)
+    public InfoCommand(
+        IBotExceptionHandler exceptionHandler,
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
     }
 

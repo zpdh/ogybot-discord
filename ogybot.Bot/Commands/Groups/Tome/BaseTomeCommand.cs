@@ -1,6 +1,7 @@
 ﻿using Discord.Interactions;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Tome;
@@ -15,8 +16,8 @@ public abstract class BaseTomeCommand : BasePermissionRequiredCommand
 
     protected BaseTomeCommand(
         IBotExceptionHandler exceptionHandler,
-        IGuildClient guildClient,
-        ITomeListClient tomeListClient) : base(exceptionHandler, guildClient)
+        IServerConfigurationAccessor configurationAccessor,
+        ITomeListClient tomeListClient) : base(exceptionHandler, configurationAccessor)
     {
         TomeListClient = tomeListClient;
     }

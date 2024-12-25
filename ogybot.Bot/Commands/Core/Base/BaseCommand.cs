@@ -2,6 +2,7 @@
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 
@@ -10,25 +11,25 @@ namespace ogybot.Bot.Commands.Core.Base;
 public abstract class BaseCommand : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly IBotExceptionHandler _botExceptionHandler;
-    private readonly IGuildClient _guildClient;
+    private readonly IServerConfigurationAccessor _configurationAccessor;
 
     protected ServerConfiguration ServerConfiguration { get; private set; }
 
-    protected BaseCommand(IBotExceptionHandler exceptionHandler, IGuildClient guildClient)
+    protected BaseCommand(IBotExceptionHandler exceptionHandler, IServerConfigurationAccessor configurationAccessor)
     {
         _botExceptionHandler = exceptionHandler;
-        _guildClient = guildClient;
+        _configurationAccessor = configurationAccessor;
     }
 
     /// <summary>
     /// Should be used as a second "constructor".
-    /// Configures internal fields in commands that can only be fetched during command execution, such as valid channels to use said command in and guild identifiers.
+    /// Configures internal fields in commands that can only be fetched during command execution, such as guild identifiers and valid channels to use said command in.
     /// </summary>
     protected abstract void ConfigureCommandSettings();
 
     private async Task ConfigureCommandAsync()
     {
-        ServerConfiguration = await FetchServerConfigurationAsync();
+        ServerConfiguration = await _configurationAccessor.FetchServerConfigurationAsync(Context.Guild.Id);
         ConfigureCommandSettings();
     }
 
@@ -47,24 +48,6 @@ public abstract class BaseCommand : InteractionModuleBase<SocketInteractionConte
         {
             await _botExceptionHandler.HandleAsync(Context, e);
         }
-    }
-
-    private async Task<ServerConfiguration> FetchServerConfigurationAsync()
-    {
-        var discordGuildId = GetGuildId();
-        var serverConfiguration = await _guildClient.FetchConfigurationAsync(discordGuildId);
-
-        if (serverConfiguration is null)
-        {
-            throw new FetchingException(ExceptionMessages.GuildNotConfigured);
-        }
-
-        return serverConfiguration;
-    }
-
-    private ulong GetGuildId()
-    {
-        return Context.Guild.Id;
     }
 
     protected async Task<bool> IsInvalidChannelAsync(ulong channelId)
