@@ -2,7 +2,7 @@
 using Discord.Interactions;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
-using ogybot.CrossCutting.Accessors.Abstractions;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;

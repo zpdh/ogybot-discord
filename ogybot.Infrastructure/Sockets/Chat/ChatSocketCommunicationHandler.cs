@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
@@ -11,7 +12,7 @@ namespace ogybot.Data.Sockets.Chat;
 public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 {
     private readonly IDiscordChannelService _discordChannelService;
-    private readonly IGuildClient _guildClient;
+    private readonly IServerConfigurationAccessor _configurationAccessor;
     private readonly IChatSocketMessageHandler _messageHandler;
     private readonly IChatSocketSetupHandler _setupHandler;
     private readonly SocketIOClient.SocketIO _socket;
@@ -21,13 +22,13 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         SocketIOClient.SocketIO socket,
         IChatSocketSetupHandler setupHandler,
         IDiscordChannelService discordChannelService,
-        IGuildClient guildClient)
+        IServerConfigurationAccessor configurationAccessor)
     {
         _messageHandler = messageHandler;
         _socket = socket;
         _setupHandler = setupHandler;
         _discordChannelService = discordChannelService;
-        _guildClient = guildClient;
+        _configurationAccessor = configurationAccessor;
     }
 
     public void SetupEventListeners()
@@ -74,6 +75,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
     {
         var authorField = message.Author.Username;
         var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+        var wynnGuildId = await GetWynnGuildIdAsync(message);
 
         if (MessageIsReply(message))
         {
@@ -81,7 +83,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         }
 
         await _socket.EmitAsync("discordMessage",
-            new DiscordMessage(authorField, cleanedContent));
+            new DiscordMessage(authorField, cleanedContent, wynnGuildId));
     }
 
     public void SetupEmitter(DiscordSocketClient client)
@@ -96,7 +98,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     private async Task SetupMessageReceiverAsync(SocketMessage message)
     {
-        var broadcastingChannelId = await GetBroadcastingChannelId(message);
+        var broadcastingChannelId = await GetBroadcastingChannelIdAsync(message);
 
         if (message.Channel.Id != broadcastingChannelId) return;
         if (message.Author.IsBot || message is not SocketUserMessage userMessage) return;
@@ -104,11 +106,25 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         await EmitMessageAsync(userMessage);
     }
 
-    private async Task<ulong> GetBroadcastingChannelId(SocketMessage message)
+    private async Task<ulong> GetBroadcastingChannelIdAsync(SocketMessage message)
     {
-        var discordGuildId = ((SocketGuildChannel)message.Channel).Guild.Id;
+        var discordGuildId = GetDiscordGuildId(message);
 
-        var serverConfig = await _guildClient.FetchConfigurationAsync(discordGuildId);
-        return serverConfig.BroadcastingChannel;
+        var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
+        return serverConfig!.BroadcastingChannel;
     }
+
+    private static ulong GetDiscordGuildId(SocketMessage message)
+    {
+        return ((SocketGuildChannel)message.Channel).Guild.Id;
+    }
+
+    private async Task<Guid> GetWynnGuildIdAsync(SocketMessage message)
+    {
+        var discordGuildId = GetDiscordGuildId(message);
+        var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
+
+        return serverConfig.WynnGuildId;
+    }
+
 }

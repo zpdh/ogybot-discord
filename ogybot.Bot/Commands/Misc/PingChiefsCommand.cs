@@ -3,7 +3,7 @@ using Discord.Interactions;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
-using ogybot.CrossCutting.Accessors.Abstractions;
+using ogybot.Domain.Accessors;
 
 namespace ogybot.Bot.Commands.Misc;
 

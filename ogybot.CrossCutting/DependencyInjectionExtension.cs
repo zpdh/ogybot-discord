@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ogybot.CrossCutting.Accessors.Abstractions;
-using ogybot.CrossCutting.Accessors.Implementations;
+using ogybot.Data.Accessors;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
 using ogybot.Data.Services;
 using ogybot.Data.Sockets.Chat;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;

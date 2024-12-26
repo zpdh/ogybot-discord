@@ -1,11 +1,11 @@
 ﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.CrossCutting.Accessors.Abstractions;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Services;
 
-namespace ogybot.CrossCutting.Accessors.Implementations;
+namespace ogybot.Data.Accessors;
 
 public class ServerConfigurationAccessor : IServerConfigurationAccessor
 {

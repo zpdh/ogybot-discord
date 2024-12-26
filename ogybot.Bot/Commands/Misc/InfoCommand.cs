@@ -4,7 +4,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
-using ogybot.CrossCutting.Accessors.Abstractions;
+using ogybot.Domain.Accessors;
 
 namespace ogybot.Bot.Commands.Misc;
 

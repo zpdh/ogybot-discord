@@ -1,6 +1,6 @@
 ﻿using ogybot.Bot.Commands.Core.Validators;
 using ogybot.Bot.Handlers;
-using ogybot.CrossCutting.Accessors.Abstractions;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Tome.Implementation;
