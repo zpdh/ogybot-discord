@@ -5,7 +5,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Waitlist.Implementation;
 
-public sealed partial class WaitlistCommands : BaseWaitlistCommand
+public sealed partial class WaitlistCommands : WaitlistCommand
 {
     private readonly IListCommandValidator _commandValidator;
 

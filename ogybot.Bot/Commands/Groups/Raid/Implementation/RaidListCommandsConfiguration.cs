@@ -5,7 +5,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Raid.Implementation;
 
-public sealed partial class RaidListCommands : BaseRaidCommand
+public sealed partial class RaidListCommands : RaidCommand
 {
     private readonly IListCommandValidator _commandValidator;
 

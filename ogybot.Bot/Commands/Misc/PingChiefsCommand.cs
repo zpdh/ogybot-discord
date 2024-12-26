@@ -7,7 +7,7 @@ using ogybot.Domain.Accessors;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public sealed class PingChiefsCommand : BaseCommand
+public sealed class PingChiefsCommand : Command
 {
     private ulong ValidChannelId { get; set; }
 

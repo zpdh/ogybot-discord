@@ -5,7 +5,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Tome.Implementation;
 
-public sealed partial class TomeListCommands : BaseTomeCommand
+public sealed partial class TomeListCommands : TomeCommand
 {
     private readonly IListCommandValidator _commandValidator;
 

@@ -8,7 +8,7 @@ using ogybot.Domain.Accessors;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public sealed class InfoCommand : BaseCommand
+public sealed class InfoCommand : Command
 {
     public InfoCommand(
         IBotExceptionHandler exceptionHandler,

@@ -6,14 +6,14 @@ using ogybot.Domain.Entities.Configurations;
 
 namespace ogybot.Bot.Commands.Core.Base;
 
-public abstract class BaseCommand : InteractionModuleBase<SocketInteractionContext>
+public abstract class Command : InteractionModuleBase<SocketInteractionContext>
 {
     private readonly IBotExceptionHandler _botExceptionHandler;
     private readonly IServerConfigurationAccessor _configurationAccessor;
 
     protected ServerConfiguration ServerConfiguration { get; private set; }
 
-    protected BaseCommand(IBotExceptionHandler exceptionHandler, IServerConfigurationAccessor configurationAccessor)
+    protected Command(IBotExceptionHandler exceptionHandler, IServerConfigurationAccessor configurationAccessor)
     {
         _botExceptionHandler = exceptionHandler;
         _configurationAccessor = configurationAccessor;

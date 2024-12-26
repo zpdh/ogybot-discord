@@ -4,27 +4,27 @@ using ogybot.Bot.Handlers;
 using ogybot.Domain.Accessors;
 using ogybot.Domain.Infrastructure.Clients;
 
-namespace ogybot.Bot.Commands.Groups.Waitlist;
+namespace ogybot.Bot.Commands.Groups.Tome;
 
-[Group("waitlist", "Presents a collection of waitlist related commands.")]
-public abstract class BaseWaitlistCommand : BasePermissionRequiredCommand
+[Group("tome-list", "Presents a collection of tome list related commands.")]
+public abstract class TomeCommand : PermissionRequiredCommand
 {
-    protected readonly IWaitListClient WaitListClient;
+    protected readonly ITomeListClient TomeListClient;
 
     protected ulong ValidChannelId { get; set; }
     protected Guid WynnGuildId { get; set; }
 
-    protected BaseWaitlistCommand(
+    protected TomeCommand(
         IBotExceptionHandler exceptionHandler,
         IServerConfigurationAccessor configurationAccessor,
-        IWaitListClient waitListClient) : base(exceptionHandler, configurationAccessor)
+        ITomeListClient tomeListClient) : base(exceptionHandler, configurationAccessor)
     {
-        WaitListClient = waitListClient;
+        TomeListClient = tomeListClient;
     }
 
     protected override void ConfigureCommandSettings()
     {
-        ValidChannelId = ServerConfiguration.LayoffsChannel;
+        ValidChannelId = ServerConfiguration.TomeChannel;
         WynnGuildId = ServerConfiguration.WynnGuildId;
     }
 }

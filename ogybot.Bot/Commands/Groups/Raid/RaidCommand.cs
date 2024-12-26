@@ -7,14 +7,14 @@ using ogybot.Domain.Infrastructure.Clients;
 namespace ogybot.Bot.Commands.Groups.Raid;
 
 [Group("raid-list", "Presents a collection of raid list related commands.")]
-public abstract class BaseRaidCommand : BasePermissionRequiredCommand
+public abstract class RaidCommand : PermissionRequiredCommand
 {
     protected readonly IRaidListClient RaidListClient;
 
     protected ulong ValidChannelId { get; set; }
     protected Guid WynnGuildId { get; set; }
 
-    protected BaseRaidCommand(
+    protected RaidCommand(
         IRaidListClient raidListClient,
         IBotExceptionHandler exceptionHandler,
         IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)

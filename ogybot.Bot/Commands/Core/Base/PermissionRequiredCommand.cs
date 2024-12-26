@@ -5,10 +5,10 @@ using ogybot.Domain.Accessors;
 
 namespace ogybot.Bot.Commands.Core.Base;
 
-public abstract class BasePermissionRequiredCommand : BaseCommand
+public abstract class PermissionRequiredCommand : Command
 {
 
-    protected BasePermissionRequiredCommand(
+    protected PermissionRequiredCommand(
         IBotExceptionHandler exceptionHandler,
         IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
