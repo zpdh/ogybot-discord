@@ -1,7 +1,5 @@
 ﻿using Discord;
-using Discord.Commands;
 using Discord.Interactions;
-using Discord.Interactions.Builders;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Enums;
 
@@ -15,7 +13,7 @@ public sealed partial class RaidListCommands
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("list", "Presents a list containing information about raid completions per guild member.")]
-    public async Task ExecuteListCommandAsync([Discord.Interactions.Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
+    public async Task ExecuteListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
         await HandleCommandExecutionAsync(() => ListCommandInstructionsAsync(orderType), false);
     }
@@ -93,7 +91,7 @@ public sealed partial class RaidListCommands
 
     private static int GetInitialCounter()
     {
-        return 1 + _currentPage * DefaultPageSize;
+        return 1 + (_currentPage * DefaultPageSize);
     }
 
     private async Task<MessageComponent> CreatePaginationComponentsAsync(RaidListOrderType orderType)
