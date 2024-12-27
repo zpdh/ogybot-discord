@@ -6,7 +6,7 @@ namespace ogybot.Data.Clients;
 
 public sealed class GuildClient : BaseClient, IGuildClient
 {
-    private const string Endpoint = "guilds/config";
+    private const string Endpoint = "config";
 
     private readonly ITokenRequester _tokenRequester;
 
