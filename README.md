@@ -1,4 +1,4 @@
-﻿<h1 align="center"> ogybot </h1>
+<h1 align="center"> ogybot </h1>
 
 <h2 align="center"> About </h2>
 
@@ -12,17 +12,10 @@ The bot itself is written in C# using the Discord.NET Library, however it does h
 Node.js, feel free to check it out <a href="https://github.com/ezlixp/ico_server" target="_blank">here</a>.
 
 
-<h2 align="center"> Contributions </h2>
-
-Contributions are heavily appreciated, however, before you commit please make sure the code is readable and doesn't
-break anything.
-
 <h2 align="center"> Commands </h2>
 
-- /zingus - Misc command. Posts a gif of this odd little cat.
 - /info - Displays info about the bot, such as this repository and it's authors.
 - /chiefs - Pings guild chiefs.
-- /war-build-help - Opens a discord thread with the author in it, including their budget and items for a build.
 - /raid - Pings either Light/Heavy Raid roles.
 - /online - Shows current mod users online in-game.
 - /tomelist (and tomelist-add, tomelist-remove) - Displays players in the queue for a guild tome. /tomelist-add adds a
@@ -30,8 +23,13 @@ break anything.
 - /waitlist (and waitlist-add, waitlist-remove) - Displays players in the queue for a guild invite. /waitlist-add adds a
   player to queue and /waitlist-remove removes one based on their username or index.
 - /aspectlist (and aspectlist-decrement) - Displays the number of aspects owed to each guild member based on their raids
-  completed. Requires the mod to add players to the list. Aspectlist-decrement decrements their aspects owed counter by
-  1 (is also automated by the mod).
+  completed. Aspectlist-decrement decrements their aspects owed counter by 1.
+
+
+<h2 align="center"> Contributions </h2>
+
+Contributions are heavily appreciated, however, before you commit please make sure the code is readable and doesn't
+break anything.
 
 <h3> How to contribute </h3>
 
@@ -41,22 +39,5 @@ break anything.
 4. Push to the Branch (`git push origin feature/newFeature`)
 5. Open a Pull Request
 
-<h3> Commands </h3>
-
-- /zingus - Misc command. Posts a gif of this odd little cat.
-- /info - Displays info about the bot, such as this repository and it's authors.
-- /chiefs - Pings guild chiefs.
-- /war-build-help - Opens a discord thread with the author in it, including their budget and items for a build.
-- /raid - Pings either Light/Heavy Raid roles.
-- /online - Shows current mod users online in-game.
-- /tomelist (and tomelist-add, tomelist-remove) - Displays players in the queue for a guild tome. /tomelist-add adds a
-  player to queue and /tomelist-remove removes one based on their username or index.
-- /waitlist (and waitlist-add, waitlist-remove) - Displays players in the queue for a guild invite. /waitlist-add adds a
-  player to queue and /waitlist-remove removes one based on their username or index.
-- /aspectlist (and aspectlist-decrement) - Displays the number of aspects owed to each guild member based on their raids
-  completed. Requires the mod to add players to the list. Aspectlist-decrement decrements their aspects owed counter by
-  1 (is also automated by the mod).
-
-<hr>
 
 That's it! Thanks for checking out my little project!
