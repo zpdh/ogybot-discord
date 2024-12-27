@@ -37,6 +37,6 @@ public sealed partial class WaitlistCommands
     private async Task ValidateUsernameAsync(string username)
     {
         var userList = await WaitListClient.GetListAsync(WynnGuildId);
-        _commandValidator.ValidateUsername(userList, username);
+        _commandValidator.ValidateUsername(username);
     }
 }
