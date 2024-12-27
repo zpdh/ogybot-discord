@@ -6,7 +6,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Tome;
 
-[Group("tome-list", "Presents a collection of tome list related commands.")]
+[Group("tomelist", "Presents a collection of tome list related commands.")]
 public abstract class TomeCommand : PermissionRequiredCommand
 {
     protected readonly ITomeListClient TomeListClient;

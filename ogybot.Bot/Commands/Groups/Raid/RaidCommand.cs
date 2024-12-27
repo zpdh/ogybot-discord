@@ -6,7 +6,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Raid;
 
-[Group("raid-list", "Presents a collection of raid list related commands.")]
+[Group("raidlist", "Presents a collection of raid list related commands.")]
 public abstract class RaidCommand : PermissionRequiredCommand
 {
     protected readonly IRaidListClient RaidListClient;
