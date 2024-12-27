@@ -8,7 +8,7 @@ namespace ogybot.Data.Clients;
 
 public class RaidListClient : BaseClient, IRaidListClient
 {
-    private const string Endpoint = "guilds/raids";
+    private const string Endpoint = "guilds/raids/rewards";
 
     private readonly ITokenRequester _tokenRequester;
 
@@ -32,8 +32,8 @@ public class RaidListClient : BaseClient, IRaidListClient
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
-        var request = new DecrementEmeraldsRequest(user.AspectAmount, user.LiquidEmeraldAmount);
+        var request = new DecrementEmeraldsRequest(user.Username, user.AspectAmount, user.EmeraldAmount);
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", request, token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}", request, token);
     }
 }
