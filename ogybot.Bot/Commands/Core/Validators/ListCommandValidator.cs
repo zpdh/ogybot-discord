@@ -8,7 +8,7 @@ namespace ogybot.Bot.Commands.Core.Validators;
 
 public interface IListCommandValidator
 {
-    void ValidateUsername(IEnumerable<User> userList, string username);
+    void ValidateUsername(string username);
     void ValidateUserRemoval(IEnumerable<User> userList, string username);
     void ValidateUserRemoval(IEnumerable<User> userList, int index);
 }
@@ -22,15 +22,8 @@ public class ListCommandValidator : IListCommandValidator
         _validCharacters = validCharacters;
     }
 
-    public void ValidateUsername(IEnumerable<User> userList, string username)
+    public void ValidateUsername(string username)
     {
-        var usernames = userList.Select(user => user.Username);
-
-        if (usernames.Contains(username))
-        {
-            throw new InvalidCommandArgumentException(ErrorMessages.UserAlreadyOnListError);
-        }
-
         if (username.Any(character => !_validCharacters.Contains(character)))
         {
             throw new InvalidCommandArgumentException(ErrorMessages.InvalidCharactersError);

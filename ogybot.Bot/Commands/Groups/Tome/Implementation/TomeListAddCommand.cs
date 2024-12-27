@@ -37,6 +37,6 @@ public sealed partial class TomeListCommands
     private async Task ValidateUsernameAsync(string username)
     {
         var userList = await TomeListClient.GetListAsync(WynnGuildId);
-        _commandValidator.ValidateUsername(userList, username);
+        _commandValidator.ValidateUsername(username);
     }
 }
