@@ -2,6 +2,6 @@
 
 namespace ogybot.Domain.Entities.UserTypes;
 
-public class OnlineUser : User
+public sealed class OnlineUser : User
 {
 }

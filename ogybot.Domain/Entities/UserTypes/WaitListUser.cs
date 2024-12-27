@@ -2,7 +2,7 @@
 
 namespace ogybot.Domain.Entities.UserTypes;
 
-public class WaitListUser : User
+public sealed class WaitListUser : User
 {
     public WaitListUser(string username) : base(username)
     {
