@@ -1,24 +1,37 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
+using ogybot.Domain.Accessors;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public class PingChiefsCommand : BaseCommand
+public sealed class PingChiefsCommand : Command
 {
-    private const ulong ChannelId = GuildChannels.WarChannel;
+    private ulong ValidChannelId { get; set; }
 
-    public PingChiefsCommand(IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    public PingChiefsCommand(
+        IBotExceptionHandler exceptionHandler,
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
+    }
+
+    protected override void ConfigureCommandSettings()
+    {
+        ValidChannelId = ServerConfiguration.WarChannel;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("chiefs", "Pings the 'Active Chief' role")]
-    public async Task ExecuteChiefsCommandAsync()
+    public async Task ExecuteCommandAsync()
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        await HandleCommandExecutionAsync(CommandInstructionsAsync);
+    }
+
+    private async Task CommandInstructionsAsync()
+    {
+        if (await IsInvalidChannelAsync(ValidChannelId))
         {
             return;
         }

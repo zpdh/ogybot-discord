@@ -7,9 +7,4 @@
         <RootNamespace>ogybot.Communication</RootNamespace>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\ogybot.Domain\ogybot.Domain.csproj"/>
-        <ProjectReference Include="..\ogybot.Utility\ogybot.Utility.csproj"/>
-    </ItemGroup>
-
 </Project>

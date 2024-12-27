@@ -3,7 +3,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ogybot.Bot.Builders;
-using ogybot.Bot.Commands.Lists.Validators;
+using ogybot.Bot.Commands.Core.Validators;
 using ogybot.Bot.Handlers;
 using ogybot.CrossCutting;
 

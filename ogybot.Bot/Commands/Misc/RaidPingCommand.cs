@@ -1,28 +1,40 @@
 ﻿using Discord;
 using Discord.Interactions;
-using ogybot.Bot.Commands.Base;
+using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
-using ogybot.Domain.Entities;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Enums;
 using ogybot.Utility.Extensions;
 
 namespace ogybot.Bot.Commands.Misc;
 
-public class RaidPingCommand : BaseCommand
+public sealed class RaidPingCommand : Command
 {
-    private const ulong ChannelId = GuildChannels.WarChannel;
+    private ulong ValidChannelId { get; set; }
 
-    public RaidPingCommand(IBotExceptionHandler exceptionHandler) : base(exceptionHandler)
+    public RaidPingCommand(
+        IBotExceptionHandler exceptionHandler,
+        IServerConfigurationAccessor configurationAccessor) : base(exceptionHandler, configurationAccessor)
     {
+    }
+
+    protected override void ConfigureCommandSettings()
+    {
+        ValidChannelId = ServerConfiguration.WarChannel;
     }
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("raid", "Pings the provided raid role (Heavy/Light Raid)")]
     public async Task ExecuteCommandAsync(RaidType raidType, [Summary("guild", "The guild attacking our claim")] string? guildAttacking = null)
     {
-        if (await IsInvalidChannelAsync(ChannelId))
+        await HandleCommandExecutionAsync(() => CommandInstructionsAsync(raidType, guildAttacking));
+    }
+
+    private async Task CommandInstructionsAsync(RaidType raidType, string? guildAttacking)
+    {
+        if (await IsInvalidChannelAsync(ValidChannelId))
         {
             return;
         }
@@ -31,18 +43,6 @@ public class RaidPingCommand : BaseCommand
         var guildMessage = CreateGuildMessage(raidRoleId, guildAttacking);
 
         await FollowupAsync(guildMessage, allowedMentions: AllowedMentions.All);
-    }
-
-    private static string CreateGuildMessage(ulong raidRoleId, string? guildAttacking)
-    {
-        var guildMessage = $"<@&{raidRoleId}>";
-
-        if (!guildAttacking.IsNullOrWhitespace())
-        {
-            guildMessage += $"\n**Guild**: {guildAttacking}";
-        }
-
-        return guildMessage;
     }
 
     private static ulong DetermineRaidRole(RaidType raidType)
@@ -55,5 +55,17 @@ public class RaidPingCommand : BaseCommand
 
             _ => throw new InvalidCommandArgumentException(ErrorMessages.InvalidRaidTypeError)
         };
+    }
+
+    private static string CreateGuildMessage(ulong raidRoleId, string? guildAttacking)
+    {
+        var guildMessage = $"<@&{raidRoleId}>";
+
+        if (!guildAttacking.IsNullOrWhitespace())
+        {
+            guildMessage += $"\n**Guild**: {guildAttacking}";
+        }
+
+        return guildMessage;
     }
 }

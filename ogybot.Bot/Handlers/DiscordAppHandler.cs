@@ -1,6 +1,5 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using Microsoft.Extensions.Configuration;
 
 namespace ogybot.Bot.Handlers;
 

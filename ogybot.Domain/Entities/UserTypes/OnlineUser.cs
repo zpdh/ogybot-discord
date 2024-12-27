@@ -2,6 +2,6 @@
 
 namespace ogybot.Domain.Entities.UserTypes;
 
-public class OnlineUser : BaseUser
+public class OnlineUser : User
 {
 }

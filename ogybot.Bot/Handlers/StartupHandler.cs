@@ -1,7 +1,6 @@
 ﻿using Discord.WebSocket;
 using ogybot.Bot.Extensions;
-using ogybot.Communication.Constants;
-using ogybot.Domain.Sockets.ChatSocket;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 namespace ogybot.Bot.Handlers;
 
@@ -25,7 +24,7 @@ public class StartupHandler : IStartupHandler
     {
         // The discord bot service must be started first. Chat socket relies on it to function.
         await StartupDiscordBotAsync(services);
-        await StartupChatSocketAsync();
+        //await StartupChatSocketAsync();
     }
 
     private async Task StartupDiscordBotAsync(IServiceProvider services)
@@ -36,6 +35,6 @@ public class StartupHandler : IStartupHandler
 
     private async Task StartupChatSocketAsync()
     {
-        await _chatSocket.SetupAndStartAsync(_client, GuildChannels.WebsocketLogChannel);
+        await _chatSocket.SetupAndStartAsync(_client);
     }
 }

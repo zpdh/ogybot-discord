@@ -1,6 +1,5 @@
-﻿using Discord;
-using Discord.WebSocket;
-using ogybot.Domain.Sockets.ChatSocket;
+﻿using Discord.WebSocket;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 namespace ogybot.Data.Sockets.Chat;
 
@@ -15,23 +14,16 @@ public class ChatSocket : IChatSocket
         _communicationHandler = communicationHandler;
     }
 
-    public async Task SetupAndStartAsync(DiscordSocketClient client, ulong channelId)
+    public async Task SetupAndStartAsync(DiscordSocketClient client)
     {
-        var channel = await _setupHandler.GetChannelByIdAsync(client, channelId);
-
-        await SetupClientAsync(channel);
-        _communicationHandler.SetupEmitter(client, channel);
+        await SetupClientAsync();
+        _communicationHandler.SetupEmitter(client);
         await _setupHandler.StartAsync();
     }
 
-    public async Task EmitMessageAsync(SocketUserMessage message)
-    {
-        await _communicationHandler.EmitMessageAsync(message);
-    }
-
-    private async Task SetupClientAsync(IMessageChannel channel)
+    private async Task SetupClientAsync()
     {
         await _setupHandler.RequestAndAddTokenToHeadersAsync();
-        _communicationHandler.SetupEventListeners(channel);
+        _communicationHandler.SetupEventListeners();
     }
 }

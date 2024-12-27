@@ -3,13 +3,13 @@ using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Communication.Requests;
 using ogybot.Communication.Responses;
-using ogybot.Domain.Security;
+using ogybot.Domain.Infrastructure.Security;
 
 namespace ogybot.Data.Security.Tokens;
 
 public class TokenRequester : ITokenRequester
 {
-    private const string Endpoint = "auth/get-token";
+    private const string Endpoint = "guilds/auth/get-token/*";
 
     private readonly HttpClient _httpClient;
     private readonly string _validationKey;
