@@ -33,7 +33,7 @@ public class RaidListClient : BaseClient, IRaidListClient
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
-        var request = new DecrementEmeraldsRequest(user.Username, user.Aspects, user.Emeralds);
+        var request = new DecrementRewardsRequest(user.Username, user.Aspects, user.Emeralds);
 
         await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}", request, token);
     }
