@@ -1,5 +1,6 @@
 ﻿using ogybot.Domain.DataTransferObjects;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Entities.UserTypes;
 
 namespace ogybot.Domain.Infrastructure.Clients;
 

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Interactions;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Enums;
 
 namespace ogybot.Bot.Commands.Groups.Raid.Implementation;
@@ -66,7 +67,7 @@ public sealed partial class RaidListCommands
         var orderedEnumerable = orderType switch
         {
             RaidListOrderType.Aspects => list.OrderByDescending(user => user.Aspects),
-            RaidListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.EmeraldsOwed),
+            RaidListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.Emeralds),
             _ => list.OrderByDescending(user => user.Raids)
         };
 
@@ -86,7 +87,7 @@ public sealed partial class RaidListCommands
         return $"**{index}: {user.Username}**\n" +
                $"- {user.Raids} Raids\n" +
                $"- {user.Aspects} Aspects Owed\n" +
-               $"- {user.EmeraldsOwed} LE Owed\n\n";
+               $"- {user.Emeralds} LE Owed\n\n";
     }
 
     private static int GetInitialCounter()

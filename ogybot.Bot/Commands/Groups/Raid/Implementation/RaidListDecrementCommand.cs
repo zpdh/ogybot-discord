@@ -38,7 +38,7 @@ public sealed partial class RaidListCommands
             await DecrementAspectFromPlayerAsync(usernamesOrIndexes, aspectAmount, liquidEmeraldAmount);
         }
 
-        await FollowupAsync("Successfully decremented 1 aspect from the provided player(s).");
+        await FollowupAsync("Successfully decremented rewards from the provided player(s).");
     }
 
     private async Task DecrementAspectFromMultiplePlayersAsync(string usernamesOrIndexes, double aspectAmount, double liquidEmeraldAmount)

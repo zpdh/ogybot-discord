@@ -33,7 +33,7 @@ public sealed partial class WaitlistCommands
 
         var embedBuilder = new EmbedBuilder()
             .WithAuthor(content.User.Username, content.User.GetAvatarUrl() ?? content.User.GetDefaultAvatarUrl())
-            .WithTitle("Wait list")
+            .WithTitle("Waitlist")
             .WithDescription(content.Description)
             .WithColor(new Color(249, 252, 154))
             .WithThumbnailUrl("https://wynncraft.wiki.gg/images/0/04/ShinyIcon.png")

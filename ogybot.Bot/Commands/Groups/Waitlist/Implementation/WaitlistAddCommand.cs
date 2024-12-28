@@ -20,7 +20,7 @@ public sealed partial class WaitlistCommands
             return;
         }
 
-        await ValidateUsernameAsync(username);
+        _commandValidator.ValidateUsername(username);
 
         await AddUserToWaitlistAsync(username);
 
@@ -32,11 +32,5 @@ public sealed partial class WaitlistCommands
         var waitListUser = new WaitListUser(username);
 
         await WaitListClient.AddUserAsync(WynnGuildId, waitListUser);
-    }
-
-    private async Task ValidateUsernameAsync(string username)
-    {
-        var userList = await WaitListClient.GetListAsync(WynnGuildId);
-        _commandValidator.ValidateUsername(username);
     }
 }

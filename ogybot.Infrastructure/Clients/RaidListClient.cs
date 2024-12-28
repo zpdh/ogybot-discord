@@ -1,6 +1,7 @@
 ﻿using ogybot.Communication.Requests;
 using ogybot.Domain.DataTransferObjects;
 using ogybot.Domain.Entities;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 
@@ -32,7 +33,7 @@ public class RaidListClient : BaseClient, IRaidListClient
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
-        var request = new DecrementEmeraldsRequest(user.Username, user.AspectAmount, user.EmeraldAmount);
+        var request = new DecrementEmeraldsRequest(user.Username, user.Aspects, user.Emeralds);
 
         await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}", request, token);
     }

@@ -1,12 +1,12 @@
 ﻿using ogybot.Domain.Entities.Primitives;
 
-namespace ogybot.Domain.Entities;
+namespace ogybot.Domain.Entities.UserTypes;
 
-public class RaidListUser : User
+public sealed class RaidListUser : User
 {
 
     public double Aspects { get; set; }
-    public double EmeraldsOwed { get; set; }
+    public double Emeralds { get; set; }
     public int Raids { get; set; }
 
     public RaidListUser(string username) : base(username)

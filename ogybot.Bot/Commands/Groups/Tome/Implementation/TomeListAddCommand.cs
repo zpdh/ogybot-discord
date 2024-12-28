@@ -10,7 +10,7 @@ public sealed partial class TomeListCommands
     [SlashCommand("add", "Adds a user to the tome list.")]
     public async Task ExecuteAddCommandAsync([Summary("user", "User to be added into the tome list")] string username)
     {
-        await HandleCommandExecutionAsync(() => RemoveCommandInstructionsAsync(username));
+        await HandleCommandExecutionAsync(() => AddCommandInstructionsAsync(username));
     }
 
     private async Task AddCommandInstructionsAsync(string username)
@@ -20,7 +20,7 @@ public sealed partial class TomeListCommands
             return;
         }
 
-        await ValidateUsernameAsync(username);
+        _commandValidator.ValidateUsername(username);
 
         await AddUserToTomeListAsync(username);
 
@@ -32,11 +32,5 @@ public sealed partial class TomeListCommands
         var tomeListUser = new TomeListUser(username);
 
         await TomeListClient.AddUserAsync(WynnGuildId, tomeListUser);
-    }
-
-    private async Task ValidateUsernameAsync(string username)
-    {
-        var userList = await TomeListClient.GetListAsync(WynnGuildId);
-        _commandValidator.ValidateUsername(username);
     }
 }
