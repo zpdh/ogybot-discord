@@ -38,7 +38,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<ChatSocketMessage>();
-                var channel = await _discordChannelService.GetByIdAsync(socketResponse.ListeningChannel);
+                var channel = await _discordChannelService.GetByIdAsync(socketResponse.GetListeningChannel());
 
                 if (!socketResponse.TextContent.IsNullOrWhitespace())
                 {
