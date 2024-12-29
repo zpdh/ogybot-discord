@@ -24,7 +24,7 @@ public class StartupHandler : IStartupHandler
     {
         // The discord bot service must be started first. Chat socket relies on it to function.
         await StartupDiscordBotAsync(services);
-        //await StartupChatSocketAsync();
+        await StartupChatSocketAsync();
     }
 
     private async Task StartupDiscordBotAsync(IServiceProvider services)
