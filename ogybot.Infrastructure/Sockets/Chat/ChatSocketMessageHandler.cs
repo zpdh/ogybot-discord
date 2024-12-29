@@ -10,7 +10,7 @@ namespace ogybot.Data.Sockets.Chat;
 
 public class ChatSocketMessageHandler : IChatSocketMessageHandler
 {
-    private const int DelayBetweenMessages = 250;
+    private const int DelayBetweenMessages = 50;
 
     public async Task FormatAndSendEmbedAsync(IMessageChannel channel, ChatSocketMessage chatSocketResponse)
     {
