@@ -11,6 +11,7 @@ public static class ErrorMessages
     public const string UsernameNotOnListError = "One or more provided username(s) are not on the list.";
     public const string UserAlreadyOnListError = "This user is already present on the list.";
     public const string InvalidIndexError = "The provided index(es) are invalid (either too high or equal to or less than 0).";
+    public const string ChannelNotConfiguredError = "This server did not configure this command.";
 
     public static string InvalidChannelError(ulong validChannelId)
     {
