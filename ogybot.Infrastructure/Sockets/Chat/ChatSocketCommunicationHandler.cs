@@ -1,4 +1,5 @@
 ﻿using Discord.WebSocket;
+using ogybot.Communication.Exceptions;
 using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
@@ -87,7 +88,16 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     public void SetupEmitter(DiscordSocketClient client)
     {
-        client.MessageReceived += SetupMessageReceiverAsync;
+        client.MessageReceived += async message => {
+            try
+            {
+                await SetupMessageReceiverAsync(message);
+            }
+            catch (ApiException)
+            {
+                // Simply silence the exception. It will only be thrown when the server is not configured.
+            }
+        };
     }
 
     private static bool MessageIsReply(SocketUserMessage message)
