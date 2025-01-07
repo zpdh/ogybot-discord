@@ -58,7 +58,7 @@ public static class DiscordSocketClientExtensions
     private static void AddLogger(this DiscordSocketClient client)
     {
         client.Log += logMessage => {
-            Console.WriteLine(logMessage.Message);
+            Console.WriteLine($"{logMessage.Message}");
 
             return Task.CompletedTask;
         };
@@ -107,24 +107,12 @@ public static class DiscordSocketClientExtensions
 
             await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);
 
-            await RegisterCommandsAsync(interactionService, services);
+            await RegisterCommandsAsync(interactionService);
         };
     }
 
-    private static async Task RegisterCommandsAsync(InteractionService interactionService, IServiceProvider services)
+    private static async Task RegisterCommandsAsync(InteractionService interactionService)
     {
-        var configuration = services.GetRequiredService<IConfiguration>();
-
-        var id = GetGuildId(configuration);
-
-        await interactionService.RegisterCommandsToGuildAsync(id);
-    }
-
-    private static ulong GetGuildId(IConfiguration configuration)
-    {
-        var branch = configuration.GetValue<string>("Branch");
-        var id = configuration.GetValue<ulong>($"ServerIds:{branch}");
-
-        return id;
+        await interactionService.RegisterCommandsGloballyAsync();
     }
 }

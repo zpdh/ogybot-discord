@@ -1,11 +1,15 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ogybot.Data.Accessors;
 using ogybot.Data.Clients;
 using ogybot.Data.Security.Tokens;
+using ogybot.Data.Services;
 using ogybot.Data.Sockets.Chat;
-using ogybot.Domain.Clients;
-using ogybot.Domain.Security;
-using ogybot.Domain.Sockets.ChatSocket;
+using ogybot.Domain.Accessors;
+using ogybot.Domain.Infrastructure.Clients;
+using ogybot.Domain.Infrastructure.Security;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
+using ogybot.Domain.Services;
 using SocketIOClient;
 
 namespace ogybot.CrossCutting;
@@ -18,6 +22,9 @@ public static class DependencyInjectionExtension
         services.AddTokenRequester();
         services.AddCustomClients();
         services.AddWebSockets();
+        services.AddServices();
+        services.AddCustomCaching();
+        services.AddAccessors();
     }
 
     private static void AddHttpClient(this ServiceCollection services)
@@ -47,8 +54,9 @@ public static class DependencyInjectionExtension
     {
         services.AddScoped<ITomeListClient, TomeListClient>();
         services.AddScoped<IWaitListClient, WaitListClient>();
-        services.AddScoped<IAspectListClient, AspectListClient>();
+        services.AddScoped<IRaidListClient, RaidListClient>();
         services.AddScoped<IOnlineClient, OnlineClient>();
+        services.AddScoped<IGuildClient, GuildClient>();
     }
 
     private static void AddWebSockets(this ServiceCollection services)
@@ -70,5 +78,21 @@ public static class DependencyInjectionExtension
         services.AddSingleton<IChatSocketSetupHandler, ChatSocketSetupHandler>();
         services.AddSingleton<IChatSocketCommunicationHandler, ChatSocketCommunicationHandler>();
         services.AddSingleton<IChatSocket, ChatSocket>();
+    }
+
+    private static void AddServices(this ServiceCollection services)
+    {
+        services.AddScoped<IDiscordChannelService, DiscordChannelService>();
+    }
+
+    private static void AddCustomCaching(this ServiceCollection services)
+    {
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheService, MemoryCacheService>();
+    }
+
+    private static void AddAccessors(this ServiceCollection services)
+    {
+        services.AddScoped<IServerConfigurationAccessor, ServerConfigurationAccessor>();
     }
 }

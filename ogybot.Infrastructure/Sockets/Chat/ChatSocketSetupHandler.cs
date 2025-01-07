@@ -1,8 +1,5 @@
-﻿using Discord;
-using Discord.WebSocket;
-using ogybot.Communication.Exceptions;
-using ogybot.Domain.Security;
-using ogybot.Domain.Sockets.ChatSocket;
+﻿using ogybot.Domain.Infrastructure.Security;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 namespace ogybot.Data.Sockets.Chat;
 
@@ -20,16 +17,6 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
     public async Task StartAsync()
     {
         await _socket.ConnectAsync();
-    }
-
-    public async Task<IMessageChannel> GetChannelByIdAsync(DiscordSocketClient client, ulong channelId)
-    {
-        if (await client.GetChannelAsync(channelId) is not IMessageChannel channel)
-        {
-            throw new WebsocketStartupFailureException();
-        }
-
-        return channel;
     }
 
     public async Task RequestAndAddTokenToHeadersAsync()

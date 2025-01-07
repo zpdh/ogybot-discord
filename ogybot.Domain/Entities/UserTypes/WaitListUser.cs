@@ -1,15 +1,15 @@
-﻿using ogybot.Domain.Entities.Primitives;
+﻿using ogybot.Domain.Primitives;
 
 namespace ogybot.Domain.Entities.UserTypes;
 
-public class WaitListUser : BaseUser
+public sealed class WaitListUser : User
 {
-    public WaitListUser()
+    public WaitListUser(string username) : base(username)
     {
 
     }
 
-    public WaitListUser(string username) : base(username)
+    private WaitListUser()
     {
 
     }

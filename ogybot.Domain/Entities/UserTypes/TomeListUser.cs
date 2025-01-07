@@ -1,15 +1,15 @@
-﻿using ogybot.Domain.Entities.Primitives;
+﻿using ogybot.Domain.Primitives;
 
 namespace ogybot.Domain.Entities.UserTypes;
 
-public class TomeListUser : BaseUser
+public sealed class TomeListUser : User
 {
-    public TomeListUser()
+    public TomeListUser(string username) : base(username)
     {
 
     }
 
-    public TomeListUser(string username) : base(username)
+    private TomeListUser()
     {
 
     }
