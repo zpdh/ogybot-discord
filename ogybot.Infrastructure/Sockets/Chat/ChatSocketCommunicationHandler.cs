@@ -64,7 +64,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
             await _setupHandler.RequestAndRefreshTokenInHeadersAsync();
 
-            await _socket.ConnectAsync();
+            await _setupHandler.TryReconnectingAsync();
         };
 
         #endregion
@@ -134,5 +134,10 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
 
         return serverConfig.WynnGuildId;
+    }
+
+    private async Task RetryConnecting()
+    {
+
     }
 }
