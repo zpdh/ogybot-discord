@@ -67,7 +67,7 @@ public sealed partial class RaidListCommands
         var orderedEnumerable = orderType switch
         {
             RaidListOrderType.Aspects => list.OrderByDescending(user => user.Aspects),
-            RaidListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.Emeralds),
+            RaidListOrderType.EmeraldsOwed => list.OrderByDescending(user => user.LiquidEmeralds),
             _ => list.OrderByDescending(user => user.Raids)
         };
 
@@ -87,7 +87,7 @@ public sealed partial class RaidListCommands
         return $"**{index}: {user.Username}**\n" +
                $"- {user.Raids} Raids\n" +
                $"- {user.Aspects} Aspects Owed\n" +
-               $"- {user.Emeralds} LE Owed\n\n";
+               $"- {user.LiquidEmeralds} LE Owed\n\n";
     }
 
     private static int GetInitialCounter()
