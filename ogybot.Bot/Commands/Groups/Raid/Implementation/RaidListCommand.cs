@@ -98,8 +98,8 @@ public sealed partial class RaidListCommands
     private async Task<MessageComponent> CreatePaginationComponentsAsync(RaidListOrderType orderType)
     {
         var totalPages = await CalculateTotalPagesAsync();
-        var previousButton = CreateButton("Previous", $"previous:{orderType}", _currentPage == 0);
-        var nextButton = CreateButton("Next", $"next{orderType}", _currentPage >= totalPages - 1);
+        var previousButton = CreateButton("\u25c4", $"previous:{orderType}", _currentPage == 0);
+        var nextButton = CreateButton("\u25ba", $"next{orderType}", _currentPage >= totalPages - 1);
 
         return new ComponentBuilder()
             .WithButton(previousButton)

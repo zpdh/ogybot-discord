@@ -1,4 +1,4 @@
-﻿using ogybot.Domain.Entities.Primitives;
+﻿using ogybot.Domain.Primitives;
 
 namespace ogybot.Domain.Entities.UserTypes;
 

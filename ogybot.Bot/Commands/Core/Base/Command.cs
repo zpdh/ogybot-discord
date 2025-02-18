@@ -51,9 +51,21 @@ public abstract class Command : InteractionModuleBase<SocketInteractionContext>
 
     protected async Task<bool> IsInvalidChannelAsync(ulong channelId)
     {
-        if (Context.Channel.Id == channelId) return false;
+        if (Context.Channel.Id == channelId)
+        {
+            return false;
+        }
 
-        await FollowupAsync(ErrorMessages.InvalidChannelError(channelId));
+        if (Context.Channel.Id == ServerConfiguration.EmptyConfigurationId)
+        {
+            await FollowupAsync(ErrorMessages.ChannelNotConfiguredError);
+        }
+
+        else
+        {
+            await FollowupAsync(ErrorMessages.InvalidChannelError(channelId));
+        }
+
         return true;
     }
 }

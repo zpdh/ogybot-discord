@@ -2,7 +2,7 @@
 
 public class ServerConfiguration
 {
-
+    public const ulong EmptyConfigurationId = 0;
     public Guid WynnGuildId { get; set; }
     public ulong DiscordGuildId { get; set; }
     public ulong TomeChannel { get; set; }
