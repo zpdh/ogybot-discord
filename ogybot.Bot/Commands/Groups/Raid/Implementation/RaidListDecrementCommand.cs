@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using ogybot.Communication.Exceptions;
 using ogybot.Domain.DataTransferObjects;
 using ogybot.Utility.Extensions;
 
@@ -38,7 +39,7 @@ public sealed partial class RaidListCommands
             await DecrementAspectFromPlayerAsync(usernamesOrIndexes, aspectAmount, liquidEmeraldAmount);
         }
 
-        await FollowupAsync("Successfully decremented rewards from the provided player(s).");
+        await FollowupAsync("Successfully decremented rewards from the valid provided player(s).");
     }
 
     private async Task DecrementAspectFromMultiplePlayersAsync(string usernamesOrIndexes, double aspectAmount, double liquidEmeraldAmount)
@@ -47,17 +48,38 @@ public sealed partial class RaidListCommands
             .Split(',')
             .Select(player => player.Trim())
             .Where(player => !player.IsNullOrWhitespace())
-            .OrderDescending();
+            .OrderDescending()
+            .ToArray();
 
-        foreach (var player in players)
+        // TEMPORARY CODE
+        var tasks = players.Select(async (player) => {
+            try
+            {
+                await DecrementAspectFromPlayerAsync(player, aspectAmount, liquidEmeraldAmount);
+            }
+            catch (Exception)
+            {
+                return player;
+            }
+
+            return null;
+        }).ToArray();
+
+        var results = await Task.WhenAll(tasks);
+        var errors = results.Where(result => result != null).ToArray();
+        var errorMsg = errors.Aggregate("Could not remove the following players:", (current, err) => current + $" {err}");
+
+        if (errors.Length != 0)
         {
-            await DecrementAspectFromPlayerAsync(player, aspectAmount, liquidEmeraldAmount);
+            throw new InvalidCommandArgumentException(errorMsg);
         }
+
+        // END OF TEMPORARY CODE
     }
 
     private async Task DecrementAspectFromPlayerAsync(string usernameOrIndex, double aspectAmount, double liquidEmeraldAmount)
     {
-        if (short.TryParse(usernameOrIndex, out var index))
+        if (ushort.TryParse(usernameOrIndex, out var index))
         {
             await DecrementByIndexAsync(index, aspectAmount, liquidEmeraldAmount);
         }
