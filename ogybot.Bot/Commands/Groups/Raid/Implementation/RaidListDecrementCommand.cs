@@ -57,7 +57,7 @@ public sealed partial class RaidListCommands
                     await DecrementAspectFromPlayerAsync(player, aspectAmount, liquidEmeraldAmount);
                     return "";
                 }
-                catch (ApiException)
+                catch (Exception)
                 {
                     return player;
                 }
