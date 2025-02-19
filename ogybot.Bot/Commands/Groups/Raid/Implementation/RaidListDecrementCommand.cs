@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.DataTransferObjects;
 using ogybot.Utility.Extensions;
@@ -44,37 +45,30 @@ public sealed partial class RaidListCommands
 
     private async Task DecrementAspectFromMultiplePlayersAsync(string usernamesOrIndexes, double aspectAmount, double liquidEmeraldAmount)
     {
-        var players = usernamesOrIndexes
+        // TODO: add Result pattern to improve this and other pieces of code.
+        var tasks = usernamesOrIndexes
             .Split(',')
             .Select(player => player.Trim())
             .Where(player => !player.IsNullOrWhitespace())
             .OrderDescending()
-            .ToArray();
+            .Select(async player => {
+                try
+                {
+                    await DecrementAspectFromPlayerAsync(player, aspectAmount, liquidEmeraldAmount);
+                    return "";
+                }
+                catch (Exception)
+                {
+                    return player;
+                }
+            });
 
-        // TEMPORARY CODE
-        var tasks = players.Select(async (player) => {
-            try
-            {
-                await DecrementAspectFromPlayerAsync(player, aspectAmount, liquidEmeraldAmount);
-            }
-            catch (Exception)
-            {
-                return player;
-            }
+        var invalidPlayerNames = (await Task.WhenAll(tasks)).Where(playerName => !playerName.IsNullOrWhitespace()).ToArray();
 
-            return null;
-        }).ToArray();
-
-        var results = await Task.WhenAll(tasks);
-        var errors = results.Where(result => result != null).ToArray();
-        var errorMsg = errors.Aggregate("Could not remove the following players:", (current, err) => current + $" {err}");
-
-        if (errors.Length != 0)
+        if (invalidPlayerNames.Length != 0)
         {
-            throw new InvalidCommandArgumentException(errorMsg);
+            throw new InvalidCommandArgumentException(ErrorMessages.CouldNotRemovePlayers(invalidPlayerNames));
         }
-
-        // END OF TEMPORARY CODE
     }
 
     private async Task DecrementAspectFromPlayerAsync(string usernameOrIndex, double aspectAmount, double liquidEmeraldAmount)

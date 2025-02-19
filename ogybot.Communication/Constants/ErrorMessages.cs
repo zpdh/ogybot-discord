@@ -13,6 +13,11 @@ public static class ErrorMessages
     public const string InvalidIndexError = "The provided index(es) are invalid (either too high or equal to or less than 0).";
     public const string ChannelNotConfiguredError = "This server did not configure this command.";
 
+    public static string CouldNotRemovePlayers(params string[] playerNames)
+    {
+        return playerNames.Aggregate("Could not remove the following players:\n", (curr, player) => curr + $"- {player}\n");
+    }
+
     public static string InvalidChannelError(ulong validChannelId)
     {
         return $"This command can only be used in <#{validChannelId}>.";
