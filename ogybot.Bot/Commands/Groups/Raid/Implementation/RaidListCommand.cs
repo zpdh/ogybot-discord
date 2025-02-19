@@ -99,7 +99,7 @@ public sealed partial class RaidListCommands
     {
         var totalPages = await CalculateTotalPagesAsync();
         var previousButton = CreateButton("\u25c4", $"previous:{orderType}", _currentPage == 0);
-        var nextButton = CreateButton("\u25ba", $"next{orderType}", _currentPage >= totalPages - 1);
+        var nextButton = CreateButton("\u25ba", $"next:{orderType}", _currentPage >= totalPages - 1);
 
         return new ComponentBuilder()
             .WithButton(previousButton)
@@ -125,23 +125,26 @@ public sealed partial class RaidListCommands
     [ComponentInteraction("next:*", true)]
     public async Task HandleNextPageAsync(RaidListOrderType orderType)
     {
-        _currentPage++;
+        await HandleCommandExecutionAsync(async () => {
+            _currentPage++;
 
-        var embed = await CreateEmbedAsync(orderType);
-        var components = await CreatePaginationComponentsAsync(orderType);
+            var embed = await CreateEmbedAsync(orderType);
+            var components = await CreatePaginationComponentsAsync(orderType);
 
-        await ModifyOriginalMessageAsync(embed, components);
+            await ModifyOriginalMessageAsync(embed, components);
+        });
     }
 
     [ComponentInteraction("previous:*", true)]
     public async Task HandlePreviousPageAsync(RaidListOrderType orderType)
     {
-        _currentPage--;
+        await HandleCommandExecutionAsync(async () => {
+            _currentPage--;
+            var embed = await CreateEmbedAsync(orderType);
+            var components = await CreatePaginationComponentsAsync(orderType);
 
-        var embed = await CreateEmbedAsync(orderType);
-        var components = await CreatePaginationComponentsAsync(orderType);
-
-        await ModifyOriginalMessageAsync(embed, components);
+            await ModifyOriginalMessageAsync(embed, components);
+        });
     }
 
     private async Task ModifyOriginalMessageAsync(Embed embed, MessageComponent components)
