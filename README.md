@@ -15,8 +15,6 @@ Node.js, feel free to check it out <a href="https://github.com/ezlixp/ico_server
 <h2 align="center"> Commands </h2>
 
 - /info - Displays info about the bot, such as this repository and it's authors.
-- /chiefs - Pings guild chiefs.
-- /raid - Pings either Light/Heavy Raid roles.
 - /online - Shows current mod users online in-game.
 - /tomelist (and tomelist-add, tomelist-remove) - Displays players in the queue for a guild tome. /tomelist-add adds a
   player to queue and /tomelist-remove removes one based on their username or index.
