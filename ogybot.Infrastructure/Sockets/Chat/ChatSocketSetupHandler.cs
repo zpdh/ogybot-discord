@@ -1,8 +1,6 @@
-﻿using Discord;
-using Discord.WebSocket;
-using ogybot.Communication.Exceptions;
-using ogybot.Domain.Security;
-using ogybot.Domain.Sockets.ChatSocket;
+﻿using System.Net.WebSockets;
+using ogybot.Domain.Infrastructure.Security;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 
 namespace ogybot.Data.Sockets.Chat;
 
@@ -10,6 +8,8 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
 {
     private readonly SocketIOClient.SocketIO _socket;
     private readonly ITokenRequester _tokenRequester;
+
+    private const int ReconnectionTries = 5;
 
     public ChatSocketSetupHandler(ITokenRequester tokenRequester, SocketIOClient.SocketIO socket)
     {
@@ -22,16 +22,6 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
         await _socket.ConnectAsync();
     }
 
-    public async Task<IMessageChannel> GetChannelByIdAsync(DiscordSocketClient client, ulong channelId)
-    {
-        if (await client.GetChannelAsync(channelId) is not IMessageChannel channel)
-        {
-            throw new WebsocketStartupFailureException();
-        }
-
-        return channel;
-    }
-
     public async Task RequestAndAddTokenToHeadersAsync()
     {
         var token = await _tokenRequester.GetTokenAsync();
@@ -42,5 +32,24 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
     {
         _socket.Options.ExtraHeaders.Remove("Authorization");
         await RequestAndAddTokenToHeadersAsync();
+    }
+
+    public async Task TryReconnectingAsync()
+    {
+        for (var i = 0; i < ReconnectionTries; i++)
+        {
+            try
+            {
+                await _socket.ConnectAsync();
+            }
+            catch (WebSocketException e)
+            {
+                // If reconnection fails, try again after 60 seconds.
+                await Task.Delay(1000 * 60);
+            } finally
+            {
+                Console.WriteLine($"Reconnection fail. Retry: {i}.");
+            }
+        }
     }
 }

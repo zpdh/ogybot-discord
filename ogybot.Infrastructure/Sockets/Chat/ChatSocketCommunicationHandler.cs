@@ -1,7 +1,9 @@
-﻿using Discord;
-using Discord.WebSocket;
+﻿using Discord.WebSocket;
+using ogybot.Communication.Exceptions;
+using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
-using ogybot.Domain.Sockets.ChatSocket;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
+using ogybot.Domain.Services;
 using ogybot.Utility.Extensions;
 using ogybot.Utility.Services;
 
@@ -9,6 +11,8 @@ namespace ogybot.Data.Sockets.Chat;
 
 public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 {
+    private readonly IServerConfigurationAccessor _configurationAccessor;
+    private readonly IDiscordChannelService _discordChannelService;
     private readonly IChatSocketMessageHandler _messageHandler;
     private readonly IChatSocketSetupHandler _setupHandler;
     private readonly SocketIOClient.SocketIO _socket;
@@ -16,14 +20,18 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
     public ChatSocketCommunicationHandler(
         IChatSocketMessageHandler messageHandler,
         SocketIOClient.SocketIO socket,
-        IChatSocketSetupHandler setupHandler)
+        IChatSocketSetupHandler setupHandler,
+        IDiscordChannelService discordChannelService,
+        IServerConfigurationAccessor configurationAccessor)
     {
         _messageHandler = messageHandler;
         _socket = socket;
         _setupHandler = setupHandler;
+        _discordChannelService = discordChannelService;
+        _configurationAccessor = configurationAccessor;
     }
 
-    public void SetupEventListeners(IMessageChannel channel)
+    public void SetupEventListeners()
     {
 
         #region Websocket Events
@@ -31,6 +39,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         _socket.On("wynnMessage",
             async response => {
                 var socketResponse = response.GetValue<ChatSocketMessage>();
+                var channel = await _discordChannelService.GetByIdAsync(socketResponse.GetListeningChannel());
 
                 if (!socketResponse.TextContent.IsNullOrWhitespace())
                 {
@@ -42,29 +51,20 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
         #region Websocket Connectivity Events
 
-        _socket.OnConnected += async (_, _) => {
+        _socket.OnConnected += (_, _) => {
             const string message = "Successfully connected to Websocket Server";
 
             Console.WriteLine(message);
-            await _messageHandler.SendLoggingMessageAsync(channel, message);
         };
 
         _socket.OnDisconnected += async (_, reason) => {
             var message = $"Disconnected from Websocket Server. Reason: {reason}";
 
             Console.WriteLine(message);
-            await _messageHandler.SendLoggingMessageAsync(channel, message);
 
             await _setupHandler.RequestAndRefreshTokenInHeadersAsync();
 
-            await _socket.ConnectAsync();
-        };
-
-        _socket.OnReconnectFailed += async (_, _) => {
-            const string message = "Could not reconnect to Websocket Server.";
-
-            Console.WriteLine(message);
-            await _messageHandler.SendLoggingMessageAsync(channel, message);
+            await _setupHandler.TryReconnectingAsync();
         };
 
         #endregion
@@ -75,6 +75,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
     {
         var authorField = message.Author.Username;
         var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+        var wynnGuildId = await GetWynnGuildIdAsync(message);
 
         if (MessageIsReply(message))
         {
@@ -82,12 +83,21 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         }
 
         await _socket.EmitAsync("discordMessage",
-            new DiscordMessage(authorField, cleanedContent));
+            new DiscordMessage(authorField, cleanedContent, wynnGuildId));
     }
 
-    public void SetupEmitter(DiscordSocketClient client, IMessageChannel channel)
+    public void SetupEmitter(DiscordSocketClient client)
     {
-        client.MessageReceived += message => SetupMessageReceiverAsync(message, channel);
+        client.MessageReceived += async message => {
+            try
+            {
+                await SetupMessageReceiverAsync(message);
+            }
+            catch (ApiException)
+            {
+                // Simply silence the exception. It will only be thrown when the server is not configured.
+            }
+        };
     }
 
     private static bool MessageIsReply(SocketUserMessage message)
@@ -95,11 +105,39 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         return message.ReferencedMessage != null;
     }
 
-    private async Task SetupMessageReceiverAsync(SocketMessage message, IMessageChannel channel)
+    private async Task SetupMessageReceiverAsync(SocketMessage message)
     {
-        if (message.Channel.Id != channel.Id) return;
+        var broadcastingChannelId = await GetBroadcastingChannelIdAsync(message);
+
+        if (message.Channel.Id != broadcastingChannelId) return;
         if (message.Author.IsBot || message is not SocketUserMessage userMessage) return;
 
         await EmitMessageAsync(userMessage);
+    }
+
+    private async Task<ulong> GetBroadcastingChannelIdAsync(SocketMessage message)
+    {
+        var discordGuildId = GetDiscordGuildId(message);
+
+        var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
+        return serverConfig.BroadcastingChannel;
+    }
+
+    private static ulong GetDiscordGuildId(SocketMessage message)
+    {
+        return ((SocketGuildChannel)message.Channel).Guild.Id;
+    }
+
+    private async Task<Guid> GetWynnGuildIdAsync(SocketMessage message)
+    {
+        var discordGuildId = GetDiscordGuildId(message);
+        var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
+
+        return serverConfig.WynnGuildId;
+    }
+
+    private async Task RetryConnecting()
+    {
+
     }
 }

@@ -1,12 +1,12 @@
-﻿using ogybot.Domain.Clients;
-using ogybot.Domain.Entities;
-using ogybot.Domain.Security;
+﻿using ogybot.Domain.Entities.UserTypes;
+using ogybot.Domain.Infrastructure.Clients;
+using ogybot.Domain.Infrastructure.Security;
 
 namespace ogybot.Data.Clients;
 
 public class WaitListClient : BaseClient, IWaitListClient
 {
-    private const string Endpoint = "waitlist";
+    private const string Endpoint = "guilds/waitlist";
 
     private readonly ITokenRequester _tokenRequester;
 
@@ -15,30 +15,30 @@ public class WaitListClient : BaseClient, IWaitListClient
         _tokenRequester = tokenRequester;
     }
 
-    public async Task<IList<WaitListUser>> GetListAsync()
+    public async Task<IList<WaitListUser>> GetListAsync(Guid wynnGuildId)
     {
         var method = HttpMethod.Get;
 
-        var response = await MakeAndSendRequestAsync(method, Endpoint);
+        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}");
 
         var listOfUsers = await ParseResponseAsync<IList<WaitListUser>>(response);
 
         return listOfUsers;
     }
 
-    public async Task AddUserAsync(WaitListUser user)
+    public async Task AddUserAsync(Guid wynnGuildId, WaitListUser user)
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, Endpoint, user, token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}", user, token);
     }
 
-    public async Task RemoveUserAsync(WaitListUser user)
+    public async Task RemoveUserAsync(Guid wynnGuildId, WaitListUser user)
     {
         var method = HttpMethod.Delete;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRouteRequestAsync(method, Endpoint, user.Username!, token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", token: token);
     }
 }

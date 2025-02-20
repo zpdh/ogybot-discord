@@ -2,14 +2,15 @@
 using Discord.WebSocket;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
-using ogybot.Domain.Sockets.ChatSocket;
+using ogybot.Domain.Enums;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
 using ogybot.Utility.Services;
 
 namespace ogybot.Data.Sockets.Chat;
 
 public class ChatSocketMessageHandler : IChatSocketMessageHandler
 {
-    private const int DelayBetweenMessages = 250;
+    private const int DelayBetweenMessages = 50;
 
     public async Task FormatAndSendEmbedAsync(IMessageChannel channel, ChatSocketMessage chatSocketResponse)
     {
