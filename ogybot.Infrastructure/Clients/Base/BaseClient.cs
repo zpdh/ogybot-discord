@@ -72,7 +72,7 @@ public abstract class BaseClient
         {
             var error = await ParseResponseAsync<ApiError>(response);
 
-            throw new ApiException(error.Error);
+            throw new ApiException(error.ErrorMessage);
         }
     }
 
