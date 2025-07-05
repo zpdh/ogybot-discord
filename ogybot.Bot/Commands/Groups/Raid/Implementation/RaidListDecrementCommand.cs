@@ -87,7 +87,7 @@ public sealed partial class RaidListCommands
         // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
         var aspectListUser = list[index - 1];
 
-        var dto = new RaidListUserDto(aspectListUser.Username, aspectAmount, liquidEmeraldAmount);
+        var dto = new RaidListUserDto(aspectListUser.McUsername, aspectAmount, liquidEmeraldAmount);
 
         await RaidListClient.DecrementRewardsAsync(WynnGuildId, dto);
     }

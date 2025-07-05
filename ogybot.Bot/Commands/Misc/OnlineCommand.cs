@@ -84,7 +84,7 @@ public sealed class OnlineCommand : Command
 
         foreach (var onlineUser in list)
         {
-            description += $"{counter}. {onlineUser.Username}\n";
+            description += $"{counter}. {onlineUser.McUsername}\n";
 
             counter++;
         }

@@ -57,6 +57,6 @@ public sealed partial class TomeListCommands
     {
         var counter = 1;
 
-        return list.Aggregate("", (current, tomeListUser) => current + $"**{counter++}.** {tomeListUser.Username}\n");
+        return list.Aggregate("", (current, tomeListUser) => current + $"**{counter++}.** {tomeListUser.McUsername}\n");
     }
 }

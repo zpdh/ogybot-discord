@@ -3,11 +3,13 @@
 public abstract class User
 {
 
-    public string Username { get; set; } = string.Empty;
+    public string McUsername { get; set; } = string.Empty;
+    public string DiscordUuid { get; set; } = string.Empty;
 
-    public User(string username)
+    public User(string username, string discordUuid = "")
     {
-        Username = username;
+        McUsername = username;
+        DiscordUuid = discordUuid;
     }
 
     protected User()

@@ -84,7 +84,7 @@ public sealed partial class RaidListCommands
 
     private static string FormatUser(int index, RaidListUser user)
     {
-        return $"**{index}: {user.Username}**\n" +
+        return $"**{index}: {user.McUsername}**\n" +
                $"- {user.Raids} Raids\n" +
                $"- {user.Aspects} Aspects Owed\n" +
                $"- {user.LiquidEmeralds} LE Owed\n\n";
