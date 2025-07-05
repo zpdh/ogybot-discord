@@ -8,14 +8,10 @@ namespace ogybot.Bot.Commands.Groups.Moderation.Implementation;
 
 public sealed partial class ModerationCommands : ModerationCommand
 {
-    private readonly IListCommandValidator _commandValidator;
-
     public ModerationCommands(
         IBotExceptionHandler exceptionHandler,
         IServerConfigurationAccessor configurationAccessor,
-        IUserClient userClient,
-        IListCommandValidator commandValidator) : base(exceptionHandler, configurationAccessor, userClient)
+        IUserClient userClient) : base(exceptionHandler, configurationAccessor, userClient)
     {
-        _commandValidator = commandValidator;
     }
 }
