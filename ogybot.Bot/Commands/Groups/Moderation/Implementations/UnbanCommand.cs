@@ -7,7 +7,7 @@ namespace ogybot.Bot.Commands.Groups.Moderation.Implementation;
 public sealed partial class ModerationCommands 
 {
     [CommandContextType(InteractionContextType.Guild)]
-    [SlashCommand("unbane", "Unbans a user.")]
+    [SlashCommand("unban", "Unbans a user.")]
     public async Task ExecuteUnbanCommandAsync([Summary("discord-uuid", "The discord user id to unban")] string discordUuid)
     {
         await HandleCommandExecutionAsync(() => UnbanCommandInstructionsAsync(discordUuid));
