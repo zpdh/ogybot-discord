@@ -7,8 +7,7 @@ using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Bot.Commands.Groups.Moderation;
 
-// [Group("moderation", "Pressents a collection of moderation related commands")]
-// commented out to simplify command names
+[Group("moderation", "Pressents a collection of moderation related commands")]
 public abstract class  ModerationCommand : HighPermissionRequiredCommand
 {
     protected readonly IUserClient UserClient;
