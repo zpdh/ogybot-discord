@@ -15,16 +15,23 @@ public sealed partial class ModerationCommands
 
     private async Task MuteCommandInstructionsAsync(string discordUuid)
     {
-        if (await IsInvalidChannelAsync(ValidChannelId))
+        if (await IsInvalidContextAsync(ValidChannelId))
         {
             return;
         }
 
-        var moderatedUser = new DiscordUser(discordUuid);
+        ulong id = await isValidIdAsync(discordUuid);
+
+        if (id == 0)
+        {
+            return;
+        }
+        
+        var moderatedUser = new DiscordUser(id);
 
         await UserClient.MuteUserAsync(moderatedUser);
 
-        await FollowupAsync("Successfully banned provided user.");
+        await FollowupAsync("Successfully muted provided user.");
     }
     
 }

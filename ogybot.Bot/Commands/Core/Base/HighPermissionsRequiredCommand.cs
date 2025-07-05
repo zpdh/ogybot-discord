@@ -27,7 +27,7 @@ public abstract class HighPermissionRequiredCommand : Command
     private async Task<bool> ValidateChannelAndRolesAsync(ulong channelId)
     {
 
-        if (await IsInvalidChannelAsync(channelId)) return true;
+        // if (await IsInvalidChannelAsync(channelId)) return true;
 
         return await UserHasNoPermissionsAsync();
 

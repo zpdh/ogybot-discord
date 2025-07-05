@@ -8,23 +8,30 @@ public sealed partial class ModerationCommands
 {
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("unmute", "Mutes a user.")]
-    public async Task ExecuteUnmuteCommandAsync([Summary("discord-uuid", "The discord user id to mute")] string discordUuid)
+    public async Task ExecuteUnmuteCommandAsync([Summary("discord-uuid", "The discord user id to unmute")] string discordUuid)
     {
         await HandleCommandExecutionAsync(() => UnmuteCommandInstructionsAsync(discordUuid));
     }
 
     private async Task UnmuteCommandInstructionsAsync(string discordUuid)
     {
-        if (await IsInvalidChannelAsync(ValidChannelId))
+        if (await IsInvalidContextAsync(ValidChannelId))
         {
             return;
         }
 
-        var moderatedUser = new DiscordUser(discordUuid);
+        var id = await isValidIdAsync(discordUuid);
+
+        if (id == 0)
+        {
+            return;
+        }
+        
+        var moderatedUser = new DiscordUser(id);
 
         await UserClient.UnmuteUserAsync(moderatedUser);
 
-        await FollowupAsync("Successfully banned provided user.");
+        await FollowupAsync("Successfully unmuted provided user.");
     }
     
 }
