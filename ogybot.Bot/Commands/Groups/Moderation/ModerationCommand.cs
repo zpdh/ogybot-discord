@@ -9,7 +9,7 @@ namespace ogybot.Bot.Commands.Groups.Moderation;
 
 // [Group("moderation", "Pressents a collection of moderation related commands")]
 // commented out to simplify command names
-public abstract class  ModerationCommand : PermissionRequiredCommand
+public abstract class  ModerationCommand : HighPermissionRequiredCommand
 {
     protected readonly IUserClient UserClient;
 
