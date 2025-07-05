@@ -20,7 +20,7 @@ public sealed partial class ModerationCommands
             return;
         }
 
-        var moderatedUser = new ModeratedUser(discordUuid);
+        var moderatedUser = new DiscordUser(discordUuid);
 
         await UserClient.MuteUserAsync(moderatedUser);
 
