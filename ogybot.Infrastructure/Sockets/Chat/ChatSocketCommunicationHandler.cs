@@ -73,17 +73,18 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     public async Task EmitMessageAsync(SocketUserMessage message)
     {
-        var authorField = message.Author.Username;
+        var discordUsername = message.Author.Username;
+        var discordUuid = message.Author.Id;
         var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
         var wynnGuildId = await GetWynnGuildIdAsync(message);
 
         if (MessageIsReply(message))
         {
-            authorField = _messageHandler.AddReplyAuthorToField(message, authorField);
+            discordUsername = _messageHandler.AddReplyAuthorToField(message, discordUsername);
         }
 
         await _socket.EmitAsync("discordMessage",
-            new DiscordMessage(authorField, cleanedContent, wynnGuildId));
+            new DiscordMessage(discordUsername, discordUuid, cleanedContent, wynnGuildId));
     }
 
     public void SetupEmitter(DiscordSocketClient client)

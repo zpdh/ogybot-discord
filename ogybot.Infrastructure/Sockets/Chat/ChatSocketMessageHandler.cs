@@ -75,7 +75,7 @@ public class ChatSocketMessageHandler : IChatSocketMessageHandler
                 embedBuilder
                     .WithColor(Color.Blue);
 
-                message = $"**{response.HeaderContent}:** {response.TextContent}";
+                message = $"**{response.HeaderContent[0]}:** {response.TextContent}";
                 break;
 
             case SocketMessageType.DiscordMessage:
@@ -83,12 +83,12 @@ public class ChatSocketMessageHandler : IChatSocketMessageHandler
                     .WithAuthor("Discord Only")
                     .WithColor(Color.Purple);
 
-                message = $"**{response.HeaderContent}:** {response.TextContent}";
+                message = $"**{response.HeaderContent[0]}:** {response.TextContent}";
                 break;
 
             case SocketMessageType.GuildMessage:
                 embedBuilder
-                    .WithAuthor(response.HeaderContent)
+                    .WithAuthor(response.HeaderContent[0].ToString())
                     .WithColor(Color.Teal);
 
                 break;
