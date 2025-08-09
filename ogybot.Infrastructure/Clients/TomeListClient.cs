@@ -1,4 +1,5 @@
-﻿using ogybot.Domain.Entities.UserTypes;
+﻿using ogybot.Communication.Constants;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 
@@ -6,7 +7,7 @@ namespace ogybot.Data.Clients;
 
 public class TomeListClient : BaseClient, ITomeListClient
 {
-    private const string Endpoint = "guilds/tomes";
+    private const string Endpoint = Endpoints.TOMES;
 
     private readonly ITokenRequester _tokenRequester;
 

@@ -1,4 +1,5 @@
-﻿using ogybot.Communication.Requests;
+﻿using ogybot.Communication.Constants;
+using ogybot.Communication.Requests;
 using ogybot.Domain.DataTransferObjects;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
@@ -9,7 +10,7 @@ namespace ogybot.Data.Clients;
 
 public class RaidListClient : BaseClient, IRaidListClient
 {
-    private const string Endpoint = "guilds/raids/rewards";
+    private const string Endpoint = Endpoints.REWARDS;
 
     private readonly ITokenRequester _tokenRequester;
 

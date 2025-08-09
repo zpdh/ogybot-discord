@@ -1,4 +1,5 @@
-﻿using ogybot.Domain.Entities.UserTypes;
+﻿using ogybot.Communication.Constants;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 
@@ -6,7 +7,7 @@ namespace ogybot.Data.Clients;
 
 public class WaitListClient : BaseClient, IWaitListClient
 {
-    private const string Endpoint = "guilds/waitlist";
+    private const string Endpoint = Endpoints.WAITLIST;
 
     private readonly ITokenRequester _tokenRequester;
 

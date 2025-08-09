@@ -1,4 +1,5 @@
-﻿using ogybot.Domain.Entities.Configurations;
+﻿using ogybot.Communication.Constants;
+using ogybot.Domain.Entities.Configurations;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 
@@ -6,7 +7,7 @@ namespace ogybot.Data.Clients;
 
 public sealed class GuildClient : BaseClient, IGuildClient
 {
-    private const string Endpoint = "config";
+    private const string Endpoint = Endpoints.CONFIG;
 
     private readonly ITokenRequester _tokenRequester;
 

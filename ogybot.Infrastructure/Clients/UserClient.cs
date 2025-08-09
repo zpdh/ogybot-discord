@@ -1,4 +1,5 @@
 using System.Threading.Channels;
+using ogybot.Communication.Constants;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
@@ -7,7 +8,7 @@ namespace ogybot.Data.Clients;
 
 public class UserClient : BaseClient, IUserClient
 {
-    private const string Endpoint = "user";
+    private const string Endpoint = Endpoints.USER;
 
     private readonly ITokenRequester _tokenRequester;
 
