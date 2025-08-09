@@ -113,6 +113,6 @@ public static class DiscordSocketClientExtensions
 
     private static async Task RegisterCommandsAsync(InteractionService interactionService)
     {
-        await interactionService.RegisterCommandsToGuildAsync(810258030201143328);
+        await interactionService.RegisterCommandsGloballyAsync();
     }
 }
