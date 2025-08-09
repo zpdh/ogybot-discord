@@ -36,6 +36,11 @@ public sealed class LinkCommand : Command
 
     private async Task LinkCommandInstructionsAsync(string mcUsername)
     {
+        if (await IsInvalidChannelAsync(ValidChannelId))
+        {
+            return;
+        }
+        
         var linkUser = new LinkUser(mcUsername, Context.User.Id);
         await UserClient.LinkUserAsync(WynnGuildId, linkUser);
 

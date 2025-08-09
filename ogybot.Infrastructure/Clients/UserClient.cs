@@ -22,7 +22,7 @@ public class UserClient : BaseClient, IUserClient
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/link/{wynnGuildId}", user, token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/link/{wynnGuildId}", new { user.McUsername, DiscordUuid = user.DiscordUuid.ToString() }, token);
     }
     public async Task BanUserAsync(DiscordUser user)
     {
@@ -38,21 +38,5 @@ public class UserClient : BaseClient, IUserClient
         var token = await _tokenRequester.GetTokenAsync();
 
         await MakeAndSendRequestAsync(method, $"{Endpoint}/ban/{user.DiscordUuid}", new { Banned = false}, token: token);
-    }
-
-    public async Task MuteUserAsync(DiscordUser user)
-    {
-        var method = HttpMethod.Post;
-        var token = await _tokenRequester.GetTokenAsync();
-
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/mute/{user.DiscordUuid}", new { Muted = true}, token: token);
-    }
-
-    public async Task UnmuteUserAsync(DiscordUser user)
-    {
-        var method = HttpMethod.Post;
-        var token = await _tokenRequester.GetTokenAsync();
-
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/mute/{user.DiscordUuid}", new { Muted = false}, token: token);
     }
 }

@@ -9,7 +9,7 @@ public sealed class RaidListUser : User
     public double LiquidEmeralds { get; set; }
     public int Raids { get; set; }
 
-    public RaidListUser(string username) : base(username)
+    public RaidListUser(string mcUsername) : base(mcUsername)
     {
 
     }

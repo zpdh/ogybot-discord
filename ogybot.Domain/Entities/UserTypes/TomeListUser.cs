@@ -4,7 +4,7 @@ namespace ogybot.Domain.Entities.UserTypes;
 
 public sealed class TomeListUser : User
 {
-    public TomeListUser(string username) : base(username)
+    public TomeListUser(string mcUsername) : base(mcUsername)
     {
 
     }
