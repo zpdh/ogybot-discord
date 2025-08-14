@@ -50,6 +50,7 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
             } finally
             {
                 Console.WriteLine($"Reconnection fail. Retry: {i}.");
+                await RequestAndRefreshTokenInHeadersAsync();
             }
         }
     }
