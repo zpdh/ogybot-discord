@@ -42,8 +42,9 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
             {
                 await _socket.ConnectAsync();
             }
-            catch (WebSocketException e)
+            catch (Exception e)
             {
+                Console.Write(e);
                 // If reconnection fails, try again after 60 seconds.
                 await Task.Delay(1000 * 60);
             } finally
