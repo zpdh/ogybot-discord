@@ -6,6 +6,7 @@ WORKDIR /usr/local/bot
 
 # Copy all the files from the current directory to the container
 COPY ./ ./
+COPY ./ogybot.Bot/.env ./ogybot.Bot/appsettings.json
 
 # Restore dependencies for the project
 RUN dotnet restore ogybot.Bot/ogybot.Bot.csproj
