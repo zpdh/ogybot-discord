@@ -1,3 +1,8 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-dev
+WORKDIR /usr/local/bot
+
+CMD ["dotnet", "watch", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
+
 # Use the official .NET SDK 8.0 image for building
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-build
 
@@ -6,7 +11,6 @@ WORKDIR /usr/local/bot
 
 # Copy all the files from the current directory to the container
 COPY ./ ./
-COPY ./ogybot.Bot/.env ./ogybot.Bot/appsettings.json
 
 # Restore dependencies for the project
 RUN dotnet restore ogybot.Bot/ogybot.Bot.csproj

@@ -46,7 +46,7 @@ public sealed class OnlineCommand : Command
 
         var embed = await CreateEmbedAsync();
 
-        await FollowupAsync(embed: embed);
+        await FollowupAsync(embed: embed, ephemeral: true);
     }
 
     private async Task<Embed> CreateEmbedAsync()
