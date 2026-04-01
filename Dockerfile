@@ -1,6 +1,9 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-dev
 WORKDIR /usr/local/bot
 
+COPY ./ ./
+RUN dotnet restore ogybot.Bot/ogybot.Bot.csproj
+
 CMD ["dotnet", "watch", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
 
 # Use the official .NET SDK 8.0 image for building

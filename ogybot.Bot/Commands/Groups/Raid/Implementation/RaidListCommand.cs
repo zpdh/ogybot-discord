@@ -125,7 +125,8 @@ public sealed partial class RaidListCommands
     [ComponentInteraction("next:*", true)]
     public async Task HandleNextPageAsync(RaidListOrderType orderType)
     {
-        await HandleCommandExecutionAsync(async () => {
+        await HandleCommandExecutionAsync(async () =>
+        {
             _currentPage++;
 
             var embed = await CreateEmbedAsync(orderType);
@@ -138,7 +139,8 @@ public sealed partial class RaidListCommands
     [ComponentInteraction("previous:*", true)]
     public async Task HandlePreviousPageAsync(RaidListOrderType orderType)
     {
-        await HandleCommandExecutionAsync(async () => {
+        await HandleCommandExecutionAsync(async () =>
+        {
             _currentPage--;
             var embed = await CreateEmbedAsync(orderType);
             var components = await CreatePaginationComponentsAsync(orderType);
@@ -149,7 +151,8 @@ public sealed partial class RaidListCommands
 
     private async Task ModifyOriginalMessageAsync(Embed embed, MessageComponent components)
     {
-        await ModifyOriginalResponseAsync(msg => {
+        await ModifyOriginalResponseAsync(msg =>
+        {
             msg.Embed = embed;
             msg.Components = components;
         });
