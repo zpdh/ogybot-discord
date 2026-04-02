@@ -2,15 +2,18 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-dev
 RUN apt-get update \
     && apt-get install unzip \
     && curl -sSL https://aka.ms/getvsdbgsh | /bin/sh /dev/stdin -v latest -l /vsdbg
-    
+
 WORKDIR /usr/local/bot
 
 COPY ./ ./
+COPY ./ogybot.Bot/.env ./ogybot.Bot/appsettings.json
+
+ENV ASPNETCORE_URLS=http://*:5000
+ENV ASPNETCORE_ENVIRONMENT=Development
 
 EXPOSE 5000
 
-
-CMD ["dotnet", "watch", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
+ENTRYPOINT ["dotnet", "watch", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
 
 # Use the official .NET SDK 8.0 image for building
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-build
