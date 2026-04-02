@@ -127,6 +127,7 @@ public sealed partial class RaidListCommands
     {
         await HandleCommandExecutionAsync(async () =>
         {
+            // TODO: fix static issues and fix ownership issues
             _currentPage++;
 
             var embed = await CreateEmbedAsync(orderType);

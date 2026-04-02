@@ -1,8 +1,14 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-dev
+RUN apt-get update \
+    && apt-get install unzip \
+    && curl -sSL https://aka.ms/getvsdbgsh | /bin/sh /dev/stdin -v latest -l /vsdbg
+    
 WORKDIR /usr/local/bot
 
 COPY ./ ./
-RUN dotnet restore ogybot.Bot/ogybot.Bot.csproj
+
+EXPOSE 5000
+
 
 CMD ["dotnet", "watch", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
 
