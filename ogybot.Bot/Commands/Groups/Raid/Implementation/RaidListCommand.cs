@@ -127,7 +127,7 @@ public sealed partial class RaidListCommands
     {
         await HandleCommandExecutionAsync(async () =>
         {
-            // TODO: fix static issues and fix ownership issues
+            // TODO: fix static issues and fix ownership issues also make buttons dissapear after 30s
             _currentPage++;
 
             var embed = await CreateEmbedAsync(orderType);
