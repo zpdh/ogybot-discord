@@ -22,8 +22,6 @@ public class TomeListClient : BaseClient, ITomeListClient
 
         var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}");
 
-        Console.WriteLine(response.Content);
-
         var listOfUsers = await ParseResponseAsync<IList<TomeListUser>>(response);
 
         return listOfUsers;
