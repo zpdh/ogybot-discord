@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Accessors;
@@ -34,6 +35,7 @@ public sealed class OnlineCommand : Command
     [SlashCommand("online", "Lists online players with the mod.")]
     public async Task ExecuteCommandAsync()
     {
+        await DeferAsync(ephemeral: true);
         await HandleCommandExecutionAsync(CommandInstructionsAsync);
     }
 

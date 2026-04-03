@@ -16,6 +16,7 @@ public sealed partial class RaidListCommands
     [SlashCommand("list", "Presents a list containing information about raid completions per guild member.")]
     public async Task ExecuteListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => ListCommandInstructionsAsync(orderType));
     }
 

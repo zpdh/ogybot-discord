@@ -26,6 +26,7 @@ public sealed class BanCommand : HighPermissionRequiredCommand
     [SlashCommand("ban", "Bans a user.")]
     public async Task ExecuteBanCommandAsync([Summary("discord-uuid", "The discord user id to ban")] string discordUuid)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => BanCommandInstructionsAsync(discordUuid));
     }
 
@@ -53,7 +54,7 @@ public sealed class BanCommand : HighPermissionRequiredCommand
 
         await FollowupAsync("Successfully banned provided user.");
     }
-    
+
     private async Task<ulong> IsValidIdAsync(string uuid)
     {
         if (ulong.TryParse(uuid, out var userId))

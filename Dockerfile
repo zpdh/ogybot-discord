@@ -13,7 +13,7 @@ ENV ASPNETCORE_ENVIRONMENT=Development
 
 EXPOSE 5000
 
-ENTRYPOINT ["dotnet", "watch", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
+ENTRYPOINT ["dotnet", "watch", "--non-interactive", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
 
 # Use the official .NET SDK 8.0 image for building
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-build

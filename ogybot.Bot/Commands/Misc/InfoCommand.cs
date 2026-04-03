@@ -35,7 +35,7 @@ public sealed class InfoCommand : Command
 
         var embed = CreateEmbed(embedTitle, embedFooter, user);
 
-        await FollowupAsync(embed: embed);
+        await RespondAsync(embed: embed);
     }
 
     private static Embed CreateEmbed(string embedTitle, string embedFooter, SocketUser user)

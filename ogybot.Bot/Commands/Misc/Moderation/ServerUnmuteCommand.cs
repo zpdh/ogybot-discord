@@ -26,6 +26,7 @@ public sealed class ServerUnuteCommand : PermissionRequiredCommand
     [SlashCommand("unmute", "Unmutes a user in the servers chat bridge.")]
     public async Task ExecuteMuteCommandAsync([Summary("discord-uuid", "The discord user id to unmute")] string discordUuid)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => MuteCommandInstructionsAsync(discordUuid));
     }
 
@@ -54,7 +55,7 @@ public sealed class ServerUnuteCommand : PermissionRequiredCommand
 
         await FollowupAsync("Successfully banned provided user.");
     }
-    
+
     private async Task<ulong> IsValidIdAsync(string uuid)
     {
         if (ulong.TryParse(uuid, out var userId))

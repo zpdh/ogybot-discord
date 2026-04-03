@@ -26,6 +26,7 @@ public sealed class UnbanCommand : HighPermissionRequiredCommand
     [SlashCommand("unban", "Bans a user.")]
     public async Task ExecuteUnbanCommandAsync([Summary("discord-uuid", "The discord user id to unban")] string discordUuid)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => UnbanCommandInstructionsAsync(discordUuid));
     }
 
@@ -53,7 +54,7 @@ public sealed class UnbanCommand : HighPermissionRequiredCommand
 
         await FollowupAsync("Successfully unbanned provided user.");
     }
-    
+
     private async Task<ulong> IsValidIdAsync(string uuid)
     {
         if (ulong.TryParse(uuid, out var userId))

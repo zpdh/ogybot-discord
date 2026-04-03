@@ -69,8 +69,6 @@ public static class DiscordSocketClientExtensions
     {
         client.InteractionCreated += async interaction =>
         {
-            await interaction.DeferAsync();
-
             await HandleCommandExecutionAsync(client, services, interaction);
         };
     }

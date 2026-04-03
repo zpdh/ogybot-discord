@@ -21,6 +21,7 @@ public sealed partial class RaidListCommands
         [Summary("LE", "Number of liquid emeralds to remove from the provided user")]
         double liquidEmeraldAmount = 0)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => DecrementCommandInstructionsAsync(usernamesOrIndexes, aspectAmount, liquidEmeraldAmount));
     }
 

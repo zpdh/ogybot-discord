@@ -11,6 +11,7 @@ public sealed partial class TomeListCommands
     [SlashCommand("remove", "removes a user from the tome list based on their name or index")]
     public async Task ExecuteRemoveCommandAsync([Summary("users-or-indexes", "The user's name or index")] string usernamesOrIndexes)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => RemoveCommandInstructionsAsync(usernamesOrIndexes));
     }
 

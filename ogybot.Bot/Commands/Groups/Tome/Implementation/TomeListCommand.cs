@@ -11,6 +11,7 @@ public sealed partial class TomeListCommands
     [SlashCommand("list", "Shows the current queue to get a guild tome.")]
     public async Task ExecuteListCommandAsync()
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(ListCommandInstructionsAsync);
     }
 

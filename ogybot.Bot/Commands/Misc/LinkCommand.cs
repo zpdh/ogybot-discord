@@ -31,6 +31,7 @@ public sealed class LinkCommand : Command
     [SlashCommand("link", "Links minecraft account to discord.")]
     public async Task ExecuteLinkCommandAsync([Summary("mc-username", "The minecraft account to link to")] string mcUsername)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => LinkCommandInstructionsAsync(mcUsername));
     }
 
@@ -40,7 +41,7 @@ public sealed class LinkCommand : Command
         {
             return;
         }
-        
+
         var linkUser = new LinkUser(mcUsername, Context.User.Id);
         await UserClient.LinkUserAsync(WynnGuildId, linkUser);
 

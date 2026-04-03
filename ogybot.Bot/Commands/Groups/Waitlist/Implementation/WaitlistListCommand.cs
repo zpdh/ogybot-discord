@@ -11,6 +11,7 @@ public sealed partial class WaitlistCommands
     [SlashCommand("list", "Shows the list to rejoin the guild.")]
     public async Task ExecuteListCommandAsync()
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(ListCommandInstructionsAsync);
     }
 
