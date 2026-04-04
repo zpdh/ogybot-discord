@@ -1,0 +1,5 @@
+services:
+  bot:
+    image: ezlixp/wynn-bridge:bot
+    pull_policy: always
+    restart: unless-stopped
