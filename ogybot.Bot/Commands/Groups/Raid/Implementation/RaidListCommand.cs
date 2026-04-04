@@ -1,8 +1,10 @@
 ﻿using Discord;
 using Discord.Interactions;
+using ogybot.Communication.Exceptions;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Enums;
+using ogybot.Domain.Primitives;
 
 namespace ogybot.Bot.Commands.Groups.Raid.Implementation;
 
@@ -10,12 +12,17 @@ public sealed partial class RaidListCommands
 {
     private const int DefaultFirstPage = 0;
     private const int DefaultPageSize = 5;
-    private static int _currentPage;
+    private ulong UserId { get; set; }
+    // idea: static page dictionary for each user, which would be reset on each command run
+    // somehow make interactions expire
+    private static readonly Dictionary<ulong, PageSessionInfo> _sessions = [];
+    private static readonly Dictionary<ulong, int> _currentPages = [];
 
     [CommandContextType(InteractionContextType.Guild)]
     [SlashCommand("list", "Presents a list containing information about raid completions per guild member.")]
     public async Task ExecuteListCommandAsync([Summary("order-by")] RaidListOrderType orderType = RaidListOrderType.Raids)
     {
+        UserId = Context.User.Id;
         await DeferAsync();
         await HandleCommandExecutionAsync(() => ListCommandInstructionsAsync(orderType));
     }
@@ -27,11 +34,53 @@ public sealed partial class RaidListCommands
             return;
         }
 
-        _currentPage = DefaultFirstPage;
+        _currentPages[UserId] = 0;
+        if (_sessions.TryGetValue(UserId, out var session))
+        {
+            await session.Message.ModifyAsync(msg =>
+            {
+                msg.Components = new ComponentBuilder().Build();
+            });
+            session.TimeoutCts.Cancel();
+        }
+
         var embed = await CreateEmbedAsync(orderType);
         var components = await CreatePaginationComponentsAsync(orderType);
 
-        await FollowupAsync(embed: embed, components: components);
+        var message = await FollowupAsync(embed: embed, components: components);
+
+        _sessions[Context.User.Id] = new PageSessionInfo
+        {
+            Message = message,
+            TimeoutCts = new(),
+        };
+        StartOrResetTimeout(UserId, _sessions[UserId]);
+    }
+    private void StartOrResetTimeout(ulong userId, PageSessionInfo session)
+    {
+        session.TimeoutCts.Cancel();
+
+        var cts = new CancellationTokenSource();
+        session.TimeoutCts = cts;
+
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(30), cts.Token);
+
+                await session.Message.ModifyAsync(msg =>
+                {
+                    msg.Components = new ComponentBuilder().Build();
+                });
+
+                _sessions.Remove(userId);
+                _currentPages.Remove(userId);
+            }
+            catch (TaskCanceledException)
+            {
+            }
+        });
     }
 
     private async Task<Embed> CreateEmbedAsync(RaidListOrderType orderType)
@@ -54,7 +103,7 @@ public sealed partial class RaidListCommands
     {
         var list = await RaidListClient.GetListAsync(WynnGuildId);
 
-        var orderedList = CreateOrderedList(list, orderType);
+        var orderedList = CreateOrderedList(list, orderType, Context.User.Id);
 
         var user = Context.User;
         var queueSize = "Players in queue: " + list.Count;
@@ -63,7 +112,7 @@ public sealed partial class RaidListCommands
         return EmbedContent.Create(user, queueSize, description);
     }
 
-    private static List<RaidListUser> CreateOrderedList(IList<RaidListUser> list, RaidListOrderType orderType)
+    private static List<RaidListUser> CreateOrderedList(IList<RaidListUser> list, RaidListOrderType orderType, ulong uid)
     {
         var orderedEnumerable = orderType switch
         {
@@ -73,10 +122,10 @@ public sealed partial class RaidListCommands
         };
 
         // Skips the first x pages of users of the enumerable, then takes the default page size (amount) of users to display.
-        return orderedEnumerable.Skip(_currentPage * DefaultPageSize).Take(DefaultPageSize).ToList();
+        return orderedEnumerable.Skip(_currentPages[uid] * DefaultPageSize).Take(DefaultPageSize).ToList();
     }
 
-    private static string CreateEmbedDescription(IList<RaidListUser> list)
+    private string CreateEmbedDescription(IList<RaidListUser> list)
     {
         var counter = GetInitialCounter();
 
@@ -91,16 +140,16 @@ public sealed partial class RaidListCommands
                $"- {user.LiquidEmeralds} LE Owed\n\n";
     }
 
-    private static int GetInitialCounter()
+    private int GetInitialCounter()
     {
-        return 1 + (_currentPage * DefaultPageSize);
+        return 1 + (_currentPages[UserId] * DefaultPageSize);
     }
 
     private async Task<MessageComponent> CreatePaginationComponentsAsync(RaidListOrderType orderType)
     {
         var totalPages = await CalculateTotalPagesAsync();
-        var previousButton = CreateButton("\u25c4", $"previous:{orderType}", _currentPage == 0);
-        var nextButton = CreateButton("\u25ba", $"next:{orderType}", _currentPage >= totalPages - 1);
+        var previousButton = CreateButton("\u25c4", $"previous:{orderType}", _currentPages[UserId] == 0);
+        var nextButton = CreateButton("\u25ba", $"next:{orderType}", _currentPages[UserId] >= totalPages - 1);
 
         return new ComponentBuilder()
             .WithButton(previousButton)
@@ -123,13 +172,22 @@ public sealed partial class RaidListCommands
             .WithDisabled(disabledWhen);
     }
 
+    private async Task VerifyPageChange()
+    {
+        if ((await GetOriginalResponseAsync()).InteractionMetadata.UserId != Context.User.Id) throw new InvalidButton("This is not your command.");
+    }
+
     [ComponentInteraction("next:*", true)]
     public async Task HandleNextPageAsync(RaidListOrderType orderType)
     {
+        UserId = Context.User.Id;
+        await DeferAsync();
         await HandleCommandExecutionAsync(async () =>
         {
             // TODO: fix static issues and fix ownership issues also make buttons dissapear after 30s
-            _currentPage++;
+            await VerifyPageChange();
+            StartOrResetTimeout(UserId, _sessions[UserId]);
+            _currentPages[UserId]++;
 
             var embed = await CreateEmbedAsync(orderType);
             var components = await CreatePaginationComponentsAsync(orderType);
@@ -141,9 +199,13 @@ public sealed partial class RaidListCommands
     [ComponentInteraction("previous:*", true)]
     public async Task HandlePreviousPageAsync(RaidListOrderType orderType)
     {
+        UserId = Context.User.Id;
+        await DeferAsync();
         await HandleCommandExecutionAsync(async () =>
         {
-            _currentPage--;
+            await VerifyPageChange();
+            StartOrResetTimeout(UserId, _sessions[UserId]);
+            _currentPages[UserId]--;
             var embed = await CreateEmbedAsync(orderType);
             var components = await CreatePaginationComponentsAsync(orderType);
 
