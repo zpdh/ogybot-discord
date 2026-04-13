@@ -16,6 +16,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
     private readonly IChatSocketMessageHandler _messageHandler;
     private readonly IChatSocketSetupHandler _setupHandler;
     private readonly SocketIOClient.SocketIO _socket;
+    private ulong myid;
 
     public ChatSocketCommunicationHandler(
         IChatSocketMessageHandler messageHandler,
@@ -37,7 +38,8 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         #region Websocket Events
 
         _socket.On("wynnMessage",
-            async response => {
+            async response =>
+            {
                 var socketResponse = response.GetValue<ChatSocketMessage>();
                 var channel = await _discordChannelService.GetByIdAsync(socketResponse.GetListeningChannel());
 
@@ -51,13 +53,15 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
         #region Websocket Connectivity Events
 
-        _socket.OnConnected += (_, _) => {
+        _socket.OnConnected += (_, _) =>
+        {
             const string message = "Successfully connected to Websocket Server";
 
             Console.WriteLine(message);
         };
 
-        _socket.OnDisconnected += async (_, reason) => {
+        _socket.OnDisconnected += async (_, reason) =>
+        {
             var message = $"Disconnected from Websocket Server. Reason: {reason}";
 
             Console.WriteLine(message);
@@ -73,23 +77,35 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     public async Task EmitMessageAsync(SocketUserMessage message)
     {
-        var discordUsername = message.Author.Username;
+        var discordUsername = (message.Author as SocketGuildUser)!.Nickname;
         var discordUuid = message.Author.Id;
         var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
         var wynnGuildId = await GetWynnGuildIdAsync(message);
+        string? replyAuthor = null;
+        string? replyContent = null;
 
         if (MessageIsReply(message))
         {
-            discordUsername = _messageHandler.AddReplyAuthorToField(message, discordUsername);
+            if (message.ReferencedMessage.Author.Id == myid)
+            {
+                replyContent = message.ReferencedMessage.Embeds.First().Description;
+            }
+            else
+            {
+                replyAuthor = (message.ReferencedMessage.Author as SocketGuildUser)!.Nickname;
+                replyContent = message.ReferencedMessage.Content;
+            }
         }
 
         await _socket.EmitAsync("discordMessage",
-            new DiscordMessage(discordUsername, discordUuid, cleanedContent, wynnGuildId));
+            new DiscordMessage(discordUsername, discordUuid, cleanedContent, wynnGuildId, replyAuthor, replyContent));
     }
 
     public void SetupEmitter(DiscordSocketClient client)
     {
-        client.MessageReceived += async message => {
+        client.MessageReceived += async message =>
+        {
+            myid = client.CurrentUser.Id;
             try
             {
                 await SetupMessageReceiverAsync(message);

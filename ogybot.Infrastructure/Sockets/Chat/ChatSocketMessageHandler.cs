@@ -25,6 +25,7 @@ public class ChatSocketMessageHandler : IChatSocketMessageHandler
         await channel.SendMessageAsync(embed: logEmbed);
     }
 
+    // deprecated, reply author is no longer added to the header content
     public string AddReplyAuthorToField(SocketUserMessage message, string author)
     {
         var replyAuthor = message.ReferencedMessage.Author;
