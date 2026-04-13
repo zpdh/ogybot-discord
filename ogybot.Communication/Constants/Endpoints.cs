@@ -9,5 +9,5 @@ public static class Endpoints
     public const string TOMES = "guilds/tomes";
     public const string WAITLIST = "guilds/waitlist";
     public const string AUTH = "auth/token";
-    
+
 }

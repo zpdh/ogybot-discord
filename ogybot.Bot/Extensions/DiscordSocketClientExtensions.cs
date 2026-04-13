@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +7,7 @@ using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Entities.Exceptions;
 using ogybot.Utility.Extensions;
+using System.Reflection;
 
 namespace ogybot.Bot.Extensions;
 

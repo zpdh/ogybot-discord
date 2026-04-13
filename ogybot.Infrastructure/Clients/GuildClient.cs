@@ -34,19 +34,19 @@ public sealed class GuildClient : BaseClient, IGuildClient
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
 
-        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{discordGuildId}/mute", new { DiscordUuid=discordUser.DiscordUuid.ToString() }, token: token);
+        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{discordGuildId}/mute", new { DiscordUuid = discordUser.DiscordUuid.ToString() }, token: token);
 
         var serverConfiguration = await ParseResponseAsync<ServerConfiguration>(response);
 
         return serverConfiguration;
     }
-    
+
     public async Task<ServerConfiguration?> UnmuteUserAsync(ulong discordGuildId, DiscordUser discordUser)
     {
         var method = HttpMethod.Delete;
         var token = await _tokenRequester.GetTokenAsync();
 
-        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{discordGuildId}/mute", new { DiscordUuid=discordUser.DiscordUuid.ToString() }, token: token);
+        var response = await MakeAndSendRequestAsync(method, $"{Endpoint}/{discordGuildId}/mute", new { DiscordUuid = discordUser.DiscordUuid.ToString() }, token: token);
 
         var serverConfiguration = await ParseResponseAsync<ServerConfiguration>(response);
 

@@ -1,8 +1,8 @@
-using System.Threading.Channels;
 using ogybot.Communication.Constants;
 using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
+using System.Threading.Channels;
 
 namespace ogybot.Data.Clients;
 
@@ -29,7 +29,7 @@ public class UserClient : BaseClient, IUserClient
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/ban/{user.DiscordUuid}", new { Banned = true}, token: token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/ban/{user.DiscordUuid}", new { Banned = true }, token: token);
     }
 
     public async Task UnbanUserAsync(DiscordUser user)
@@ -37,6 +37,6 @@ public class UserClient : BaseClient, IUserClient
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/ban/{user.DiscordUuid}", new { Banned = false}, token: token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/ban/{user.DiscordUuid}", new { Banned = false }, token: token);
     }
 }

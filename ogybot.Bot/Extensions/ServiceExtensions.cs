@@ -37,7 +37,8 @@ public static class ServiceExtensions
 
     private static void AddDiscordClient(this ServiceCollection services)
     {
-        services.AddSingleton<DiscordSocketClient>(provider => {
+        services.AddSingleton<DiscordSocketClient>(provider =>
+        {
             var handler = provider.GetRequiredService<IDiscordAppHandler>();
 
             return handler.SetupDiscordClient();
@@ -46,7 +47,8 @@ public static class ServiceExtensions
 
     private static void AddInteractionService(this ServiceCollection services)
     {
-        services.AddSingleton<InteractionService>(provider => {
+        services.AddSingleton<InteractionService>(provider =>
+        {
             var client = provider.GetRequiredService<DiscordSocketClient>();
 
             return new InteractionService(client.Rest);
@@ -55,7 +57,8 @@ public static class ServiceExtensions
 
     private static void AddCommandValidators(this ServiceCollection services)
     {
-        services.AddScoped<IListCommandValidator>(provider => {
+        services.AddScoped<IListCommandValidator>(provider =>
+        {
             var configuration = provider.GetRequiredService<IConfiguration>();
             var validCharacters = configuration.GetValue<string>("ValidCharacters")!;
 

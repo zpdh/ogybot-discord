@@ -1,10 +1,10 @@
-﻿using System.Text;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Accessors;
+using System.Text;
 
 namespace ogybot.Bot.Commands.Misc;
 

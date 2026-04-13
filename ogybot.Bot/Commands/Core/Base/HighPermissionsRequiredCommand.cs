@@ -36,7 +36,7 @@ public abstract class HighPermissionRequiredCommand : Command
     private async Task<bool> UserHasNoPermissionsAsync()
     {
         // This method should always be called before a command, therefore this shouldn't present any issues.
-        var validIds = new[] { 264097995325177856ul, 752610633580675176ul};
+        var validIds = new[] { 264097995325177856ul, 752610633580675176ul };
 
         var user = Context.User as IGuildUser;
 

@@ -1,9 +1,9 @@
-﻿using System.Net.Http.Json;
-using ogybot.Communication.Constants;
+﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Communication.Requests;
 using ogybot.Communication.Responses;
 using ogybot.Domain.Infrastructure.Security;
+using System.Net.Http.Json;
 
 namespace ogybot.Data.Security.Tokens;
 

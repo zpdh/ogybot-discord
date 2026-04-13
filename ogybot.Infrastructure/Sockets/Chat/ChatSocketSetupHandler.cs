@@ -1,6 +1,6 @@
-﻿using System.Net.WebSockets;
-using ogybot.Domain.Infrastructure.Security;
+﻿using ogybot.Domain.Infrastructure.Security;
 using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
+using System.Net.WebSockets;
 
 namespace ogybot.Data.Sockets.Chat;
 
@@ -47,7 +47,8 @@ public class ChatSocketSetupHandler : IChatSocketSetupHandler
                 Console.Write(e);
                 // If reconnection fails, try again after 60 seconds.
                 await Task.Delay(1000 * 60);
-            } finally
+            }
+            finally
             {
                 Console.WriteLine($"Reconnection fail. Retry: {i}.");
                 await RequestAndRefreshTokenInHeadersAsync();
