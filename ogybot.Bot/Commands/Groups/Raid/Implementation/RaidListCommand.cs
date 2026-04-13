@@ -14,8 +14,6 @@ public sealed partial class RaidListCommands
     private const int DefaultFirstPage = 0;
     private const int DefaultPageSize = 5;
     private ulong UserId { get; set; }
-    // idea: static page dictionary for each user, which would be reset on each command run
-    // somehow make interactions expire
     private static readonly Dictionary<ulong, PageSessionInfo> _sessions = [];
     private static readonly Dictionary<ulong, int> _currentPages = [];
 
