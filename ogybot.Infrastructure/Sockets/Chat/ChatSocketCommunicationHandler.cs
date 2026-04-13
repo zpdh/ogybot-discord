@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
@@ -88,6 +89,8 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         {
             if (message.ReferencedMessage.Author.Id == myid)
             {
+                if (message.ReferencedMessage.Embeds.First().Author is EmbedAuthor author)
+                    replyAuthor = author.Name;
                 replyContent = message.ReferencedMessage.Embeds.First().Description;
             }
             else
