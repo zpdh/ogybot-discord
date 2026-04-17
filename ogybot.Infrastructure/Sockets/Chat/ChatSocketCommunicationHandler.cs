@@ -78,7 +78,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     public async Task EmitMessageAsync(SocketUserMessage message)
     {
-        var discordUsername = (message.Author as SocketGuildUser)!.Nickname;
+        var discordUsername = (message.Author as SocketGuildUser)!.DisplayName;
         var discordUuid = message.Author.Id;
         var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
         var wynnGuildId = await GetWynnGuildIdAsync(message);
@@ -95,7 +95,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
             }
             else
             {
-                replyAuthor = (message.ReferencedMessage.Author as SocketGuildUser)!.Nickname;
+                replyAuthor = (message.ReferencedMessage.Author as SocketGuildUser)!.DisplayName;
                 replyContent = message.ReferencedMessage.Content;
             }
         }
