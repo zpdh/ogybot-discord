@@ -17,7 +17,7 @@ Some of the features included are:
 - Discord.NET
 - Docker
 - WebSockets
-- Cache
+- In-Memory Caching
 - Socket.IO
 
  <a href="https://github.com/ezlixp/ico_server" target="_blank"> API implementation </a>. (Node.js)
