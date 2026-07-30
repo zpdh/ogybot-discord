@@ -2,26 +2,45 @@
 
 <h2 align="center"> About </h2>
 
-This is a discord bot made for the Idiot Co Discord server. This project is mainly maintained by me, but feel free to
-open pull requests to merge new features, bug fixes, improvements, etc.
-
+OgyBot is a discord bot designed for easy guild management in the Wynncraft MMORPG & providing a real-time chat between the game & discord via WebSockets.
+Some of the features included are:
+- Automated queue management for guild invitations
+- Queue management for guild rewards (tomes, aspects)
+- Raid tracking across guild members
+- Bidirectional real-time chatting between Discord and the in-game guild
 
 <h2 align="center"> Technologies </h2>
 
-The bot itself is written in C# using the Discord.NET Library, however it does have an API implementation written in
-Node.js, feel free to check it out <a href="https://github.com/ezlixp/ico_server" target="_blank">here</a>.
+- Domain-Driven Design Architecture
+- .NET 8.0
+- C#
+- Discord.NET
+- Docker
+- WebSockets
+- Cache
+- Socket.IO
 
+ <a href="https://github.com/ezlixp/ico_server" target="_blank"> API implementation </a>. (Node.js)
+ <a href="https://github.com/ezlixp/guild_api" target="_blank"> Minecraft Mod </a>. (Java)
 
 <h2 align="center"> Commands </h2>
 
 - /info - Displays info about the bot, such as this repository and it's authors.
+> - /chiefs - Pings guild chiefs.
+> - /raid - Pings either Light/Heavy Raid roles.
+- /link - Links discord account to minecraft account
 - /online - Shows current mod users online in-game.
-- /tomelist (and tomelist-add, tomelist-remove) - Displays players in the queue for a guild tome. /tomelist-add adds a
-  player to queue and /tomelist-remove removes one based on their username or index.
-- /waitlist (and waitlist-add, waitlist-remove) - Displays players in the queue for a guild invite. /waitlist-add adds a
-  player to queue and /waitlist-remove removes one based on their username or index.
-- /aspectlist (and aspectlist-decrement) - Displays the number of aspects owed to each guild member based on their raids
-  completed. Aspectlist-decrement decrements their aspects owed counter by 1.
+- /tomelist \_\_\_
+  - list - Displays players in the queue for a guild tome.
+  - add - Adds a player to the queue.
+  - remove - Removes a player(s) from the queue based on their username or index.
+- /waitlist \_\_\_
+  - list - Displays players in the queue for a guild invite.
+  - add - Adds a to queue
+  - remove - Removes a player(s) from the queue based on their username or index.
+- /raidlist \_\_\_
+  - list - Displays the raid information of each guild member (guild raids completed, aspects owed)
+  - decrement - Decrements the aspects a user(s) based on their username of index.
 
 
 <h2 align="center"> Contributions </h2>
@@ -36,6 +55,3 @@ break anything.
 3. Commit your Changes (`git commit -m 'feat: add newFeature'`)
 4. Push to the Branch (`git push origin feature/newFeature`)
 5. Open a Pull Request
-
-
-That's it! Thanks for checking out my little project!
