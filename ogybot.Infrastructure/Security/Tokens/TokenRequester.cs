@@ -1,15 +1,15 @@
-﻿using System.Net.Http.Json;
-using ogybot.Communication.Constants;
+﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Communication.Requests;
 using ogybot.Communication.Responses;
 using ogybot.Domain.Infrastructure.Security;
+using System.Net.Http.Json;
 
 namespace ogybot.Data.Security.Tokens;
 
 public class TokenRequester : ITokenRequester
 {
-    private const string Endpoint = "guilds/auth/get-token/*";
+    private const string Endpoint = Endpoints.AUTH;
 
     private readonly HttpClient _httpClient;
     private readonly string _validationKey;

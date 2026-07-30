@@ -1,0 +1,2 @@
+docker build --target bot-final -t ezlixp/wynn-bridge:bot .
+docker push ezlixp/wynn-bridge:bot

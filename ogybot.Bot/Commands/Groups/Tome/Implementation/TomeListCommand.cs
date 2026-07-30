@@ -11,6 +11,7 @@ public sealed partial class TomeListCommands
     [SlashCommand("list", "Shows the current queue to get a guild tome.")]
     public async Task ExecuteListCommandAsync()
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(ListCommandInstructionsAsync);
     }
 
@@ -57,6 +58,6 @@ public sealed partial class TomeListCommands
     {
         var counter = 1;
 
-        return list.Aggregate("", (current, tomeListUser) => current + $"**{counter++}.** {tomeListUser.Username}\n");
+        return list.Aggregate("", (current, tomeListUser) => current + $"**{counter++}.** {tomeListUser.McUsername}\n");
     }
 }

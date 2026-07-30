@@ -11,6 +11,7 @@ public sealed partial class WaitlistCommands
     [SlashCommand("list", "Shows the list to rejoin the guild.")]
     public async Task ExecuteListCommandAsync()
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(ListCommandInstructionsAsync);
     }
 
@@ -58,6 +59,6 @@ public sealed partial class WaitlistCommands
     {
         var counter = 1;
 
-        return list.Aggregate("", (current, waitlistUser) => current + $"**{counter++}.** {waitlistUser.Username}\n");
+        return list.Aggregate("", (current, waitlistUser) => current + $"**{counter++}.** {waitlistUser.McUsername}\n");
     }
 }

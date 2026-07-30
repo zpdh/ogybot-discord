@@ -1,10 +1,10 @@
-﻿using System.Text;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Accessors;
+using System.Text;
 
 namespace ogybot.Bot.Commands.Misc;
 
@@ -35,7 +35,7 @@ public sealed class InfoCommand : Command
 
         var embed = CreateEmbed(embedTitle, embedFooter, user);
 
-        await FollowupAsync(embed: embed);
+        await RespondAsync(embed: embed);
     }
 
     private static Embed CreateEmbed(string embedTitle, string embedFooter, SocketUser user)

@@ -25,12 +25,15 @@ public class BotExceptionHandler : IBotExceptionHandler
 
     private static async Task HandleOgybotExceptionAsync(SocketInteractionContext context, Exception exception)
     {
-        await context.Interaction.FollowupAsync(exception.Message);
+        // this is ephemeral because the response to buttons is ephemeral based on this value, while usually it is based on the value passed
+        // in to the defer async before this
+        await context.Interaction.FollowupAsync(exception.Message, ephemeral: true);
     }
 
     private static async Task HandleUnknownExceptionAsync(SocketInteractionContext context, Exception exception)
     {
-        await context.Interaction.FollowupAsync(ErrorMessages.UnknownError);
+        // see above for ephemeral explaination
+        await context.Interaction.FollowupAsync(ErrorMessages.UnknownError, ephemeral: true);
         Log(exception);
     }
 

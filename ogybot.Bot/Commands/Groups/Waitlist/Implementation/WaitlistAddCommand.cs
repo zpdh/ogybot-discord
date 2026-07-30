@@ -10,6 +10,7 @@ public sealed partial class WaitlistCommands
     [SlashCommand("add", "Adds a user to the wait list.")]
     public async Task ExecuteAddCommandAsync([Summary("user", "User to insert into the wait list")] string username)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => AddCommandInstructionsAsync(username));
     }
 

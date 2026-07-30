@@ -1,4 +1,5 @@
-﻿using ogybot.Domain.Entities.UserTypes;
+﻿using ogybot.Communication.Constants;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 using ogybot.Domain.Infrastructure.Security;
 
@@ -6,7 +7,7 @@ namespace ogybot.Data.Clients;
 
 public class TomeListClient : BaseClient, ITomeListClient
 {
-    private const string Endpoint = "guilds/tomes";
+    private const string Endpoint = Endpoints.TOMES;
 
     private readonly ITokenRequester _tokenRequester;
 
@@ -39,6 +40,6 @@ public class TomeListClient : BaseClient, ITomeListClient
         var method = HttpMethod.Delete;
         var token = await _tokenRequester.GetTokenAsync();
 
-        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.Username}", token: token);
+        await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}/{user.McUsername}", token: token);
     }
 }

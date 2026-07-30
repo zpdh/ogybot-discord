@@ -2,13 +2,13 @@
 
 public class RaidListUserDto
 {
-    public string Username { get; set; } = string.Empty;
+    public string McUsername { get; set; } = string.Empty;
     public double Aspects { get; set; }
     public double Emeralds { get; set; }
 
-    public RaidListUserDto(string username, double aspects, double liquidEmeraldAmount)
+    public RaidListUserDto(string mcUsername, double aspects, double liquidEmeraldAmount)
     {
-        Username = username;
+        McUsername = mcUsername;
         Aspects = aspects;
         Emeralds = liquidEmeraldAmount * 4096;
     }

@@ -21,6 +21,7 @@ public sealed partial class RaidListCommands
         [Summary("LE", "Number of liquid emeralds to remove from the provided user")]
         double liquidEmeraldAmount = 0)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => DecrementCommandInstructionsAsync(usernamesOrIndexes, aspectAmount, liquidEmeraldAmount));
     }
 
@@ -51,7 +52,8 @@ public sealed partial class RaidListCommands
             .Select(player => player.Trim())
             .Where(player => !player.IsNullOrWhitespace())
             .OrderDescending()
-            .Select(async player => {
+            .Select(async player =>
+            {
                 try
                 {
                     await DecrementAspectFromPlayerAsync(player, aspectAmount, liquidEmeraldAmount);
@@ -89,7 +91,7 @@ public sealed partial class RaidListCommands
 
         _commandValidator.ValidateUserRemoval(list, username);
 
-        var dto = new RaidListUserDto(username, aspectAmount, liquidEmeraldAmount);
+        var dto = new RaidListUserDto(username, -aspectAmount, liquidEmeraldAmount);
 
         await RaidListClient.DecrementRewardsAsync(WynnGuildId, dto);
     }
@@ -103,7 +105,7 @@ public sealed partial class RaidListCommands
         // Gets the user based on the index provided. As the list count starts at 1, the index has to be subtracted by 1.
         var aspectListUser = list[index - 1];
 
-        var dto = new RaidListUserDto(aspectListUser.Username, aspectAmount, liquidEmeraldAmount);
+        var dto = new RaidListUserDto(aspectListUser.McUsername, -aspectAmount, liquidEmeraldAmount);
 
         await RaidListClient.DecrementRewardsAsync(WynnGuildId, dto);
     }

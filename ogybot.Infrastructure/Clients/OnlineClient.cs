@@ -1,11 +1,12 @@
-﻿using ogybot.Domain.Entities.UserTypes;
+﻿using ogybot.Communication.Constants;
+using ogybot.Domain.Entities.UserTypes;
 using ogybot.Domain.Infrastructure.Clients;
 
 namespace ogybot.Data.Clients;
 
 public class OnlineClient : BaseClient, IOnlineClient
 {
-    private const string Endpoint = "guilds/online";
+    private const string Endpoint = Endpoints.ONLINE;
 
     public OnlineClient(HttpClient httpClient) : base(httpClient)
     {

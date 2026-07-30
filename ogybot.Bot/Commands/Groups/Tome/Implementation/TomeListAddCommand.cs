@@ -10,6 +10,7 @@ public sealed partial class TomeListCommands
     [SlashCommand("add", "Adds a user to the tome list.")]
     public async Task ExecuteAddCommandAsync([Summary("user", "User to be added into the tome list")] string username)
     {
+        await DeferAsync();
         await HandleCommandExecutionAsync(() => AddCommandInstructionsAsync(username));
     }
 

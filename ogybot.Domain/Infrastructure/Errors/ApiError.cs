@@ -2,5 +2,5 @@
 
 public class ApiError
 {
-    public string Error { get; set; } = string.Empty;
+    public string ErrorMessage { get; set; } = string.Empty;
 }

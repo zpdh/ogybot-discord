@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +7,7 @@ using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Entities.Exceptions;
 using ogybot.Utility.Extensions;
+using System.Reflection;
 
 namespace ogybot.Bot.Extensions;
 
@@ -57,7 +57,8 @@ public static class DiscordSocketClientExtensions
 
     private static void AddLogger(this DiscordSocketClient client)
     {
-        client.Log += logMessage => {
+        client.Log += logMessage =>
+        {
             Console.WriteLine($"{logMessage.Message}");
 
             return Task.CompletedTask;
@@ -66,9 +67,8 @@ public static class DiscordSocketClientExtensions
 
     private static void AddInteraction(this DiscordSocketClient client, IServiceProvider services)
     {
-        client.InteractionCreated += async interaction => {
-            await interaction.DeferAsync();
-
+        client.InteractionCreated += async interaction =>
+        {
             await HandleCommandExecutionAsync(client, services, interaction);
         };
     }
@@ -102,7 +102,8 @@ public static class DiscordSocketClientExtensions
 
     private static void ReadyUp(this DiscordSocketClient client, IServiceProvider services)
     {
-        client.Ready += async () => {
+        client.Ready += async () =>
+        {
             var interactionService = services.GetRequiredService<InteractionService>();
 
             await interactionService.AddModulesAsync(Assembly.GetExecutingAssembly(), services);

@@ -1,4 +1,5 @@
-﻿using ogybot.Communication.Requests;
+﻿using ogybot.Communication.Constants;
+using ogybot.Communication.Requests;
 using ogybot.Domain.DataTransferObjects;
 using ogybot.Domain.Entities;
 using ogybot.Domain.Entities.UserTypes;
@@ -9,7 +10,7 @@ namespace ogybot.Data.Clients;
 
 public class RaidListClient : BaseClient, IRaidListClient
 {
-    private const string Endpoint = "guilds/raids/rewards";
+    private const string Endpoint = Endpoints.REWARDS;
 
     private readonly ITokenRequester _tokenRequester;
 
@@ -33,7 +34,7 @@ public class RaidListClient : BaseClient, IRaidListClient
     {
         var method = HttpMethod.Post;
         var token = await _tokenRequester.GetTokenAsync();
-        var request = new DecrementRewardsRequest(user.Username, user.Aspects, user.Emeralds);
+        var request = new DecrementRewardsRequest(user.McUsername, user.Aspects, user.Emeralds);
 
         await MakeAndSendRequestAsync(method, $"{Endpoint}/{wynnGuildId}", request, token);
     }

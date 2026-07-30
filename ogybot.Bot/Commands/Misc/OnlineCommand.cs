@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Interactions;
+using Discord.WebSocket;
 using ogybot.Bot.Commands.Core.Base;
 using ogybot.Bot.Handlers;
 using ogybot.Domain.Accessors;
@@ -34,6 +35,7 @@ public sealed class OnlineCommand : Command
     [SlashCommand("online", "Lists online players with the mod.")]
     public async Task ExecuteCommandAsync()
     {
+        await DeferAsync(ephemeral: true);
         await HandleCommandExecutionAsync(CommandInstructionsAsync);
     }
 
@@ -46,7 +48,7 @@ public sealed class OnlineCommand : Command
 
         var embed = await CreateEmbedAsync();
 
-        await FollowupAsync(embed: embed);
+        await FollowupAsync(embed: embed, ephemeral: true);
     }
 
     private async Task<Embed> CreateEmbedAsync()
@@ -84,7 +86,7 @@ public sealed class OnlineCommand : Command
 
         foreach (var onlineUser in list)
         {
-            description += $"{counter}. {onlineUser.Username}\n";
+            description += $"{counter}. {onlineUser.McUsername}\n";
 
             counter++;
         }

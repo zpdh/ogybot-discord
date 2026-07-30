@@ -29,7 +29,8 @@ public static class DependencyInjectionExtension
 
     private static void AddHttpClient(this ServiceCollection services)
     {
-        services.AddSingleton<HttpClient>(provider => {
+        services.AddSingleton<HttpClient>(provider =>
+        {
             var configuration = provider.GetRequiredService<IConfiguration>();
             var baseAddress = configuration.GetValue<Uri>("Api:Uri");
 
@@ -40,7 +41,8 @@ public static class DependencyInjectionExtension
     private static void AddTokenRequester(this ServiceCollection services)
     {
 
-        services.AddSingleton<ITokenRequester>(provider => {
+        services.AddSingleton<ITokenRequester>(provider =>
+        {
             var configuration = provider.GetRequiredService<IConfiguration>();
             var validationKey = configuration.GetValue<string>("Api:ValidationKey")!;
 
@@ -52,6 +54,7 @@ public static class DependencyInjectionExtension
 
     private static void AddCustomClients(this ServiceCollection services)
     {
+        services.AddScoped<IUserClient, UserClient>();
         services.AddScoped<ITomeListClient, TomeListClient>();
         services.AddScoped<IWaitListClient, WaitListClient>();
         services.AddScoped<IRaidListClient, RaidListClient>();
@@ -61,7 +64,8 @@ public static class DependencyInjectionExtension
 
     private static void AddWebSockets(this ServiceCollection services)
     {
-        services.AddSingleton<SocketIOClient.SocketIO>(provider => {
+        services.AddSingleton<SocketIOClient.SocketIO>(provider =>
+        {
             var config = provider.GetRequiredService<IConfiguration>();
             var websocketUrl = config.GetValue<string>("Websocket:WebsocketServerUrl")!;
 

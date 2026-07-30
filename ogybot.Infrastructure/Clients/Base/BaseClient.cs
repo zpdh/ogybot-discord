@@ -1,9 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using ogybot.Communication.Constants;
+﻿using ogybot.Communication.Constants;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Infrastructure.Errors;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 
 namespace ogybot.Data.Clients;
 
@@ -72,7 +72,7 @@ public abstract class BaseClient
         {
             var error = await ParseResponseAsync<ApiError>(response);
 
-            throw new ApiException(error.Error);
+            throw new ApiException(error.ErrorMessage);
         }
     }
 

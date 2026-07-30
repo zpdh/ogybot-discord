@@ -6,10 +6,10 @@ public sealed class RaidListUser : User
 {
 
     public double Aspects { get; set; }
-    public double Emeralds { get; set; }
+    public double LiquidEmeralds { get; set; }
     public int Raids { get; set; }
 
-    public RaidListUser(string username) : base(username)
+    public RaidListUser(string mcUsername) : base(mcUsername)
     {
 
     }

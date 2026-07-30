@@ -1,4 +1,5 @@
-﻿using Discord.WebSocket;
+﻿using Discord;
+using Discord.WebSocket;
 using ogybot.Communication.Exceptions;
 using ogybot.Domain.Accessors;
 using ogybot.Domain.Entities;
@@ -16,6 +17,7 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
     private readonly IChatSocketMessageHandler _messageHandler;
     private readonly IChatSocketSetupHandler _setupHandler;
     private readonly SocketIOClient.SocketIO _socket;
+    private ulong myid;
 
     public ChatSocketCommunicationHandler(
         IChatSocketMessageHandler messageHandler,
@@ -37,7 +39,8 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
         #region Websocket Events
 
         _socket.On("wynnMessage",
-            async response => {
+            async response =>
+            {
                 var socketResponse = response.GetValue<ChatSocketMessage>();
                 var channel = await _discordChannelService.GetByIdAsync(socketResponse.GetListeningChannel());
 
@@ -51,13 +54,15 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
         #region Websocket Connectivity Events
 
-        _socket.OnConnected += (_, _) => {
+        _socket.OnConnected += (_, _) =>
+        {
             const string message = "Successfully connected to Websocket Server";
 
             Console.WriteLine(message);
         };
 
-        _socket.OnDisconnected += async (_, reason) => {
+        _socket.OnDisconnected += async (_, reason) =>
+        {
             var message = $"Disconnected from Websocket Server. Reason: {reason}";
 
             Console.WriteLine(message);
@@ -73,22 +78,37 @@ public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
 
     public async Task EmitMessageAsync(SocketUserMessage message)
     {
-        var authorField = message.Author.Username;
+        var discordUsername = (message.Author as SocketGuildUser)!.DisplayName;
+        var discordUuid = message.Author.Id;
         var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
         var wynnGuildId = await GetWynnGuildIdAsync(message);
+        string? replyAuthor = null;
+        string? replyContent = null;
 
         if (MessageIsReply(message))
         {
-            authorField = _messageHandler.AddReplyAuthorToField(message, authorField);
+            if (message.ReferencedMessage.Author.Id == myid)
+            {
+                if (message.ReferencedMessage.Embeds.First().Author is EmbedAuthor author)
+                    replyAuthor = author.Name;
+                replyContent = message.ReferencedMessage.Embeds.First().Description;
+            }
+            else
+            {
+                replyAuthor = (message.ReferencedMessage.Author as SocketGuildUser)!.DisplayName;
+                replyContent = message.ReferencedMessage.Content;
+            }
         }
 
         await _socket.EmitAsync("discordMessage",
-            new DiscordMessage(authorField, cleanedContent, wynnGuildId));
+            new DiscordMessage(discordUsername, discordUuid, cleanedContent, wynnGuildId, replyAuthor, replyContent));
     }
 
     public void SetupEmitter(DiscordSocketClient client)
     {
-        client.MessageReceived += async message => {
+        client.MessageReceived += async message =>
+        {
+            myid = client.CurrentUser.Id;
             try
             {
                 await SetupMessageReceiverAsync(message);
