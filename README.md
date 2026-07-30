@@ -20,8 +20,9 @@ Some of the features included are:
 - In-Memory Caching
 - Socket.IO
 
- <a href="https://github.com/ezlixp/ico_server" target="_blank"> API implementation </a>. (Node.js)
- <a href="https://github.com/ezlixp/guild_api" target="_blank"> Minecraft Mod </a>. (Java)
+ <a href="https://github.com/ezlixp/ico_server" target="_blank"> API implementation </a> (Node.js)
+ 
+ <a href="https://github.com/ezlixp/guild_api" target="_blank"> Minecraft Mod </a> (Java)
 
 <h2 align="center"> Commands </h2>
 
