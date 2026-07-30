@@ -1,0 +1,21 @@
+﻿using ogybot.Domain.Primitives;
+
+namespace ogybot.Domain.Entities.UserTypes;
+
+public sealed class RaidListUser : User
+{
+
+    public double Aspects { get; set; }
+    public double LiquidEmeralds { get; set; }
+    public int Raids { get; set; }
+
+    public RaidListUser(string mcUsername) : base(mcUsername)
+    {
+
+    }
+
+    private RaidListUser()
+    {
+
+    }
+}

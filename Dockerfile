@@ -1,22 +1,46 @@
-#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-dev
+RUN apt-get update \
+    && apt-get install unzip \
+    && curl -sSL https://aka.ms/getvsdbgsh | /bin/sh /dev/stdin -v latest -l /vsdbg
 
-FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
-WORKDIR /app
+WORKDIR /usr/local/bot
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["ogybot.csproj", "."]
-RUN dotnet restore "./ogybot.csproj"
-COPY . .
-WORKDIR "/src/."
-RUN dotnet build "./ogybot.csproj" -c $BUILD_CONFIGURATION -o /app/build
+COPY ./ ./
+COPY ./ogybot.Bot/.env ./ogybot.Bot/appsettings.json
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ogybot.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+ENV ASPNETCORE_URLS=http://*:5000
+ENV ASPNETCORE_ENVIRONMENT=Development
 
-FROM base AS final
-WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ogybot.dll"]
+EXPOSE 5000
+
+ENTRYPOINT ["dotnet", "watch", "--non-interactive", "run", "--project", "ogybot.Bot/ogybot.Bot.csproj"]
+
+# Use the official .NET SDK 8.0 image for building
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS bot-build
+
+# Set the working directory inside the container
+WORKDIR /usr/local/bot
+
+# Copy all the files from the current directory to the container
+COPY ./ ./
+
+# Restore dependencies for the project
+RUN dotnet restore ogybot.Bot/ogybot.Bot.csproj
+
+# Build the project in Release mode
+RUN dotnet build ogybot.Bot/ogybot.Bot.csproj -c Release -o /usr/local/bot/build
+
+# Publish the project into a folder optimized for deployment
+RUN dotnet publish ogybot.Bot/ogybot.Bot.csproj -c Release -o /usr/local/bot/publish --no-restore
+
+# Use the runtime-only .NET 8.0 image for the final container
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS bot-final
+
+# Set the working directory in the runtime container
+WORKDIR /usr/local/bot
+
+# Copy the build artifacts from the build stage
+COPY --from=bot-build /usr/local/bot/publish ./
+
+# Set the entry point for the container
+ENTRYPOINT ["dotnet", "ogybot.Bot.dll"]

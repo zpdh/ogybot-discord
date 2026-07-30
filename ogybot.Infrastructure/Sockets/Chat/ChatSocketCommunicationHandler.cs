@@ -1,0 +1,163 @@
+﻿using Discord;
+using Discord.WebSocket;
+using ogybot.Communication.Exceptions;
+using ogybot.Domain.Accessors;
+using ogybot.Domain.Entities;
+using ogybot.Domain.Infrastructure.Sockets.ChatSocket;
+using ogybot.Domain.Services;
+using ogybot.Utility.Extensions;
+using ogybot.Utility.Services;
+
+namespace ogybot.Data.Sockets.Chat;
+
+public class ChatSocketCommunicationHandler : IChatSocketCommunicationHandler
+{
+    private readonly IServerConfigurationAccessor _configurationAccessor;
+    private readonly IDiscordChannelService _discordChannelService;
+    private readonly IChatSocketMessageHandler _messageHandler;
+    private readonly IChatSocketSetupHandler _setupHandler;
+    private readonly SocketIOClient.SocketIO _socket;
+    private ulong myid;
+
+    public ChatSocketCommunicationHandler(
+        IChatSocketMessageHandler messageHandler,
+        SocketIOClient.SocketIO socket,
+        IChatSocketSetupHandler setupHandler,
+        IDiscordChannelService discordChannelService,
+        IServerConfigurationAccessor configurationAccessor)
+    {
+        _messageHandler = messageHandler;
+        _socket = socket;
+        _setupHandler = setupHandler;
+        _discordChannelService = discordChannelService;
+        _configurationAccessor = configurationAccessor;
+    }
+
+    public void SetupEventListeners()
+    {
+
+        #region Websocket Events
+
+        _socket.On("wynnMessage",
+            async response =>
+            {
+                var socketResponse = response.GetValue<ChatSocketMessage>();
+                var channel = await _discordChannelService.GetByIdAsync(socketResponse.GetListeningChannel());
+
+                if (!socketResponse.TextContent.IsNullOrWhitespace())
+                {
+                    await _messageHandler.FormatAndSendEmbedAsync(channel, socketResponse);
+                }
+            });
+
+        #endregion
+
+        #region Websocket Connectivity Events
+
+        _socket.OnConnected += (_, _) =>
+        {
+            const string message = "Successfully connected to Websocket Server";
+
+            Console.WriteLine(message);
+        };
+
+        _socket.OnDisconnected += async (_, reason) =>
+        {
+            var message = $"Disconnected from Websocket Server. Reason: {reason}";
+
+            Console.WriteLine(message);
+
+            await _setupHandler.RequestAndRefreshTokenInHeadersAsync();
+
+            await _setupHandler.TryReconnectingAsync();
+        };
+
+        #endregion
+
+    }
+
+    public async Task EmitMessageAsync(SocketUserMessage message)
+    {
+        var discordUsername = (message.Author as SocketGuildUser)!.DisplayName;
+        var discordUuid = message.Author.Id;
+        var cleanedContent = WhitespaceRemovalService.RemoveExcessWhitespaces(message.CleanContent).Trim();
+        var wynnGuildId = await GetWynnGuildIdAsync(message);
+        string? replyAuthor = null;
+        string? replyContent = null;
+
+        if (MessageIsReply(message))
+        {
+            if (message.ReferencedMessage.Author.Id == myid)
+            {
+                if (message.ReferencedMessage.Embeds.First().Author is EmbedAuthor author)
+                    replyAuthor = author.Name;
+                replyContent = message.ReferencedMessage.Embeds.First().Description;
+            }
+            else
+            {
+                replyAuthor = (message.ReferencedMessage.Author as SocketGuildUser)!.DisplayName;
+                replyContent = message.ReferencedMessage.Content;
+            }
+        }
+
+        await _socket.EmitAsync("discordMessage",
+            new DiscordMessage(discordUsername, discordUuid, cleanedContent, wynnGuildId, replyAuthor, replyContent));
+    }
+
+    public void SetupEmitter(DiscordSocketClient client)
+    {
+        client.MessageReceived += async message =>
+        {
+            myid = client.CurrentUser.Id;
+            try
+            {
+                await SetupMessageReceiverAsync(message);
+            }
+            catch (ApiException)
+            {
+                // Simply silence the exception. It will only be thrown when the server is not configured.
+            }
+        };
+    }
+
+    private static bool MessageIsReply(SocketUserMessage message)
+    {
+        return message.ReferencedMessage != null;
+    }
+
+    private async Task SetupMessageReceiverAsync(SocketMessage message)
+    {
+        var broadcastingChannelId = await GetBroadcastingChannelIdAsync(message);
+
+        if (message.Channel.Id != broadcastingChannelId) return;
+        if (message.Author.IsBot || message is not SocketUserMessage userMessage) return;
+
+        await EmitMessageAsync(userMessage);
+    }
+
+    private async Task<ulong> GetBroadcastingChannelIdAsync(SocketMessage message)
+    {
+        var discordGuildId = GetDiscordGuildId(message);
+
+        var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
+        return serverConfig.BroadcastingChannel;
+    }
+
+    private static ulong GetDiscordGuildId(SocketMessage message)
+    {
+        return ((SocketGuildChannel)message.Channel).Guild.Id;
+    }
+
+    private async Task<Guid> GetWynnGuildIdAsync(SocketMessage message)
+    {
+        var discordGuildId = GetDiscordGuildId(message);
+        var serverConfig = await _configurationAccessor.FetchServerConfigurationAsync(discordGuildId);
+
+        return serverConfig.WynnGuildId;
+    }
+
+    private async Task RetryConnecting()
+    {
+
+    }
+}
